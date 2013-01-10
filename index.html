@@ -1,41 +1,82 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Embree by embree</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Embree : Photo-Realistic Ray Tracing Kernels" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Embree</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Embree</h1>
-        <p>Photo-Realistic Ray Tracing Kernels</p>
 
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/embree">View on GitHub</a>
 
-        <p class="view"><a href="https://github.com/embree">View My GitHub Profile</a></p>
+          <h1 id="project_title">Embree</h1>
+          <h2 id="project_tagline">Photo-Realistic Ray Tracing Kernels</h2>
 
-      </header>
-      <section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h3>What is Embree?</h3>
 
-<p>Embree is a collection of high-performance ray tracing kernels, developed at Intel Labs. The kernels are optimized for photo-realistic rendering on the latest Intel© processors with support for the SSE and AVX instruction sets. In addition to the ray tracing kernels, Embree provides an example photo-realistic rendering engine. Embree is designed for Monte Carlo ray tracing algorithms, where the vast majority of rays are incoherent. The specific single-ray traversal kernels in Embree provide the best performance in this scenario and they are very easy to integrate into existing applications.</p>
+<p>Embree is a collection of high-performance ray tracing kernels, developed at Intel Labs. The target user of Embree are graphics application engineers that want to improve the performance of their application by leveraging the optimized ray tracing kernels of Embree. The ray tracing kernels are optimized for photo-realistic rendering on the latest Intel© processors with support for the SSE and AVX instruction sets. Embree is designed for Monte Carlo ray tracing algorithms, where the vast majority of rays are incoherent. The specific single-ray traversal kernels in Embree provide the best performance in this scenario. Embree is released as Open Source under the Apache 2.0 license.</p>
 
 <h3>What's New in Embree 1.1?</h3>
 
-<p>Embree 1.1 offers new acceleration structures with significantly lower memory consumption: up to 2x during rendering and up to 3x during construction. In addition, the new builders are up to twice as fast as the previous version. To better support movie production rendering, Embree 1.1 adds a new acceleration structure for scenes with motion blur, support for very large models, and improved ray/triangle intersection accuracy.</p>
+<p>Embree 1.1 offers new acceleration structures with significantly lower memory consumption: up to 2x during rendering and up to 3x during construction. In addition, the new builders are up to twice as fast as the previous version. To better support movie production rendering, Embree 1.1 adds a new acceleration structures for scenes with motion blur, support for very large models, and improved accuracy for ray/triangle intersection.</p>
 
 <h3>Downloading Embree</h3>
 
-<p>The Embree source code can be downloaded directly via git:</p>
+<p>You can get the latest Embree version 1.1 via git the following way:</p>
 
-<pre><code>$ git clone embree.github.com/embree.git embree
+<pre><code>$ git clone https://github.com/embree/embree.git embree
+$ cd embree
+$ git checkout v1.1
+</code></pre>
+
+<p>Alternatively Embree version 1.1 can also be checked out with subversion:</p>
+
+<pre><code>$ svn checkout https://github.com/embree/embree.git/branches/v1.1 embree
+$ cd embree
+</code></pre>
+
+<h3>Compiling Embree</h3>
+
+<p>For compilation under Windows use the included Visual Studio 2008 or Visual Studio 2010 solution files. </p>
+
+<p>To compile Embree under Linux and MaxOSX you need to install CMake and FreeGLUT. Optionally you should also install OpenEXR and ImageMagick to support reading more image formats. Under MaxOSX you can install these dependencies using MacPorts:</p>
+
+<pre><code>sudo port install cmake openexr freeglut ImageMagick
+</code></pre>
+
+<p>For compilation under Linux and MacOSX use CMake:</p>
+
+<pre><code>$ mkdir bin
+$ cd bin
+$ cmake ..
+$ make
+</code></pre>
+
+<h3>Using the Embree example renderer</h3>
+
+<p>Embree provides an example photo-realistic rendering engine. Embree also ships with a few simple test scenes, each consisting of a scene file (.xml or .obj) and an Embree command script file (.ecs). The command script file contains command line parameters that set the camera parameters, lights and render settings. The following command line will render the Cornell Box scene with 16 samples per pixel and write the resulting image to the file cornell_box.tga in the current directory:</p>
+
+<pre><code>embree -c ../models/cornell_box.ecs -spp 16 -o cornell_box.tga
+</code></pre>
+
+<p>To interactively display the same scene, enter the following command:</p>
+
+<pre><code>embree -c ../models/cornell_box.ecs
 </code></pre>
 
 <h3>Embree Resources</h3>
@@ -52,11 +93,16 @@
 
 <p>For questions and bug reports please write us at embree_support@intel.com. For information about compiler optimizations, see our <a href="http://software.intel.com/en-us/articles/optimization-notice#opt-en">Optimization Notice</a>. </p>
       </section>
-      <footer>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+
     
+
   </body>
 </html>
