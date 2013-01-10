@@ -50,6 +50,12 @@ $ git checkout v1.1
 $ cd embree
 </code></pre>
 
+<p>Embree version 1.1 is also available as zip and tar.gz files: </p>
+
+<p><a href="releases/embree_1.1.tar.gz">embree_1.1.tar.gz</a> </p>
+
+<p><a href="releases/embree_1.1.zip">embree_1.1.zip</a></p>
+
 <h3>Compiling Embree</h3>
 
 <p>For compilation under Windows use the included Visual Studio 2008 or Visual Studio 2010 solution files. </p>
@@ -71,12 +77,12 @@ $ make
 
 <p>Embree provides an example photo-realistic rendering engine. Embree also ships with a few simple test scenes, each consisting of a scene file (.xml or .obj) and an Embree command script file (.ecs). The command script file contains command line parameters that set the camera parameters, lights and render settings. The following command line will render the Cornell Box scene with 16 samples per pixel and write the resulting image to the file cornell_box.tga in the current directory:</p>
 
-<pre><code>embree -c ../models/cornell_box.ecs -spp 16 -o cornell_box.tga
+<pre><code>./embree -c ../models/cornell_box.ecs -spp 16 -o cornell_box.tga
 </code></pre>
 
 <p>To interactively display the same scene, enter the following command:</p>
 
-<pre><code>embree -c ../models/cornell_box.ecs
+<pre><code>./embree -c ../models/cornell_box.ecs
 </code></pre>
 
 <h3>Embree Resources</h3>
@@ -89,9 +95,9 @@ $ make
 
 <p>Blog Post: <a href="http://blogs.intel.com/research/2011/07/cant_wait_to_create_photo-real.php">Can't wait to create photo-realistic images for free?</a></p>
 
-<h3>Embree Support or Contact</h3>
+<h3>Embree Support and Contact</h3>
 
-<p>For questions and bug reports please write us at embree_support@intel.com. For information about compiler optimizations, see our <a href="http://software.intel.com/en-us/articles/optimization-notice#opt-en">Optimization Notice</a>. </p>
+<p>For questions and bug reports please write us at <a href="embree_support@intel.com">embree_support@intel.com</a>. For information about compiler optimizations, see our <a href="http://software.intel.com/en-us/articles/optimization-notice#opt-en">Optimization Notice</a>. </p>
       </section>
     </div>
 
