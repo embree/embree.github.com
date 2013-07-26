@@ -28,70 +28,132 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h3>
-<a name="embree-20-to-be-released-during-siggraph-2013" class="anchor" href="#embree-20-to-be-released-during-siggraph-2013"><span class="octicon octicon-link"></span></a>Embree 2.0 to be released during Siggraph 2013</h3>
-
-<p>Based on Embree's success on Intel Xeon platforms we are proud to announce the release of Embree 2.0 with support for Xeon Phi during the annual ACM Siggraph 2013 Conference in Anaheim, CA. Embree 2.0 will be presented on July 25th from 3:45 to 5:15 in the Convention Center in Anaheim in Ballroom D, and will be released on this site shortly thereafter. </p>
-
-<h3>
 <a name="what-is-embree" class="anchor" href="#what-is-embree"><span class="octicon octicon-link"></span></a>What is Embree?</h3>
 
-<p>Embree is a collection of high-performance ray tracing kernels, developed at Intel Labs. The target user of Embree are graphics application engineers that want to improve the performance of their application by leveraging the optimized ray tracing kernels of Embree. The ray tracing kernels are optimized for photo-realistic rendering on the latest Intel© processors with support for the SSE and AVX instruction sets. Embree is designed for Monte Carlo ray tracing algorithms, where the vast majority of rays are incoherent. Embree is not supposed to be used as a rendering engine, it merely contains an example photorealistic renderer with limited capabilities. Embree is released as Open Source under the Apache 2.0 license.</p>
+<p>Embree is a collection of high-performance ray tracing kernels,
+developed at Intel. The target users of Embree are graphics
+application engineers that want to improve the performance of their 
+application by leveraging the optimized ray tracing kernels of Embree.
+The kernels are optimized for photo-realistic rendering on the latest
+Intel® processors with support for SSE, AVX, and 16 wide Xeon Phi
+vector instructions. In version 2.0 Embree now also supports applications written with the
+Intel SPMD Programm Compiler (ISPC, <a href="http://ispc.github.com">http://ispc.github.com</a>) which 
+makes it possible to write a renderer in ISPC that leverages SSE, AVX, 
+and Xeon Phi instructions without any code change. </p>
+
+<p>Embree contains algorithms optimized for incoherent workloads (e.g. 
+Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary
+visibility and hard shadow rays). For standard CPUs, the single-ray 
+traversal kernels in Embree provide the best performance for
+incoherent ray distributions and are very easy to integrate into existing
+rendering applications. For Xeon Phi, a renderer written in ISPC using 
+the optimized hybrid ray/packet traversal algorithms have shown to
+perform best. For coherent workloads, ISPC generally outperforms the 
+single ray mode on each platform.</p>
+
+<p>In addition to the ray tracing kernels, Embree provides some tutorials 
+and an example photo-realistic rendering engine to demonstrate how the ray
+tracing kernels are used in practice. The Embree example
+renderer is not a full featured renderer and not designed to be used
+for production renderering.</p>
+
+<p>Embree is released as Open Source under the Apache 2.0 license.</p>
 
 <h3>
-<a name="whats-new-in-embree-11" class="anchor" href="#whats-new-in-embree-11"><span class="octicon octicon-link"></span></a>What's New in Embree 1.1?</h3>
+<a name="whats-new-in-embree-20" class="anchor" href="#whats-new-in-embree-20"><span class="octicon octicon-link"></span></a>What's New in Embree 2.0?</h3>
 
-<p>Embree 1.1 offers new acceleration structures with significantly lower memory consumption: up to 2x during rendering and up to 3x during construction. In addition, the new builders are up to twice as fast as the previous version. To better support movie production rendering, Embree 1.1 adds a new acceleration structures for scenes with motion blur, support for very large models, and improved accuracy for ray/triangle intersection.</p>
+<p>In addition to everything offered by the previous version, Embree 2.0 now also boasts support for the Intel Xeon Phi coprocessor platform; support for high-performance "packet" kernels on SSE, AVX, and Xeon Phi; integration with both traditional C++ and with the Intel SPMD Program Compiler (ISPC); instantiation and fast BVH reconstruction; and an example photo-realistic rendering engine for both C++ and ISPC.</p>
 
 <h3>
 <a name="downloading-embree" class="anchor" href="#downloading-embree"><span class="octicon octicon-link"></span></a>Downloading Embree</h3>
 
-<p>You can get the latest Embree version 1.1 via git the following way:</p>
+<p>You can get the latest Embree version 2.0 via git the following way:</p>
 
 <pre><code>$ git clone https://github.com/embree/embree.git embree
 $ cd embree
-$ git checkout v1.1
+$ git checkout v2.0
 </code></pre>
 
-<p>Alternatively Embree version 1.1 can also be checked out with subversion:</p>
+<p>Alternatively Embree can also be checked out with subversion:</p>
 
-<pre><code>$ svn checkout https://github.com/embree/embree.git/branches/v1.1 embree
+<pre><code>$ svn checkout https://github.com/embree/embree.git/branches/v2.0 embree
 $ cd embree
 </code></pre>
 
-<p>A ZIP file containing the Embree 1.1 release is available here:</p>
+<p>A ZIP files for different versions of Embree are available here:</p>
 
 <p><a href="http://github.com/embree/embree/archive/v1.1.zip">embree-1.1.zip</a></p>
+
+<p><a href="http://github.com/embree/embree/archive/v2.0.zip">embree-2.0.zip</a></p>
 
 <h3>
 <a name="compiling-embree" class="anchor" href="#compiling-embree"><span class="octicon octicon-link"></span></a>Compiling Embree</h3>
 
-<p>For compilation under Windows use the included Visual Studio 2008 or Visual Studio 2010 solution files. </p>
+<p>For compilation under Windows use the included Visual Studio 2008 solution file embree.sln to compile Embree without ISPC support and embree_ispc.sln to compile Embree with ISPC support. In the latter case you also have to install ISPC first (see below).</p>
 
-<p>To compile Embree under Linux and MacOSX you need to install CMake and FreeGLUT. Optionally you should also install OpenEXR and ImageMagick to support reading more image formats. Under MacOSX you can install these dependencies using MacPorts:</p>
+<p>To compile Embree under Linux and MacOSX you need to install CMake and FreeGLUT. Optionally you should also install OpenEXR and ImageMagick to support reading more image formats with the example renderer. </p>
 
-<pre><code>sudo port install cmake openexr freeglut ImageMagick
+<p>Under MacOSX you can install these dependencies using MacPorts:</p>
+
+<pre><code>sudo port install cmake freeglut openexr ImageMagick
+</code></pre>
+
+<p>Under Linux you can install the dependencies using yum:</p>
+
+<pre><code>sudo yum install cmake.x86_64
+sudo yum install freeglut.x86_64 freeglut-devel.x86_64
+sudo yum install libXmu.x86_64 libXi.x86_64 
+sudo yum install libXmu-devel.x86_64 libXi-devel.x86_64
+sudo yum install OpenEXR.x86_64 OpenEXR-devel.x86_64
+sudo yum install ImageMagick.x86_64 ImageMagick-c++.x86_64 
+sudo yum install ImageMagick-devel.x86_64 ImageMagick-c++-devel.x86_64 
 </code></pre>
 
 <p>For compilation under Linux and MacOSX use CMake:</p>
 
-<pre><code>$ mkdir bin
-$ cd bin
-$ cmake ..
-$ make
+<pre><code>mkdir bin
+cd bin
+cmake ..
+make
 </code></pre>
+
+<h3>
+<a name="installing-ispc" class="anchor" href="#installing-ispc"><span class="octicon octicon-link"></span></a>Installing ISPC</h3>
+
+<p>For the ISPC projects of Embree to work you have to install
+ISPC from . You can download precompiled ISPC binaries or 
+compile ISPC from its sources. We recommend using the precompiled
+binaries of ISPC v1.4.2 as we used that 
+version for testing:</p>
+
+<p><a href="http://sourceforge.net/projects/ispcmirror/files/v1.4.2/ispc-v1.4.2-windows.zip/download">Windows ISPC binary and examples (v1.4.2)</a></p>
+
+<p><a href="http://sourceforge.net/projects/ispcmirror/files/v1.4.2/ispc-v1.4.2-osx.tar.gz/download">Mac OS X ISPC binary and examples (v1.4.2)</a></p>
+
+<p><a href="http://sourceforge.net/projects/ispcmirror/files/v1.4.2/ispc-v1.4.2-linux.tar.gz/download">Linux ISPC binary and examples (v1.4.2)</a></p>
+
+<p>After installing ISPC you have to set the ISPC_DIR environment variable and put the ispc executable into your path:</p>
+
+<pre><code>export ISPC_DIR=path-to-ispc
+export PATH=path-to-ispc:$PATH
+</code></pre>
+
+<p>Best set the ISPC_DIR variable and PATH permanently.</p>
 
 <h3>
 <a name="using-the-embree-example-renderer" class="anchor" href="#using-the-embree-example-renderer"><span class="octicon octicon-link"></span></a>Using the Embree example renderer</h3>
 
 <p>Embree provides an example photo-realistic rendering engine. Embree also ships with a few simple test scenes, each consisting of a scene file (.xml or .obj) and an Embree command script file (.ecs). The command script file contains command line parameters that set the camera parameters, lights and render settings. The following command line will render the Cornell Box scene with 16 samples per pixel and write the resulting image to the file cornell_box.tga in the current directory:</p>
 
-<pre><code>./embree -c ../models/cornell_box.ecs -spp 16 -o cornell_box.tga
+<pre><code>./renderer -c ../models/cornell_box.ecs -spp 16 -o cornell_box.tga
 </code></pre>
 
 <p>To interactively display the same scene, enter the following command:</p>
 
-<pre><code>./embree -c ../models/cornell_box.ecs
+<pre><code>./renderer -c ../models/cornell_box.ecs
 </code></pre>
+
+<p>Please read the README.txt file for more information on howto compile and use Embree.</p>
 
 <h3>
 <a name="embree-resources" class="anchor" href="#embree-resources"><span class="octicon octicon-link"></span></a>Embree Resources</h3>
@@ -109,7 +171,7 @@ $ make
 <h3>
 <a name="embree-support-and-contact" class="anchor" href="#embree-support-and-contact"><span class="octicon octicon-link"></span></a>Embree Support and Contact</h3>
 
-<p>For questions and bug reports please write us at embree_support@intel.com. For information about compiler optimizations, see our <a href="http://software.intel.com/en-us/articles/optimization-notice#opt-en">Optimization Notice</a>. </p>
+<p>For questions and bug reports please write us at embree_support@intel.com. For information about compiler optimizations, see our <a href="http://software.intel.com/en-us/articles/optimization-notice#opt-en">Optimization Notice</a>.</p>
       </section>
     </div>
 
