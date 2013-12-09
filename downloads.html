@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Embree : Photo-Realistic Ray Tracing Kernels" />
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <title>Embree</title>
+  </head>
+  
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+      <header class="inner">
+        <a id="forkme_banner" href="https://github.com/embree">View on GitHub</a>
+        <h1 id="project_title">Embree</h1>
+        <h2 id="project_tagline">Photo-Realistic Ray Tracing Kernels</h2>
+      </header>
+
+      <div id="nav">
+      <div id="nbar">
+        <ul>
+          <li><a href="index2.html">Overview</a></li>
+          <li id="selected"><a href="downloads.html">Downloads</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="renderer.html">Renderer</a></li>
+        </ul>
+      </div>
+      </div>
+
+    </div>
+    
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+
+      <section id="main_content" class="inner">
+
+        <h3>Downloading Embree</h3>
+
+      <p>Embree is only available in source form. We recommend
+      downloading Embree using one of the following ZIP files:</p>
+
+      <p><a href="http://github.com/embree/embree/archive/v2.1_alpha.zip">embree-2.1-alpha.zip</a></p>
+      <p><a href="http://github.com/embree/embree/archive/v2.0.zip">embree-2.0.zip</a></p>
+      <p><a href="http://github.com/embree/embree/archive/v1.1.zip">embree-1.1.zip</a></p>
+        
+      <p>Alternatively you can also use git to get the latest Embree 2.1:</p>
+
+      <pre><code>$ git clone https://github.com/embree/embree.git embree
+$ cd embree
+$ git checkout v2.1</code></pre>
+      
+      <p>You can also check out with subversion:</p>
+      
+      <pre><code>$ svn checkout https://github.com/embree/embree.git/branches/v2.1 embree
+$ cd embree</code></pre>
+      
+      <h3>Compiling Embree under Windows</h3>
+
+      <p>Embree requires the Intel SPMD Compiler (ISPC) to compile. We
+      have tested ISPC version 1.5.0, but more recent versions of ISPC
+      should also work. You can download and install the ISPC binaries
+      from <a href="http://ispc.github.com/downloads.html">ispc.github.com</a>. After
+      installation, put the path to ispc.exe permanently into your
+      PATH environment variable. You have to restart Visual Studio for
+      this change to take effect.</p>
+      
+      <p>For compilation of Embree under Windows use the Visual Studio
+      2008 solution file embree_vs2008.sln or Visual Studio 2010 solution
+      file embree_vs2010.sln. The project compiles in 32 bit and 64 bit
+      mode. The solution is by default setup to use the Microsoft
+      Compiler. You can switch to the Intel Compiler by right clicking onto
+      the solution in the Solution Explorer and then selecting the Intel
+      Compiler. We recommend using 64 bit mode and the Intel Compiler for
+      best performance.</p>
+      
+      <p>In Visual Studio, you will find 4 build configurations, Debug
+      (for SSE2 debug mode), Release (for SSE2 release mode),
+      ReleaseAVX (for AVX release mode), and ReleaseAVX2 (for AVX2
+      release mode). When using Microsoft Compiler you can only use
+      the Debug and Release configuration. For enabling the ReleaseAVX
+      configuration you need at least Intel Compiler 11.1 and for the
+      ReleaseAVX2 configuration you need at least Intel Compiler 12.1.</p>
+
+      <p>There is an issue with compiling the ISPC files in Visual Studio 2010,
+      resulting in link errors for the first builds. Please rebuild the
+      project multiple times until it links properly.</p>
+
+     <p>We recommend enabling syntax highlighting for the .ispc source 
+     and .isph header files. To do so open Visual Studio 2008, go to 
+     Tools -> Options -> Text Editor -> File Extension and add the isph
+     and ispc extension for the "Microsoft Visual C++" editor.</p>
+
+      <h3>Compiling Embree under Linux and MacOSX</h3>
+
+      <p>Embree requires the Intel SPMD Compiler (ISPC) to compile. We
+      have tested ISPC version 1.5.0, but more recent versions of ISPC
+      should also work. You can download and install the ISPC binaries
+      from <a
+       href="http://ispc.github.com/downloads.html">ispc.github.com</a>. After
+      installation, put the path to the ispc executable permanently
+      into your PATH environment variable.</p>
+      
+<pre><code>export PATH=path-to-ispc:$PATH</code></pre>
+
+      <p>To compile Embree under Linux and MacOSX you additionally
+      need to install CMake and FreeGLUT. Under MacOSX you can install
+      these dependencies using MacPorts:</p>
+
+      <pre><code>sudo port install cmake freeglut openexr ImageMagick</code></pre>
+
+      <p>Under Linux you can install these dependencies using yum:</p>
+
+      <pre><code>sudo yum install cmake.x86_64
+sudo yum install freeglut.x86_64 freeglut-devel.x86_64
+sudo yum install libXmu.x86_64 libXi.x86_64 
+sudo yum install libXmu-devel.x86_64 libXi-devel.x86_64</code></pre>
+        
+      <p>Now you can compile Embree using CMake:</p>
+        
+        <pre><code>mkdir build
+cd build
+cmake ..
+make</code></pre>
+
+<p>This will open a configuration dialog where you should set the
+CMAKE_BUILD_TYPE to "Release" and the compiler to "GCC", "CLANG" or
+"ICC". You should also select all targets that you want Embree to
+generate optimized code for. We recommend to enable TARGET_SSE41,
+TARGET_AVX, and TARGET_AVX2 if you want to use Embree on standard
+CPUs, and you have to enable TARGET_XEON_PHI if you want to use Embree
+on Xeon Phi. You need at least Intel Compiler 11.1 or GCC 4.4 to
+enable AVX and Intel Compiler 12.1 or GCC 4.7 to enable AVX2. Now
+press c (for configure) and g (for generate) to generate a Makefile
+and leave the configuration. The code can be compiled by executing
+make.</p>
+
+      <pre><code>make</code></pre>
+
+The executables will be generated inside the build folder. We
+recommend to finally install the Embree library and header files on
+your system:
+
+  <pre><code>sudo make install</code></pre>
+
+      </section>
+    </div>
+    
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+  </body>
+</html>

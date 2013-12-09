@@ -166,8 +166,6 @@ pre, code {
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
 
-
-
 }
 
 pre {
@@ -231,7 +229,8 @@ hr {
 }
 
 table {
-  border: 1px solid #373737;
+  border: 0px solid #373737;
+  margin-top: 20px;
   margin-bottom: 20px;
   text-align: left;
  }
@@ -245,7 +244,9 @@ th {
 
 td {
   padding: 10px;
-  border: 1px solid #373737;
+  border: 0px solid #373737;
+  color: #222;
+  background-color: #fff;
  }
 
 form {
@@ -273,6 +274,51 @@ Full-Width Styles
   margin: 0 auto;
 }
 
+/* Navbar */
+
+#nav {
+	height: 30px;
+	background: #006ac8;
+	position: relative;
+
+  max-width: 640px;
+  margin: 0 auto;
+}
+#nbar {
+	position: relative;
+	width: auto;
+	height: 30px;
+	margin: 0;
+	padding : 0 0 0 0;
+	font: bold 12px/25px Verdana, Arial, Tahoma, Sans-serif;
+}
+#nbar ul {
+	float: left;
+	list-style : none;
+	margin: 0;
+	padding: 0;
+	padding-top: 2px;
+}
+#nbar ul li {
+	display: inline;
+}
+#nbar ul li a {
+	display: block;
+	float: left;
+	padding: 0 10px;
+	color: #DFDFDF;
+	text-decoration: none;
+}
+#nbar ul li a:hover {
+	color: #FAFAFA;
+}
+#nbar ul li#selected a {
+	color: #fff;
+}
+#content-wrap {
+	margin-top: 5px;
+}
+
 #forkme_banner {
   display: block;
   position: absolute;
@@ -289,12 +335,16 @@ Full-Width Styles
 }
 
 #header_wrap {
-  background: #000091;
+#  background: #000091;
 #  background: -moz-linear-gradient(top, #373737, #212121);
 #  background: -webkit-linear-gradient(top, #373737, #212121);
 #  background: -ms-linear-gradient(top, #373737, #212121);
 #  background: -o-linear-gradient(top, #373737, #212121);
 #  background: linear-gradient(top, #373737, #212121);
+#  color: #000000;
+  background: #798287;
+  background-image: url('../images/crown_close.jpg');
+  background-repeat:no-repeat;
 }
 
 #header_wrap .inner {

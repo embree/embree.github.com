@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Embree : Photo-Realistic Ray Tracing Kernels" />
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <title>Embree</title>
+  </head>
+  
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+      <header class="inner">
+        <a id="forkme_banner" href="https://github.com/embree">View on GitHub</a>
+        <h1 id="project_title">Embree</h1>
+        <h2 id="project_tagline">Photo-Realistic Ray Tracing Kernels</h2>
+      </header>
+
+      <div id="nav">
+      <div id="nbar">
+        <ul>
+          <li><a href="index2.html">Overview</a></li>
+          <li><a href="downloads.html">Downloads</a></li>
+          <li id="selected"><a href="api.html">API</a></li>
+          <li><a href="renderer.html">Renderer</a></li>
+        </ul>
+      </div>
+      </div>
+
+    </div>
+    
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+
+      <section id="main_content" class="inner">
+
+        <h2>Embree API</h2>
+
+   <p>The Embree API is a low level ray tracing API that supports
+   defining and committing of geometry and tracing of rays. Static and
+   dynamic geometry are both supported, as well as finding the closest
+   intersection of a ray, and testing a ray segment for any
+   intersection with the scene. Single rays, as well as packets of
+   rays in struct of array layout are supported for packet sizes of 1,
+   4, 8, and 16. The special case of linear motion blur is
+   supported.</p>
+
+   <p>The Embree API exists in a C++ and ISPC version. This document
+      describes the C++ version of the API, the ISPC version is almost
+      identical.</p>
+      
+   <p>The user is supposed to include the embree2/rtcore.h, and
+   alternatively the embree2/rtcore_ray.h file, but none of the other
+   .h files. If using the ISPC version of the API, the user should
+   include embree2/rtcore.isph and embree2/rtcore_ray.isph.</p>
+
+   <pre><code>#include &lt;embree2/rtcore.h&gt;
+#include &lt;embree2/rtcore_ray.h&gt;
+</pre></code>
+
+   <p>Before invoking any API call, the Embree ray tracing core
+   has to get initialized through the rtcInit call. Before the
+   application exits it should call rtcExit. Initializing Embree again
+   after an rtcExit is safe.</p>
+
+   <pre><code>rtcInit("verbose=1");
+...
+rtcExit();
+</pre></code>
+
+   <p>The rtcInit call initializes the ray tracing core. An optional
+  configuration string can be passed through this function to
+  configure implementation specific parameters. If this string is
+  NULL, a default configuration is used.</p>
+
+   <h3>Creating a Scene</h3>
+
+   <p>A scene is a container for different geometries. After
+   initialization the user can setup a scene to render. A scene is
+   created using the rtcNewScene function call, and destroyed using
+   the rtcDeleteScene function call. Two types of scene are supported,
+   dynamic and static scenes. Different flags specify the type of
+   scene to create, and the operations to later perform on the
+   scene. The following example creates a scene that supports dynamic
+   updates and the single ray rtcIntersect and rtcOccluded calls.</p>
+
+   <pre><code>RTCScene scene = rtcNewScene(RTC_DYNAMIC,RTC_INTERSECT1);
+...
+rtcDeleteScene(scene);
+</pre></code>
+
+  Using the following flags the user can select between creating a
+  static and dynamic scene.
+
+<table>
+  <tr><td>RTC_STATIC</td><td>scene optimized for static geometry</td></tr>
+  <tr><td>RTC_DYNAMIC</td><td>scene optimized for dynamic geometry</td></tr>
+</table>
+
+   The following flags can be used to tune the used acceleration
+structure. These flags are only hints and may be ignored by the
+implementation. 
+
+<table>
+  <tr><td>RTC_COMPACT</td><td>Avoids using algorithms that consume much memory</td></tr>
+  <tr><td>RTC_COHERENT</td><td>Optimize for coherent rays (e.g. primary rays)</td></tr>
+  <tr><td>RTC_INCOHERENT</td><td>Optimize for in-coherent rays (e.g. diffuse reflection rays)</td></tr>
+  <tr><td>RTC_HIGH_QUALITY</td><td>Build higher quality spatial data structures.</td></tr>
+</table>
+
+  The following flags can be used to tune the traversal algorithm that
+  is used by Embree. These flags are only hints and may be ignored by
+  the implementation.
+
+<table>
+  <tr><td>RTC_ROBUST</td><td>Avoid optimizations that reduce accuracy.</td></tr>
+</table>
+
+  <p>The second argument of the rtcNewScene function gets algorithm flags
+  as input, that allow to specify which intersect and occluded
+  function are required by the application. Calling a query function
+  different than the ones specified at scene creation time is not allowed.</p>
+
+<table>
+  <tr><td>RTC_INTERSECT1</td><td>Enables the rtcIntersect1 and rtcOccluded1 functions for this scene</td></tr>
+  <tr><td>RTC_INTERSECT4</td><td>Enables the rtcIntersect4 and rtcOccluded4 functions for this scene</td></tr>
+  <tr><td>RTC_INTERSECT8</td><td>Enables the rtcIntersect8 and rtcOccluded8 functions for this scene</td></tr>
+  <tr><td>RTC_INTERSECT16</td><td>Enables the rtcIntersect16 and rtcOccluded16 functions for this scene</td></tr>
+</table>
+
+   <p>A dynamic scene is created by invoking rtcNewScene with the
+   RTC_DYNAMIC flag. Different geometries can now be created inside
+   that scene. Geometries are enabled by default. Once the scene
+   geometry is specified, an rtcCommit calls will finish the scene
+   description and trigger building of internal data structures. After
+   the rtcCommit call it is safe to trace rays. Geometries can be
+   disabled (rtcDisable call) and enabled again (rtcEnable
+   call). Geometries can also get modified again, including vertex and
+   index arrays. After the modification to some geometry is finished,
+   rtcModified call has to get invoked on that geometry. If geometries
+   got enabled, disabled, or modified an rtcCommit call has to get
+   invoked before tracing rays.</p>
+
+   <p>A static scene is created by the rtcNewScene call with the
+   RTC_STATIC flag. Geometries can only be created and modified until
+   the first rtcCommit call. After that call, each access to any
+   geometry of that static scene is invalid, including enabling,
+   disabling, modifying, and deletion of geometries. Consequently
+   geometries once created inside a static scene can only get deleted
+   by deleting the entire scene.</p>
+
+   <h3>Creating Geometries</h3>
+
+   <p>Once a scene is created, geometries can be created inside this
+   scene. Each geometry is assigned an integer ID at creating time,
+   which is unique for that scene. The current version of the API
+   supports triangle meshes (rtcNewTriangleMesh), single level
+   instances of other scenes (rtcNewInstance), and user defined
+   geometries (rtcNewUserGeometry). The API is designed in a way that
+   easily allows adding new geometry types in later releases.</p>
+
+   <p>For dynamic scenes, assigned geometry IDs fulfill the following
+   properties. As long as no geometry got deleted, all IDs are
+   assigned sequentially, starting from 0. If geometries got deleted,
+   the implementation will reuse IDs later on in an implementation
+   dependent way. Consequently sequential assignment is no longer
+   guaranteed, but a compact range of IDs. These rules allow the
+   application to manage a dynamic array to efficiently map from
+   geometry IDs to its own geometry representation.</p>
+
+   <p>For static scenes, geometry IDs are assigned sequentially starting
+   at 0. This allows the application to use a fixed size array to map
+   from geometry IDs to its own geometry representation.</p>
+
+   <p>API calls that access geometries are only thread safe as long as
+   different geometries are accessed. Accesses to one geometry have to
+   get sequentialized by the application. All other API calls are
+   thread safe. The rtcIntersect and rtcOccluded calls are re-entrant,
+   but only for other rtcIntersect and rtcOccluded calls. It is thus
+   safe to trace new rays when intersecting a user defined object, but
+   not supported to create new geometry inside the intersect function
+   of that user defined object.</p>
+
+   <h3>Triangle Meshes</h3>
+
+<p>Triangle mesh geometries are created using the rtcNewTriangle mesh
+function call, and potentially deleted using the rtcDeleteGeometry
+function call.</p>
+
+<p>The number of triangles (numTriangles), number of vertices
+(numVertices), and number of time steps (1 for normal meshes, and 2
+for linear motion blur), have to get specified at construction time of
+the mesh. The following example creates a triangle mesh without motion
+blur:</p>
+
+   <pre><code>int geomID = rtcNewTriangleMesh(scene,numTriangles,numVertices,1);</pre></code>
+
+<p>The triangle indices can be set by mapping and writing to the index buffer
+(RTC_INDEX_BUFFER) and the triangle vertices can be set by mapping and
+writing into the vertex buffer (RTC_VERTEX_BUFFER). In case of linear
+motion blur, two vertex buffers have to get filled
+(RTC_VERTEX_BUFFER0, RTC_VERTEX_BUFFER1), one for each time step.</p>
+
+   <pre><code>struct Vertex   { float x,y,z,a; };
+struct Triangle { int v0, v1, v2; };
+
+  Vertex* vertices = (Vertex*) rtcMapBuffer(scene,geomID,RTC_VERTEX_BUFFER);
+  // fill vertices here
+  rtcUnmapBuffer(scene,mesh,RTC_VERTEX_BUFFER);
+
+  Triangle* triangles = (Triangle*) rtcMapBuffer(scene,geomID,RTC_INDEX_BUFFER);
+  // fill triangle indices here
+  rtcUnmapBuffer(scene,mesh,RTC_INDEX_BUFFER);
+
+</pre></code>
+
+   <p>A 32 bit geometry mask can be assigned to triangle mesh
+   geometries using the rtcSetMask call.</p>
+
+   <pre><code>rtcSetMask(scene,geomID,mask);
+</pre></code>
+
+   <p>Only if the bitwise and operation of this mask with the
+   mask stored inside the ray is not 0, triangles of this mesh are hit
+   by a ray. This feature can be used to disable selected triangle
+   meshes for specifically tagged rays, e.g. to disable shadow casting
+   for some geometry. This API feature is optional and disabled in
+   Embree by default at compile time.</p>
+
+   <h3>Ray Query Functions</h3>
+
+   The API supports finding the closest hit of a ray segment with the
+   scene (rtcIntersect functions), and determining if any hit between
+   a ray segment and the scene exists (rtcOccluded functions). In the
+   ray packet mode (with packet size of N), the user has to provide a
+   pointer to N 32 bit integers that act as a ray activity mask. If
+   one of these integers is set to 0x00000000 the corresponding ray is
+   considered inactive and if the integer is set to 0xFFFFFFFF, the
+   ray is considered active. Rays that are inactive will not update
+   any hit information. Data alignment requirements for query functions
+   operating on single rays is 16 bytes for the ray. Data alignment
+   requirements for query functions operating on AOS packets of 4, 8,
+   or 16 rays, is 16, 32, and 64 bytes respectively, for the valid
+   mask and the ray. To operate on packets of 4 rays, the CPU has to
+   support SSE, to operate on packets of 8 rays, the CPU has to support
+   AVX-256, and to operate on packets of 16 rays, the CPU has to support
+   the AVX-512 instructions.
+
+   <pre><code>void rtcIntersect   (                   RTCScene scene, RTCRay& ray);
+void rtcIntersect4  (const void* valid, RTCScene scene, RTCRay4& ray);
+void rtcIntersect8  (const void* valid, RTCScene scene, RTCRay8& ray);
+void rtcIntersect16 (const void* valid, RTCScene scene, RTCRay16& ray);
+void rtcOccluded    (                   RTCScene scene, RTCRay& ray);
+void rtcOccluded4   (const void* valid, RTCScene scene, RTCRay4& ray);
+void rtcOccluded8   (const void* valid, RTCScene scene, RTCRay8& ray);
+void rtcOccluded16  (const void* valid, RTCScene scene, RTCRay16& ray);
+</pre></code>
+
+   <p>Finding the closest hit distance is done through the rtcIntersect
+   functions. These get the activity mask, the scene, and a ray as
+   input. The user has to initialize the ray origin (org), ray
+   direction (dir), and ray segment (tnear, tfar). The ray segment has
+   to be in the range [0,inf], thus ranges that start behind the ray
+   origin are not valid, but ranges can reach to infinity. The
+   geometry ID (geomID member) has to get initialized to
+   INVALID_GEOMETRY_ID (-1). If the scene contains linear motion blur,
+   also the ray time (time) has to get initialized. If the scene
+   contains instances, also the instance ID (instID) has to get
+   initialized. If ray masks are enabled at compile time, also the ray
+   mask (mask) has to get initialized. After tracing the ray, the hit
+   distance (tfar), geometry normal (Ng), local hit coordinates (u,v),
+   geometry ID (geomID), and primitive ID (primID) are set. The
+   geometry ID corresponds to the ID returned at creation time of the
+   hit geometry, and the primitive ID corresponds to the nth primitive
+   of that geometry, e.g. nth triangle.</p>
+
+   <p>The following code properly sets up a ray and traces it through
+   the scene:</p>
+
+   <pre><code>RTCRay ray;
+ray.org = ray_origin;
+ray.dir = ray_direction;
+ray.tnear = 0.0f;
+ray.tfar = inf;
+ray.geomID = INVALID_GEOMETRY_ID;
+ray.mask = -1;
+ray.time = 0.0f;
+rtcIntersect(scene,ray);
+</pre></code>
+
+   <p>Testing if any geometry intersects with the ray segment is done
+   through the rtcOccluded functions. Initialization has to be done as
+   for rtcIntersect. If some geometry got found along the ray segment,
+   the geometry ID (geomID) will get set to 0. No other member of the
+   ray will get updated.</p>
+
+      </section>
+    </div>
+    
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+  </body>
+</html>
