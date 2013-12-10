@@ -72,28 +72,34 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   font-size: 36px;
   font-weight: 700;
+  color: #0071C5;
 }
 
 h2 {
   padding-bottom: 10px;
   font-size: 32px;
-  background: url('../images/bg_hr.png') repeat-x bottom;
+#  background: url('../images/bg_hr.png') repeat-x bottom;
+  color: #0071C5;
 }
 
 h3 {
   font-size: 24px;
+  color: #0071C5;
 }
 
 h4 {
   font-size: 21px;
+  color: #0071C5;
 }
 
 h5 {
   font-size: 18px;
+  color: #0071C5;
 }
 
 h6 {
   font-size: 16px;
+  color: #0071C5;
 }
 
 p {
@@ -102,6 +108,7 @@ p {
 
 footer p {
   color: #f2f2f2;
+  font-weight: bold;
 }
 
 a {
@@ -159,7 +166,8 @@ pre {
   color: #222;
   background-color: #fff;
 
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+#  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+#  font-family: Terminal, monospace;
   font-size: 14px;
 
   border-radius: 2px;
@@ -176,12 +184,13 @@ pre {
 }
 
 code {
-  font-style: italic;
+#  font-style: italic;
 #  font-weight: bold;
+  font-family: Terminal, monospace;
 #  padding: 3px;
 #  margin: 0 3px;
 #  box-shadow: 0 0 10px rgba(0,0,0,.1);
-#}
+}
 
 pre code {
   display: block;
@@ -240,7 +249,7 @@ table {
 th {
   font-family: 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   padding: 10px;
-  background: #373737;
+  background: #0071C5;
   color: #fff;
  }
 
@@ -280,7 +289,7 @@ Full-Width Styles
 
 #nav {
 	height: 30px;
-	background: #006ac8;
+	background: #0071C5;
 	position: relative;
 
   max-width: 640px;
@@ -308,7 +317,7 @@ Full-Width Styles
 	display: block;
 	float: left;
 	padding: 0 10px;
-	color: #DFDFDF;
+	color: #BFBFBF;
 	text-decoration: none;
 }
 #nbar ul li a:hover {
@@ -329,7 +338,7 @@ Full-Width Styles
   z-index: 10;
   padding: 10px 50px 10px 10px;
   color: #fff;
-  background: url('../images/blacktocat.png') #0090ff no-repeat 95% 50%;
+  background: url('../images/blacktocat.png') #0071C5 no-repeat 95% 50%;
   font-weight: 700;
   box-shadow: 0 0 10px rgba(0,0,0,.5);
   border-bottom-left-radius: 2px;
@@ -337,14 +346,14 @@ Full-Width Styles
 }
 
 #header_wrap {
-#  background: #000091;
+#  background: #0071C5;
 #  background: -moz-linear-gradient(top, #373737, #212121);
 #  background: -webkit-linear-gradient(top, #373737, #212121);
 #  background: -ms-linear-gradient(top, #373737, #212121);
 #  background: -o-linear-gradient(top, #373737, #212121);
 #  background: linear-gradient(top, #373737, #212121);
 #  color: #000000;
-  background: #798287;
+  background: #7C838A;
   background-image: url('../images/crown_close.jpg');
   background-repeat:no-repeat;
 }
@@ -419,9 +428,8 @@ Full-Width Styles
 }
 
 #footer_wrap {
-  background: #000091;
+  background: #0071C5;
 }
-
 
 
 /*******************************************************************************

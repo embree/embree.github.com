@@ -24,7 +24,7 @@
         <ul>
           <li><a href="index.html">Overview</a></li>
           <li><a href="downloads.html">Downloads</a></li>
-          <li><a href="api.html">API</a></li>
+          <li><a href="api.html">Embree API</a></li>
           <li id="selected"><a href="renderer.html">Renderer</a></li>
         </ul>
       </div>
@@ -37,7 +37,7 @@
 
       <section id="main_content" class="inner">
 
-<h3>Photo-Realistic Example Renderer</h3>
+<h1>Photo-Realistic Example Renderer</h1>
 
 <p>The Embree Example Renderer is a photo-realistic renderer that
 builds on the Embree high performance ray tracing kernels. The
@@ -45,7 +45,9 @@ renderer is used to demonstrate how Embree is used in practice and to
 measure Embree's performance in a realistic application scenario. The
 Embree Example Renderer is not a full featured renderer and not
 designed to be used for production renderering. The Embree Example
-Renderer is released as Open Source under the Apache 2.0 license.</p>
+Renderer is released as Open Source under the <a
+ href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0
+license</a>.</p>
       
 <p>In ealier versions of Embree this photo-realistic renderer was part
 of the Embree kernel repository. In fact, this path tracer was
@@ -79,7 +81,7 @@ Renderer 2.1:</p>
 $ cd embree-renderer
 $ git checkout v2.1</code></pre>
       
-<h3>Compiling under Windows</h3>
+<h2>Compiling under Windows</h2>
 
 <p>For compilation under Windows you first have to install the Embree
 ray tracing kernels including the Intel SPMD Compiler (ISPC). After
@@ -99,7 +101,7 @@ performance.</p>
 properly. For compiling the solution without ISPC, simply delete the
 device_ispc project from the solution file.</p>
 
-<h3>Compiling under Linux and MacOS</h3>
+<h2>Compiling under Linux and MacOS</h2>
 
 <p>To compile the Embree Example Renderer using CMake create a build
 directory and execute "ccmake .." inside this directory.</p>
@@ -148,7 +150,7 @@ make. The executables will be generated in the build folder.</p>
 
 <pre><code>make</pre></code>
 
-<h3>Using the Embree Example Renderer</h3>
+<h2>Using the Embree Example Renderer</h2>
 
 <p>The example renderer also ships with a few simple test scenes, each
 consisting of a scene file (.xml or .obj) and a command script file
@@ -180,7 +182,7 @@ beginning:</p>
 ./renderer -device ispc_xeonphi -c ../../models/cornell_box.ecs
 </code></pre>
 
-<h4>Using the Embree Example Renderer in network mode</h4>
+<h3>Network Mode</h3>
 
 <p>For using the network device start the render server on some machine:</p>
 
@@ -191,7 +193,7 @@ connect from a second machine to the network server:</p>
 
 <pre><code>renderer -connect ip_of_network_server -c ../../models/cornell_box.ecs</code></pre>
   
-<h4>Navigation</h4>
+<h3>Navigation</h3>
 
 <p>The navigation in the interactive display mode follows the camera
 orbit model, where the camera revolves around the current center of
@@ -210,14 +212,14 @@ recommend rotating the scene.</p>
     <dt>Shift+L Key</dt> <dd>Increase lens radius by one world space unit</dd>
 </dl>
 
-<h4>Example Models</h4>
+<h2>Example Models</h2>
 
 <p>We provide also a more advanced model of the Imperial Crown
 of Austria to test the renderer with: <a
  href="http://software.intel.com/sites/default/files/article/183323/crown0413.zip">Crown0413.zip
 (74MB)</a>.</p>
 
-<p><img src="http://software.intel.com/sites/default/files/m/d/4/1/d/8/crown.png" alt="Imperial Crown of Austria"> Model courtesy <a href="http://www.loramel.net">Martin Lubich</a>.</p>
+<p><img src="images/crown.jpg" alt="Imperial Crown of Austria"> Model courtesy <a href="http://www.loramel.net">Martin Lubich</a>.</p>
 
       </section>
     </div>
@@ -225,7 +227,7 @@ of Austria to test the renderer with: <a
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+        <p>&copy; 2011-2013 Intel Corporation</p>
       </footer>
     </div>
 
