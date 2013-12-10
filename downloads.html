@@ -4,7 +4,7 @@
   <head>
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Embree : Photo-Realistic Ray Tracing Kernels" />
+    <meta name="description" content="Embree: High Performance Ray Tracing Kernels" />
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
     <title>Embree</title>
   </head>
@@ -16,13 +16,13 @@
       <header class="inner">
         <a id="forkme_banner" href="https://github.com/embree">View on GitHub</a>
         <h1 id="project_title">Embree</h1>
-        <h2 id="project_tagline">Photo-Realistic Ray Tracing Kernels</h2>
+        <h2 id="project_tagline">High Performance Ray Tracing Kernels</h2>
       </header>
 
       <div id="nav">
       <div id="nbar">
         <ul>
-          <li><a href="index2.html">Overview</a></li>
+          <li><a href="index.html">Overview</a></li>
           <li id="selected"><a href="downloads.html">Downloads</a></li>
           <li><a href="api.html">API</a></li>
           <li><a href="renderer.html">Renderer</a></li>
@@ -37,90 +37,90 @@
 
       <section id="main_content" class="inner">
 
-        <h3>Downloading Embree</h3>
+<h3>Supported Platforms</h3>
 
-      <p>Embree is only available in source form. We recommend
-      downloading Embree using one of the following ZIP files:</p>
+<p>Embree supports Windows, Linux and MacOS, each in 32bit and 64bit
+modes. The code compiles with the Intel Compiler, the Microsoft
+Compiler, GCC and CLANG. Using the Intel Compiler improves performance
+by approximately 10%. Performance also varies across different
+operating systems. Embree requires a CPU with at least support for
+SSE2. Embree is optimized for Intel CPUs supporting SSE, AVX, and AVX2
+instructions.</p>
 
-      <p><a href="http://github.com/embree/embree/archive/v2.1_alpha.zip">embree-2.1-alpha.zip</a></p>
-      <p><a href="http://github.com/embree/embree/archive/v2.0.zip">embree-2.0.zip</a></p>
-      <p><a href="http://github.com/embree/embree/archive/v1.1.zip">embree-1.1.zip</a></p>
+<p>The Xeon Phi&reg; version of Embree only works under Linux in 64bit
+mode. For compilation of the the Xeon Phi&reg; code the Intel Compiler is
+required. The host side code compiles with GCC, CLANG, and the Intel
+Compiler.</p>
+
+<h3>Downloading Embree</h3>
+      
+<p>Embree is only available in source form. We recommend downloading
+Embree using one of the following ZIP files:</p>
+
+<p><a href="http://github.com/embree/embree/archive/v2.1_alpha.zip">embree-2.1-alpha.zip</a></p>
+<p><a href="http://github.com/embree/embree/archive/v2.0.zip">embree-2.0.zip</a></p>
+<p><a href="http://github.com/embree/embree/archive/v1.1.zip">embree-1.1.zip</a></p>
         
-      <p>Alternatively you can also use git to get the latest Embree 2.1:</p>
-
-      <pre><code>$ git clone https://github.com/embree/embree.git embree
+<p>Alternatively you can also use git to get the latest Embree 2.1:</p>
+<pre><code>$ git clone https://github.com/embree/embree.git embree
 $ cd embree
 $ git checkout v2.1</code></pre>
       
-      <p>You can also check out with subversion:</p>
-      
-      <pre><code>$ svn checkout https://github.com/embree/embree.git/branches/v2.1 embree
+<p>You can also check out Embree with subversion:</p>
+<pre><code>$ svn checkout https://github.com/embree/embree.git/branches/v2.1 embree
 $ cd embree</code></pre>
+
+<h3>Folder Structure</h3>
+
+<p>Once you downloaded or checked out Embree you will see the following
+folder structure:</p>
       
-      <h3>Compiling Embree under Windows</h3>
+<dl>
+    <dt>embree</dt>                 <dd>Embree root folder</dd>
+    <dt>embree/include/</dt>        <dd>User API to the ray tracing kernels</dd>
+    <dt>embree/kernels</dt>                <dd>Embree ray tracing kernels implementation</dd>
+    <dt>embree/kernels/xeon</dt>           <dd>Embree kernels for Intel&reg; Xeon&reg; CPUs</dd>
+    <dt>embree/kernels/xeonphi</dt>        <dd>Embree kernels for Intel&reg; Xeon Phi&reg; Accelerators</dd>
+    <dt>embree/tutorials</dt>              <dd>Embree tutorials</dd>
+</dl>
 
-      <p>Embree requires the Intel SPMD Compiler (ISPC) to compile. We
-      have tested ISPC version 1.5.0, but more recent versions of ISPC
-      should also work. You can download and install the ISPC binaries
-      from <a href="http://ispc.github.com/downloads.html">ispc.github.com</a>. After
-      installation, put the path to ispc.exe permanently into your
-      PATH environment variable. You have to restart Visual Studio for
-      this change to take effect.</p>
+<p>As of version 2.1, the Embree example renderer that used to come with
+earlier versions of Embree is no longer included in the main branch
+used for the kernels, and has been moved to a separate branch
+dedicated to this path tracer. More information can be found here: <a
+href="renderer.html">Embree Renderer</a></p>
+
+<p>How Embree is built depends on what platform you are using.
+Detailed instructions for building Embree on Linux, Windows, and MacOS
+can be found in the following sections.</p>
       
-      <p>For compilation of Embree under Windows use the Visual Studio
-      2008 solution file embree_vs2008.sln or Visual Studio 2010 solution
-      file embree_vs2010.sln. The project compiles in 32 bit and 64 bit
-      mode. The solution is by default setup to use the Microsoft
-      Compiler. You can switch to the Intel Compiler by right clicking onto
-      the solution in the Solution Explorer and then selecting the Intel
-      Compiler. We recommend using 64 bit mode and the Intel Compiler for
-      best performance.</p>
-      
-      <p>In Visual Studio, you will find 4 build configurations, Debug
-      (for SSE2 debug mode), Release (for SSE2 release mode),
-      ReleaseAVX (for AVX release mode), and ReleaseAVX2 (for AVX2
-      release mode). When using Microsoft Compiler you can only use
-      the Debug and Release configuration. For enabling the ReleaseAVX
-      configuration you need at least Intel Compiler 11.1 and for the
-      ReleaseAVX2 configuration you need at least Intel Compiler 12.1.</p>
+<h3>Compiling Embree on Linux and MacOS</h3>
 
-      <p>There is an issue with compiling the ISPC files in Visual Studio 2010,
-      resulting in link errors for the first builds. Please rebuild the
-      project multiple times until it links properly.</p>
-
-     <p>We recommend enabling syntax highlighting for the .ispc source 
-     and .isph header files. To do so open Visual Studio 2008, go to 
-     Tools -> Options -> Text Editor -> File Extension and add the isph
-     and ispc extension for the "Microsoft Visual C++" editor.</p>
-
-      <h3>Compiling Embree under Linux and MacOSX</h3>
-
-      <p>Embree requires the Intel SPMD Compiler (ISPC) to compile. We
-      have tested ISPC version 1.5.0, but more recent versions of ISPC
-      should also work. You can download and install the ISPC binaries
-      from <a
-       href="http://ispc.github.com/downloads.html">ispc.github.com</a>. After
-      installation, put the path to the ispc executable permanently
-      into your PATH environment variable.</p>
+<p>Embree requires the Intel SPMD Compiler (ISPC) to compile. We have
+tested ISPC version 1.5.0, but more recent versions of ISPC should
+also work. You can download and install the ISPC binaries from <a
+ href="http://ispc.github.com/downloads.html">ispc.github.com</a>. After installation, put
+the path to the ispc executable permanently into your PATH.</p>
       
 <pre><code>export PATH=path-to-ispc:$PATH</code></pre>
 
-      <p>To compile Embree under Linux and MacOSX you additionally
-      need to install CMake and FreeGLUT. Under MacOSX you can install
-      these dependencies using MacPorts:</p>
+<p>You additionally have to install CMake and the developer version of
+GLUT. Under MaxOS, these dependencies can be installed using
+MacPorts:</p>
 
-      <pre><code>sudo port install cmake freeglut openexr ImageMagick</code></pre>
+<pre><code>sudo port install cmake freeglut</code></pre>
 
-      <p>Under Linux you can install these dependencies using yum:</p>
+<p>Under Linux you can install these dependencies using yum:</p>
 
-      <pre><code>sudo yum install cmake.x86_64
+ <pre><code>sudo yum install cmake.x86_64
 sudo yum install freeglut.x86_64 freeglut-devel.x86_64
 sudo yum install libXmu.x86_64 libXi.x86_64 
 sudo yum install libXmu-devel.x86_64 libXi-devel.x86_64</code></pre>
         
-      <p>Now you can compile Embree using CMake:</p>
+<p>Finally you can compile Embree using CMake. Create a build directory
+and execute "ccmake .." inside this directory.</p>
         
-        <pre><code>mkdir build
+<pre><code>mkdir build
 cd build
 cmake ..
 make</code></pre>
@@ -131,19 +131,55 @@ CMAKE_BUILD_TYPE to "Release" and the compiler to "GCC", "CLANG" or
 generate optimized code for. We recommend to enable TARGET_SSE41,
 TARGET_AVX, and TARGET_AVX2 if you want to use Embree on standard
 CPUs, and you have to enable TARGET_XEON_PHI if you want to use Embree
-on Xeon Phi. You need at least Intel Compiler 11.1 or GCC 4.4 to
+on Xeon Phi&reg;. You need at least Intel Compiler 11.1 or GCC 4.4 to
 enable AVX and Intel Compiler 12.1 or GCC 4.7 to enable AVX2. Now
 press c (for configure) and g (for generate) to generate a Makefile
 and leave the configuration. The code can be compiled by executing
 make.</p>
 
-      <pre><code>make</code></pre>
+<pre><code>make</code></pre>
 
 The executables will be generated inside the build folder. We
 recommend to finally install the Embree library and header files on
 your system:
 
-  <pre><code>sudo make install</code></pre>
+<pre><code>sudo make install</code></pre>
+
+ <h3>Compiling Embree on Windows</h3>
+
+ <p>Embree requires the Intel SPMD Compiler (ISPC) to compile. We have
+ tested ISPC version 1.5.0, but more recent versions of ISPC should
+ also work. You can download and install the ISPC binaries from <a
+  href="http://ispc.github.com/downloads.html">ispc.github.com</a>. After
+ installation, put the path to ispc.exe permanently into your PATH
+ environment variable. You have to restart Visual Studio for this
+ change to take effect.</p>
+      
+  <p>For compilation of Embree under Windows use the Visual Studio
+  2008 solution file embree_vs2008.sln or Visual Studio 2010 solution
+  file embree_vs2010.sln. The project compiles in 32 bit and 64 bit
+  mode. The solution is by default setup to use the Microsoft
+  Compiler. You can switch to the Intel Compiler by right clicking
+  onto the solution in the Solution Explorer and then selecting the
+  Intel Compiler. We recommend using 64 bit mode and the Intel
+  Compiler for best performance.</p>
+      
+  <p>In Visual Studio, you will find 4 build configurations, Debug
+  (for SSE2 debug mode), Release (for SSE2 release mode), ReleaseAVX
+  (for AVX release mode), and ReleaseAVX2 (for AVX2 release
+  mode). When using Microsoft Compiler you can only use the Debug and
+  Release configuration. For enabling the ReleaseAVX configuration you
+  need at least Intel Compiler 11.1 and for the ReleaseAVX2
+  configuration you need at least Intel Compiler 12.1.</p>
+
+  <p>There is an issue with compiling the ISPC files in Visual Studio
+  2010, resulting in link errors for the first builds. Please rebuild
+  the project multiple times until it links properly.</p>
+
+  <p>We recommend enabling syntax highlighting for the .ispc source
+  and .isph header files. To do so open Visual Studio 2008, go to
+  Tools -> Options -> Text Editor -> File Extension and add the isph
+  and ispc extension for the "Microsoft Visual C++" editor.</p>
 
       </section>
     </div>

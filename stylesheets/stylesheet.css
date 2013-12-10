@@ -154,7 +154,7 @@ img {
   -ms-box-shadow: 0 0 5px #ebebeb;
 }
 
-pre, code {
+pre {
   width: 100%;
   color: #222;
   background-color: #fff;
@@ -176,10 +176,12 @@ pre {
 }
 
 code {
-  padding: 3px;
-  margin: 0 3px;
-  box-shadow: 0 0 10px rgba(0,0,0,.1);
-}
+  font-style: italic;
+#  font-weight: bold;
+#  padding: 3px;
+#  margin: 0 3px;
+#  box-shadow: 0 0 10px rgba(0,0,0,.1);
+#}
 
 pre code {
   display: block;
