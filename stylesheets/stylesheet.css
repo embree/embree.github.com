@@ -335,16 +335,13 @@ Full-Width Styles
 }
 
 #header_wrap {
-#  background: #000091;
+  background: #000091;
 #  background: -moz-linear-gradient(top, #373737, #212121);
 #  background: -webkit-linear-gradient(top, #373737, #212121);
 #  background: -ms-linear-gradient(top, #373737, #212121);
 #  background: -o-linear-gradient(top, #373737, #212121);
 #  background: linear-gradient(top, #373737, #212121);
 #  color: #000000;
-  background: #798287;
-  background-image: url('../images/crown_close.jpg');
-  background-repeat:no-repeat;
 }
 
 #header_wrap .inner {
