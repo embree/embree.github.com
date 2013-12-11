@@ -248,15 +248,17 @@ the triangle mesh:</p>
 <table>
   <tr><th>Flag</th><th>Description</th></tr>
   <tr><td>RTC_GEOMETRY_STATIC</td><td>The mesh is considered static
-  and should get modified rarely by the application.</td></tr>
+  and should get modified rarely by the application. Only this flag
+  can be set for static scenes.</td></tr>
   <tr><td>RTC_GEOMETRY_DEFORMABLE</td><td>The mesh is considered
   to deform in a coherent way, e.g. a skinned character. The
+  connectivity of the mesh has to stay constant, thus modifying the
+  index array is not allowed. The
   implementation is free to choose a BVH refitting approach for
   handling meshes tagged with that flag.</td></tr>
   <tr><td>RTC_GEOMETRY_DYNAMIC</td><td>The mesh is considered highly
-  dynamic and changes frequently and in an unstructured way. For
-  dynamic scenes the implementation will rebuild data structures from
-  scratch for this type of mesh.</td></tr>
+  dynamic and changes frequently and in an unstructured way. Embree
+  will rebuild data structures from scratch for this type of mesh.</td></tr>
 </table>
 
 <p>The triangle indices can be set by mapping and writing to the index
@@ -281,7 +283,7 @@ rtcUnmapBuffer(scene,geomID,RTC_INDEX_BUFFER);
 
 <p>A triangle mesh with linear motion blur support is created by
 setting the number of time steps to 2 at mesh construction
-time. Specifying a number of time steps larger than 2 is invalid. For
+time. Specifying a number of time steps of 0 or larger than 2 is invalid. For
 a triangle mesh with linear motion blur, the user has to set the
 <code>RTC_VERTEX_BUFFER0</code> and <code>RTC_VERTEX_BUFFER1</code>
 vertex arrays, one for each time step. If a scene contains triangle
