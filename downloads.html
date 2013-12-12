@@ -43,12 +43,12 @@
 modes. The code compiles with the Intel Compiler, the Microsoft
 Compiler, GCC and CLANG. Using the Intel Compiler improves performance
 by approximately 10%. Performance also varies across different
-operating systems. Embree requires a CPU with at least support for
-SSE2. Embree is optimized for Intel CPUs supporting SSE, AVX, and AVX2
-instructions.</p>
+operating systems. Embree is optimized for Intel CPUs supporting SSE,
+AVX, and AVX2 instructions, and requires at least a CPU with support
+for SSE2.</p>
 
-<p>The Xeon Phi&reg; version of Embree only works under Linux in 64bit
-mode. For compilation of the the Xeon Phi&reg; code the Intel Compiler is
+<p>The Xeon Phi&trade; version of Embree only works under Linux in 64bit
+mode. For compilation of the the Xeon Phi&trade; code the Intel Compiler is
 required. The host side code compiles with GCC, CLANG, and the Intel
 Compiler.</p>
 
@@ -77,10 +77,10 @@ folder structure:</p>
       
 <dl>
     <dt>embree</dt>                 <dd>Embree root folder</dd>
-    <dt>embree/include/</dt>        <dd>User API to the ray tracing kernels</dd>
+    <dt>embree/include</dt>        <dd>User API to the ray tracing kernels</dd>
     <dt>embree/kernels</dt>                <dd>Embree ray tracing kernels implementation</dd>
     <dt>embree/kernels/xeon</dt>           <dd>Embree kernels for Intel&reg; Xeon&reg; CPUs</dd>
-    <dt>embree/kernels/xeonphi</dt>        <dd>Embree kernels for Intel&reg; Xeon Phi&reg; Accelerators</dd>
+    <dt>embree/kernels/xeonphi</dt>        <dd>Embree kernels for Intel&reg; Xeon Phi&trade; Accelerators</dd>
     <dt>embree/tutorials</dt>              <dd>Embree tutorials</dd>
 </dl>
 
@@ -106,7 +106,7 @@ the path to the ispc executable permanently into your PATH.</p>
 
 <p>You additionally have to install CMake and the developer version of
 GLUT. Under MaxOS, these dependencies can be installed using
-MacPorts:</p>
+<a href="http://www.macports.org/">MacPorts</a>:</p>
 
 <pre><code>sudo port install cmake freeglut</code></pre>
 
@@ -131,7 +131,7 @@ CMAKE_BUILD_TYPE to "Release" and the compiler to "GCC", "CLANG" or
 generate optimized code for. We recommend to enable TARGET_SSE41,
 TARGET_AVX, and TARGET_AVX2 if you want to use Embree on standard
 CPUs, and you have to enable TARGET_XEON_PHI if you want to use Embree
-on Xeon Phi&reg;. You need at least Intel Compiler 11.1 or GCC 4.4 to
+on Xeon Phi&trade;. You need at least Intel Compiler 11.1 or GCC 4.4 to
 enable AVX and Intel Compiler 12.1 or GCC 4.7 to enable AVX2. Now
 press c (for configure) and g (for generate) to generate a Makefile
 and leave the configuration. The code can be compiled by executing
@@ -167,12 +167,12 @@ your system:
   <p>In Visual Studio, you will find 4 build configurations, Debug
   (for SSE2 debug mode), Release (for SSE2 release mode), ReleaseAVX
   (for AVX release mode), and ReleaseAVX2 (for AVX2 release
-  mode). When using Microsoft Compiler you can only use the Debug and
+  mode). When using the Microsoft Compiler you can only use the Debug and
   Release configuration. For enabling the ReleaseAVX configuration you
   need at least Intel Compiler 11.1 and for the ReleaseAVX2
   configuration you need at least Intel Compiler 12.1.</p>
 
-  <p>There is an issue with compiling the ISPC files in Visual Studio
+  <p>There is a known issue with compiling the ISPC files in Visual Studio
   2010, resulting in link errors for the first builds. Please rebuild
   the project multiple times until it links properly.</p>
 

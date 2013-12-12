@@ -64,10 +64,12 @@ the ISPC version of the API, the user should include
 #include &lt;embree2/rtcore_ray.h&gt;
 </pre></code>
 
-<p>Before invoking any API call, the Embree ray tracing core has to
-get initialized through the <code>rtcInit</code> call. Before the
-application exits it should call <code>rtcExit</code>. Initializing
-Embree again after an <code>rtcExit</code> is allowed.</p>
+<p>All API calls carry the prefix <code>rtc</code> which stands for
+<b>r</b>ay <b>t</b>racing <b>c</b>ore. Before invoking any API call,
+the Embree ray tracing core has to get initialized through the
+<code>rtcInit</code> call. Before the application exits it should call
+<code>rtcExit</code>. Initializing Embree again after an
+<code>rtcExit</code> is allowed.</p>
 
    <pre><code>rtcInit(NULL);
 ...
@@ -77,7 +79,8 @@ rtcExit();
 <p>The <code>rtcInit</code> call initializes the ray tracing core. An
 optional configuration string can be passed through this function to
 configure implementation specific parameters. If this string is NULL,
-a default configuration is used.</p>
+a default configuration is used, that is optimal for most
+usages.</p>
 
 <p>API calls that access geometries are only thread safe as long as
 different geometries are accessed. Accesses to one geometry have to
@@ -92,7 +95,7 @@ geometry inside the intersect function of a user defined geometry.</p>
 occurs when invoking some API function, this flag is set to an error
 code if it stores no previous error. The <code>rtcGetError</code>
 function reads and returns the currently stored error and clears the
-error flag again. For performance reasons the ray query functions to
+error flag again. For performance reasons the ray query functions do
 not set an error flag, but fail hard in some circumstances (e.g. if
 the user forgot to perform an <code>rtcCommit</code>).</p>
 
@@ -102,7 +105,7 @@ the user forgot to perform an <code>rtcCommit</code>).</p>
   <tr><th>Error Code</th><th>Description</th></tr>
   <tr><td>RTC_NO_ERROR</td><td>No error occured.</td></tr>
   <tr><td>RTC_UNKNOWN_ERROR</td><td>An unknown error has occured.</td></tr>
-  <tr><td>RTC_INVALID_ARGUMENT</td><td>An invalid argument is specified.</td></tr>
+  <tr><td>RTC_INVALID_ARGUMENT</td><td>An invalid argument was specified.</td></tr>
   <tr><td>RTC_INVALID_OPERATION</td><td>The operation is not allowed
  for the specified object.</td>
  <tr><td>RTC_OUT_OF_MEMORY</td><td>There is not enough memory left to
@@ -126,11 +129,11 @@ updates and the single ray <code>rtcIntersect</code> and
 rtcDeleteScene(scene);
 </pre></code>
 
-<p>Using the following flags the user can select between creating a
+<p>Using the following scene flags the user can select between creating a
 static and dynamic scene.</p>
 
 <table>
-  <tr><th>Flag</th><th>Description</th></tr>
+  <tr><th>Scene Flag</th><th>Description</th></tr>
   <tr><td>RTC_SCENE_STATIC</td><td>scene optimized for static geometry</td></tr>
   <tr><td>RTC_SCENE_DYNAMIC</td><td>scene optimized for dynamic geometry</td></tr>
 </table>
@@ -149,16 +152,16 @@ can also get modified, including their vertex and index arrays. After
 the modification of some geometry, <code>rtcModified</code> has to get
 called for that geometry. If geometries got enabled, disabled,
 deleted, or modified an <code>rtcCommit</code> call has to get invoked
-before performing any ray queries, otherwise the effect of the ray
-query is undefined.</p>
+before performing any ray queries for the scene, otherwise the effect
+of the ray query is undefined.</p>
 
 <p>A static scene is created by the <code>rtcNewScene</code> call with
 the <code>RTC_SCENE_STATIC</code> flag. Geometries can only be created
-and modified until the first <code>rtcCommit</code> call for the
-scene. After that call, each access to any geometry of that static
-scene is invalid, including enabling, disabling, modifying, and
-deletion of geometries. Consequently, geometries that got created inside a
-static scene can only get deleted by deleting the entire static
+and modified until the first <code>rtcCommit</code> call for some
+static scene. After that call, each access to any geometry of that
+static scene is invalid, including enabling, disabling, modifying, and
+deletion of geometries. Consequently, geometries that got created
+inside a static scene can only get deleted by deleting the entire
 scene.</p>
 
 <p>The following flags can be used to tune the used acceleration
@@ -166,9 +169,9 @@ structure. These flags are only hints and may be ignored by the
 implementation.</p>
 
 <table>
-  <tr><th>Flag</th><th>Description</th></tr>
-  <tr><td>RTC_SCENE_COMPACT</td><td>Creates a compact data structure
-  by avoiding to use algorithms that consume much memory.</td></tr>
+  <tr><th>Scene Flag</th><th>Description</th></tr>
+  <tr><td>RTC_SCENE_COMPACT</td><td>Creates a compact data structure and
+avoids algorithms that consume much memory.</td></tr>
   <tr><td>RTC_SCENE_COHERENT</td><td>Optimize for coherent rays (e.g. primary rays)</td></tr>
   <tr><td>RTC_SCENE_INCOHERENT</td><td>Optimize for in-coherent rays (e.g. diffuse reflection rays)</td></tr>
   <tr><td>RTC_SCENE_HIGH_QUALITY</td><td>Build higher quality spatial data structures.</td></tr>
@@ -179,23 +182,23 @@ that is used by Embree. These flags are only hints and may be ignored
 by the implementation.</p>
 
 <table>
-  <tr><th>Flag</th><th>Description</th></tr>
+  <tr><th>Scene Flag</th><th>Description</th></tr>
   <tr><td>RTC_SCENE_ROBUST</td><td>Avoid optimizations that reduce arithmetic accuracy.</td></tr>
 </table>
 
 <p>The second argument of the <code>rtcNewScene</code> function are
 algorithm flags, that allow to specify which ray queries are required
 by the application. Calling for a scene a ray query API function that
-is different than the ones specified at scene creation time is not
-allowed. The application should only pass ray query requirements that
+is different to the ones specified at scene creation time is not
+allowed. Further, the application should only pass ray query requirements that
 are really needed, to give Embree most freedom in choosing the best
 algorithm. E.g. in case Embree implements no packet traversers for some
 highly optimized data structure for single rays, then this data
-structure cannot be used if the user requires any ray packet
+structure cannot be used if the user specifies any ray packet
 query.</p>
 
 <table>
-  <tr><th>Flag</th><th>Description</th></tr>
+  <tr><th>Algorithm Flag</th><th>Description</th></tr>
   <tr><td>RTC_INTERSECT1</td><td>Enables the <code>rtcIntersect</code> and <code>rtcOccluded</code> functions for this scene</td></tr>
   <tr><td>RTC_INTERSECT4</td><td>Enables the <code>rtcIntersect4</code> and <code>rtcOccluded4</code> functions for this scene</td></tr>
   <tr><td>RTC_INTERSECT8</td><td>Enables the <code>rtcIntersect8</code> and <code>rtcOccluded8</code> functions for this scene</td></tr>
@@ -236,20 +239,19 @@ deleted using the <code>rtcDeleteGeometry</code> function call.</p>
 steps (1 for normal meshes, and 2 for linear motion blur), have to get
 specified at construction time of the mesh. The user can also specify
 additional flags that choose the strategy to handle that mesh in
-dynamic scenes. The following example creates a triangle mesh with
-some geometry flags, numTriangle trangles numVertices vertices and no
-motion blur:</p>
+dynamic scenes. The following example demonstrates howto create a
+triangle mesh without motion blur:</p>
 
-<pre><code>unsigned geomID = rtcNewTriangleMesh(scene,flags,numTriangles,numVertices,1);</pre></code>
+<pre><code>unsigned geomID = rtcNewTriangleMesh(scene,geomFlags,numTriangles,numVertices,1);</pre></code>
 
 <p>The following geometry flags can be specified at construction time of
 the triangle mesh:</p>
 
 <table>
-  <tr><th>Flag</th><th>Description</th></tr>
+  <tr><th>Geometry Flag</th><th>Description</th></tr>
   <tr><td>RTC_GEOMETRY_STATIC</td><td>The mesh is considered static
-  and should get modified rarely by the application. Only this flag
-  can be set for static scenes.</td></tr>
+  and should get modified rarely by the application. This flag
+  has to get used in static scenes.</td></tr>
   <tr><td>RTC_GEOMETRY_DEFORMABLE</td><td>The mesh is considered
   to deform in a coherent way, e.g. a skinned character. The
   connectivity of the mesh has to stay constant, thus modifying the
@@ -257,7 +259,7 @@ the triangle mesh:</p>
   implementation is free to choose a BVH refitting approach for
   handling meshes tagged with that flag.</td></tr>
   <tr><td>RTC_GEOMETRY_DYNAMIC</td><td>The mesh is considered highly
-  dynamic and changes frequently and in an unstructured way. Embree
+  dynamic and changes frequently, possibly in an unstructured way. Embree
   will rebuild data structures from scratch for this type of mesh.</td></tr>
 </table>
 
@@ -298,33 +300,33 @@ using the <code>rtcSetMask</code> call.</p>
 
 <pre><code>rtcSetMask(scene,geomID,mask);</pre></code>
 
-<p>Only if the bitwise and operation of this mask with the mask stored
-inside the ray is not 0, triangles of this mesh are hit by a ray. This
-feature can be used to disable selected triangle meshes for
-specifically tagged rays, e.g. to disable shadow casting for some
-geometry. This API feature is disabled in Embree by default at compile
-time, and can be enabled in cmake through the
+<p>Only if the bitwise <code>and</code> operation of this mask with
+the mask stored inside the ray is not 0, triangles of this mesh are
+hit by a ray. This feature can be used to disable selected triangle
+meshes for specifically tagged rays, e.g. to disable shadow casting
+for some geometry. This API feature is disabled in Embree by default
+at compile time, and can be enabled in cmake through the
 <code>RTCORE_ENABLE_RAY_MASK</code> parameter.</p>
 
 <p>See tutorial00 for an example of how to create triangle meshes.</p>
 
 <h3>User Defined Geometry</h3>
 
-<p>User defined geometries make it possible to extend Embree by adding
-arbitrary types of geometry to the scene. This is achieved by
-providing for each such user geometry a bounding box as well as user
-defined intersect and occluded functions. When performing ray queries
-on a scene containing user geometries, Embree will invoke these user
-functions to test rays for intersection with the user defined
-geometry. A user provided data pointer, that points to a user specific
-representation of the geometry, is also passed to each user function
-invokation. As Embree supports different ray packet sizes, one
-potentially has to provide different versions of user intersect and
-occluded function pointers for these packet sizes. However, the ray
-packet size of the called user function always matches the packet size
-of the originally invoked ray query function. Consequently, an
-application only operating on single rays, also only has to provide
-single ray intersect and occluded function pointers. </p>
+<p>User defined geometries make it possible to extend Embree with
+arbitrary types of geometry. This is achieved by providing for each
+such user geometry a bounding box as well as user defined intersect
+and occluded functions. When performing ray queries on a scene
+containing user geometries, Embree will invoke these user functions to
+test rays for intersection with the user defined geometry. A user
+provided data pointer, that points to a user specific representation
+of the geometry, is also passed to each user function invokation. As
+Embree supports different ray packet sizes, one potentially has to
+provide different versions of user intersect and occluded function
+pointers for these packet sizes. However, the ray packet size of the
+called user function always matches the packet size of the originally
+invoked ray query function. Consequently, an application only
+operating on single rays only has to provide single ray
+intersect and occluded function pointers. </p>
 
 <p>User geometries are created using the
 <code>rtcNewUserGeometry</code> function call, and potentially deleted
@@ -349,19 +351,26 @@ rtcSetUserData(scene,geomID,userGeom);
 rtcSetIntersectFunction(scene,geomID,&userIntersectFunction);
 rtcSetOccludedFunction (scene,geomID,&userOccludedFunction);</pre></code>
 
-<p>The user intersect function (userIntersectFunction) get as input
-the pointer provided through the <code>rtcSetUserData</code> function
-call, and the ray to test the geometry for intersection with. If the
-user geometry is missed, the function should return without modifying
-the ray structure. If the geometry is hit, the hit information of the
-ray (tfar,u,v,Ng,geomID,primID) have to get updated.</p>
+<p>The user intersect function (<code>userIntersectFunction</code>)
+gets as input the pointer provided through the
+<code>rtcSetUserData</code> function call, and the ray to test the
+geometry for intersection with. If the user geometry is missed, the
+function should return without modifying the ray structure. If the
+geometry is hit, the hit information of the ray
+(<code>tfar</code>, <code>u</code>, <code>v</code>, <code>Ng</code>,
+<code>geomID</code>, <code>primID</code>)
+have to get updated.</p>
 
-<p>The user occluded function (userOccludedFunc) get as input the
-pointer provided through the <code>rtcSetUserData</code> function
-call, and the ray for the occlusion test. If the user geometry is
-missed, the function should return without modifying the ray
-structure. If the geometry is hit, the geomID member of the ray should
-get set to 0.</p>
+<p>The user occluded function (<code>userOccludedFunction</code>) gets
+as input the pointer provided through the <code>rtcSetUserData</code>
+function call, and the ray for the occlusion test. If the user
+geometry is missed, the function should return without modifying the
+ray structure. If the geometry is hit, the <code>geomID</code> member
+of the ray has to get set to 0.</p>
+
+<p>For ray packets, these user intersect and occluded functions also
+get a pointer to a valid mask as input. The user provided functions
+should not modify any ray that is disabled by that valid mask</p>
 
 <p>Is is supported to invoke the <code>rtcIntersect</code> and
 <code>rtcOccluded</code> function calls inside such user functions. It
@@ -373,11 +382,11 @@ geometries.</p>
 
 <h3>Instances</h3>
 
-<p>Embree supports instancing of scenes inside another scene using some
+<p>Embree supports instancing of scenes inside another scene by some
 transformation. As the instanced scene is stored only a single time,
 even if instanced to multiple locations, this feature can be used to
 create extremely large scenes. Only single level instancing is
-supported by Embree natively, however, multi-level instances can
+supported by Embree natively, however, multi-level instancing can
 principally be implemented through user geometries.</p>
 
 <p>Instances are created using the <code>rtcNewInstance</code>
@@ -391,12 +400,14 @@ rtcSetTransform(sceneA,instID,RTC_MATRIX_COLUMN_MAJOR,&column_matrix_3x4);
 </pre></code>
 
 <p>One has to call <code>rtcCommit</code> on scene B before one calls
-<code>rtcCommit</code> on scene A. Providing a bounding box is not
-required and also not allowed. If a ray hits the instance, then the
-geomID and primID members of the ray are set to the geometry ID and
-primitive ID of the primitive hit in scene B, and the instID member of
-the ray is set to the instance ID returned from the
-<code>rtcNewInstance</code> function.</p>
+<code>rtcCommit</code> on scene A. When modifying scene B one has to
+call <code>rtcModified</code> for all instances of that
+scene. Providing a bounding box is not required and also not
+allowed. If a ray hits the instance, then the geomID and primID
+members of the ray are set to the geometry ID and primitive ID of the
+primitive hit in scene B, and the instID member of the ray is set to
+the instance ID returned from the <code>rtcNewInstance</code>
+function.</p>
 
 <p>The <code>rtcSetTransform</code> call can be passed an affine
 transformation matrix with different data layouts:</p>
@@ -419,6 +430,10 @@ homogenous matrix is layed out in column major form, use the
 <code>RTC_MATRIX_COLUMN_MAJOR_ALIGNED16</code> mode. In both cases,
 Embree will ignore the last row of the matrix.</p>
 
+<p>The transformation passed to <code>rtcSetTransform</code>
+transforms from the local space of the instantiated scene, to world
+space.</code>
+
 <p>See tutorial04 for an example of how to use instances.</p>
 
 <h2>Ray Queries</h2>
@@ -426,52 +441,6 @@ Embree will ignore the last row of the matrix.</p>
 <p>The API supports finding the closest hit of a ray segment with the
 scene (<code>rtcIntersect</code> functions), and determining if any hit between a
 ray segment and the scene exists (<code>rtcOccluded</code> functions).</p>
-
-<p>The ray layout to be passed to the ray tracing core is defined in the
-<code>embree2/rtcore_ray.h</code> header file. It is up to the user if
-he wants to use the ray structures defined in that file, or resemble
-the exact same binary data layout with their own vector classes. The
-ray layout might change with new Embree releases as new features get
-added, however, will stay constant as long as the major release number
-does not change.</p>
-
-<p>The ray contains the following data members (in SOA layout for ray
-packets):</p>
-
-<table>
-  <tr><th>Member</th><th>In/Out</th><th>Description</th></tr>
-  <tr><td>org</td><td>in</td><td>ray origin</td></tr>
-  <tr><td>dir</td><td>in</td><td>ray direction (can be unnomalized)</td></tr>
-  <tr><td>tnear</td><td>in</td><td>start of ray segment</td></tr>
-  <tr><td>tfar</td><td>in/out</td><td>end of ray segment, set to hit distance after intersection</td></tr>
-  <tr><td>time</td><td>in</td><td>time used for motion blur</td></tr>
-  <tr><td>mask</td><td>in</td><td>ray mask to mask out geometries</td></tr>
-
-  <tr><td>Ng</td><td>out</td><td>not normalized geometry normal</td></tr>
-  <tr><td>u</td><td>out</td><td>barycentric u-coordinate of hit</td></tr>
-  <tr><td>v</td><td>out</td><td>barycentric v-coordinate of hit</td></tr>
-  <tr><td>geomID</td><td>out</td><td>geometry ID of hit geometry</td></tr>
-  <tr><td>primID</td><td>out</td><td>primitive ID of hit primitive</td></tr>
-  <tr><td>instID</td><td>out</td><td>instance ID of hit instance</td></tr>
-</table>
-
-<p>Note that the <code>tfar</code> member functions as an input and
-output.</p>
-
-<p>In the ray packet mode (with packet size of N), the user has to
-provide a pointer to N 32 bit integers that act as a ray activity
-mask. If one of these integers is set to 0x00000000 the corresponding
-ray is considered inactive and if the integer is set to 0xFFFFFFFF,
-the ray is considered active. Rays that are inactive will not update
-any hit information. Data alignment requirements for ray query functions
-operating on single rays is 16 bytes for the ray. Data alignment
-requirements for query functions operating on AOS packets of 4, 8, or
-16 rays, is 16, 32, and 64 bytes respectively, for the valid mask and
-the ray. To operate on packets of 4 rays, the CPU has to support SSE,
-to operate on packets of 8 rays, the CPU has to support AVX-256, and
-to operate on packets of 16 rays, the CPU has to support the AVX-512
-instructions. Additionally, the required ISA has to be enabled at
-Embree compile time, to use the desired packet size.</p>
 
 <pre><code>void rtcIntersect   (                   RTCScene scene, RTCRay& ray);
 void rtcIntersect4  (const void* valid, RTCScene scene, RTCRay4& ray);
@@ -483,21 +452,68 @@ void rtcOccluded8   (const void* valid, RTCScene scene, RTCRay8& ray);
 void rtcOccluded16  (const void* valid, RTCScene scene, RTCRay16& ray);
 </pre></code>
 
+<p>The ray layout to be passed to the ray tracing core is defined in the
+<code>embree2/rtcore_ray.h</code> header file. It is up to the user if
+he wants to use the ray structures defined in that file, or resemble
+the exact same binary data layout with their own vector classes. The
+ray layout might change with new Embree releases as new features get
+added, however, will stay constant as long as the major release number
+does not change. The ray contains the following data members:</p>
+
+<table>
+  <tr><th>Member</th><th>In/Out</th><th>Description</th></tr>
+  <tr><td>org</td><td>in</td><td>ray origin</td></tr>
+  <tr><td>dir</td><td>in</td><td>ray direction (can be unnomalized)</td></tr>
+  <tr><td>tnear</td><td>in</td><td>start of ray segment</td></tr>
+  <tr><td>tfar</td><td>in/out</td><td>end of ray segment, set to hit distance after intersection</td></tr>
+  <tr><td>time</td><td>in</td><td>time used for motion blur</td></tr>
+  <tr><td>mask</td><td>in</td><td>ray mask to mask out geometries (30
+  bits used)</td></tr>
+
+  <tr><td>Ng</td><td>out</td><td>not normalized geometry normal</td></tr>
+  <tr><td>u</td><td>out</td><td>barycentric u-coordinate of hit</td></tr>
+  <tr><td>v</td><td>out</td><td>barycentric v-coordinate of hit</td></tr>
+  <tr><td>geomID</td><td>out</td><td>geometry ID of hit geometry</td></tr>
+  <tr><td>primID</td><td>out</td><td>primitive ID of hit primitive</td></tr>
+  <tr><td>instID</td><td>out</td><td>instance ID of hit instance</td></tr>
+</table>
+
+<p>This structure is in struct of array layout (SOA) for ray
+packets. Note that the <code>tfar</code> member functions as an input
+and output.</p>
+
+<p>In the ray packet mode (with packet size of N), the user has to
+provide a pointer to N 32 bit integers that act as a ray activity
+mask. If one of these integers is set to 0x00000000 the corresponding
+ray is considered inactive and if the integer is set to 0xFFFFFFFF,
+the ray is considered active. Rays that are inactive will not update
+any hit information. Data alignment requirements for ray query functions
+operating on single rays is 16 bytes for the ray.</p>
+
+<p>Data alignment requirements for query functions operating on AOS
+packets of 4, 8, or 16 rays, is 16, 32, and 64 bytes respectively, for
+the valid mask and the ray. To operate on packets of 4 rays, the CPU
+has to support SSE, to operate on packets of 8 rays, the CPU has to
+support AVX-256, and to operate on packets of 16 rays, the CPU has to
+support the Xeon Phi instructions. Additionally, the required ISA has
+to be enabled in Embree at compile time, to use the desired packet
+size.</p>
+
 <p>Finding the closest hit distance is done through the
 <code>rtcIntersect</code> functions. These get the activity mask, the
 scene, and a ray as input. The user has to initialize the ray origin
-(org), ray direction (dir), and ray segment (tnear, tfar). The ray
+(<code>org</code>), ray direction (<code>dir</code>), and ray segment (<code>tnear</code>, <code>tfar</code>). The ray
 segment has to be in the range [0,inf], thus ranges that start behind
 the ray origin are not valid, but ranges can reach to infinity. The
-geometry ID (geomID member) has to get initialized to
-INVALID_GEOMETRY_ID (-1). If the scene contains instances, also the
-instance ID (instID) has to get initialized to INVALID_GEOMETRY_ID
+geometry ID (<code>geomID</code> member) has to get initialized to
+<code>INVALID_GEOMETRY_ID</code> (-1). If the scene contains instances, also the
+instance ID (<code>instID</code>) has to get initialized to <code>INVALID_GEOMETRY_ID</code>
 (-1). If the scene contains linear motion blur, also the ray time
-(time) has to get initialized. If ray masks are enabled at compile
-time, also the ray mask (mask) has to get initialized. After tracing
-the ray, the hit distance (tfar), geometry normal (Ng), local hit
-coordinates (u,v), geometry ID (geomID), and primitive ID (primID) are
-set. If the scene contains instances, also the instance ID (instID) is
+(<code>time</code>) has to get initialized to a value in the range [0,1]. If ray masks are enabled at compile
+time, also the ray mask (<code>mask</code>) has to get initialized. After tracing
+the ray, the hit distance (<code>tfar</code>), geometry normal (<code>Ng</code>), local hit
+coordinates (<code>u</code>, <code>v</code>), geometry ID (<code>geomID</code>), and primitive ID (<code>primID</code>) are
+set. If the scene contains instances, also the instance ID (<code>instID</code>) is
 set, if an instance is hit. The geometry ID corresponds to the ID
 returned at creation time of the hit geometry, and the primitive ID
 corresponds to the nth primitive of that geometry, e.g. nth
@@ -523,7 +539,7 @@ rtcIntersect(scene,ray);
 <p>Testing if any geometry intersects with the ray segment is done
 through the <code>rtcOccluded</code> functions. Initialization has to
 be done as for <code>rtcIntersect</code>. If some geometry got found
-along the ray segment, the geometry ID (geomID) will get set to 0. No
+along the ray segment, the geometry ID (<code>geomID</code>) will get set to 0. No
 other member of the ray will get modified.</p>
 
 <p>See tutorial00 for an example of how to trace rays.</p>

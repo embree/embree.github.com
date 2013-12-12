@@ -106,6 +106,10 @@ p {
   margin: 10px 0 15px 0;
 }
 
+b {
+  font-weight: bold;
+}
+
 footer p {
   color: #f2f2f2;
   font-weight: bold;
