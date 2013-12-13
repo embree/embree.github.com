@@ -37,9 +37,9 @@
 
       <section id="main_content" class="inner">
 
-<h1>Photo-Realistic Example Renderer</h1>
+<h1>Embree Example Renderer</h1>
 
-<p>The Embree Example Renderer is a photo-realistic renderer that
+<p>The Embree Example Renderer is a photo-realistic path tracer that
 builds on the Embree high performance ray tracing kernels. The
 renderer is used to demonstrate how Embree is used in practice and to
 measure Embree's performance in a realistic application scenario. The
@@ -79,7 +79,7 @@ Renderer 2.1:</p>
       
 <pre><code>$ git clone https://github.com/embree/embree-renderer.git embree-renderer
 $ cd embree-renderer
-$ git checkout v2.1</code></pre>
+$ git checkout v2.1_alpha</code></pre>
       
 <h2>Compiling under Windows</h2>
 
@@ -115,11 +115,11 @@ mode to “Release” and the compiler to either GCC, CLANG, or ICC. You can
 configure which parts of the Embree Example Renderer to build:</p>
 
 <table>
-  <tr><td>BUILD_SINGLE_RAY_DEVICE</td><td>Single ray device for CPU operating on single rays.</td></tr>
-  <tr><td>BUILD_SINGLE_RAY_DEVICE_KNC</td><td>Single ray device for Xeon Phi&trade; operating on single rays.</td></tr>
-  <tr><td>BUILD_ISPC_DEVICE</td><td>ISPC CPU device operating on ray packets of size 4 (SSE) or 8 (AVX).</td></tr>
-  <tr><td>BUILD_ISPC_DEVICE_KNC</td><td>ISPC device for Xeon Phi&trade; accelerator operating on ray packets of size 16</td></tr>
-  <tr><td>BUILD_NETWORK_DEVICE</td><td>Network device to render on render server</td></tr>
+  <tr><td>BUILD_SINGLE_RAY_DEVICE</td><td>Single ray rendering device for CPUs.</td></tr>
+  <tr><td>BUILD_SINGLE_RAY_DEVICE_KNC</td><td>Single ray rendering device for Xeon Phi&trade;.</td></tr>
+  <tr><td>BUILD_ISPC_DEVICE</td><td>ISPC CPU rendering device operating on ray packets of size 4 (SSE) or 8 (AVX).</td></tr>
+  <tr><td>BUILD_ISPC_DEVICE_KNC</td><td>ISPC Xeon Phi&trade; rendering device operating on ray packets of size 16.</td></tr>
+  <tr><td>BUILD_NETWORK_DEVICE</td><td>Network device to render on render server.</td></tr>
 </table>
   
 <p>When enabling any ISPC renderer, you also have to install ISPC. If
@@ -136,12 +136,13 @@ you will get link errors.</p>
 <p>If you installed Embree, CMake will find it automatically and set
 the EMBREE_INCLUDE_PATH and EMBREE_LIBRARY variables.</p>
 
-<p>If you do not want to install Embree on your system some additional
-configurations are required to use Embree from its build folder. Set
-the EMBREE_INCLUDE_PATH to the embree_root_directory/include folder and the
-EMBREE_LIBRARY to embree_root_directory/build/libembree.2.1.0.dylib for
-MacOS or embree_root_directory/build/libembree.so.2.1.0 for Linux. Under
-Linux you have to additionally add embree_root_directory/build to your
+<p>If you cannot install Embree on your system (e.g. when you don't have
+administrator rights) some additional configurations are required to
+use Embree from its build folder. Set the EMBREE_INCLUDE_PATH to the
+embree_root_directory/include folder and the EMBREE_LIBRARY to
+embree_root_directory/build/libembree.2.1.0.dylib for MacOS or
+embree_root_directory/build/libembree.so.2.1.0 for Linux. Under Linux
+you have to additionally add embree_root_directory/build to your
 LD_LIBRARY_PATH. This last step is not required under MacOS.</p>
 
 </p>Press c (for configure) and g (for generate) to generate a Makefile
@@ -172,8 +173,8 @@ parameters, pressing r enables or disables the progressive refinement
 mode.</p>
 
 <p>By default the renderer uses the single ray device. For selecting a
-different device use the -device command line parameter at the very 
-beginning:</p>
+different device use the <code>-device</code> command line parameter
+as first argument:</p>
 
 <pre><code>./renderer -device singleray -c ../models/cornell_box.ecs
 ./renderer -device ispc -c ../models/cornell_box.ecs
@@ -189,9 +190,9 @@ beginning:</p>
 <pre><code>renderer_server</code></pre>
 
 <p>Make sure that port 8484 is not blocked by the firewall. Now you can 
-connect from a second machine to the network server:</p>
+connect from a second machine to the render server:</p>
 
-<pre><code>renderer -connect ip_of_network_server -c ../../models/cornell_box.ecs</code></pre>
+<pre><code>renderer -connect ip_of_render_server -c ../../models/cornell_box.ecs</code></pre>
   
 <h3>Navigation</h3>
 
