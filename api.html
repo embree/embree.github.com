@@ -313,64 +313,76 @@ at compile time, and can be enabled in cmake through the
 <h3>User Defined Geometry</h3>
 
 <p>User defined geometries make it possible to extend Embree with
-arbitrary types of geometry. This is achieved by providing for each
-such user geometry a bounding box as well as user defined intersect
-and occluded functions. When performing ray queries on a scene
-containing user geometries, Embree will invoke these user functions to
-test rays for intersection with the user defined geometry. A user
-provided data pointer, that points to a user specific representation
-of the geometry, is also passed to each user function invokation. As
-Embree supports different ray packet sizes, one potentially has to
-provide different versions of user intersect and occluded function
+arbitrary types of geometry. This is achieved by introducing arrays of
+user geometries as a special geometry type. These objects do not
+contain a single user geometry, but a set of such geometries, each
+specified by an index. The user has to provide a user data pointer,
+bounding function as well as user defined intersect and occluded
+functions to create a set of user geometries. The user geometry to
+process is specified by passing its user data pointer and index to
+each invokation of the bounding, intersect, and occluded function. The
+bounding function is used to query the bounds of each user
+geometry. When performing ray queries, Embree will invoke the user
+intersect (and occluded) functions to test rays for intersection (and
+occlusion) with the specified user defined geometry.</p>
+
+<p>As Embree supports different ray packet sizes, one potentially has
+to provide different versions of user intersect and occluded function
 pointers for these packet sizes. However, the ray packet size of the
 called user function always matches the packet size of the originally
 invoked ray query function. Consequently, an application only
-operating on single rays only has to provide single ray
-intersect and occluded function pointers. </p>
+operating on single rays only has to provide single ray intersect and
+occluded function pointers. </p>
 
 <p>User geometries are created using the
 <code>rtcNewUserGeometry</code> function call, and potentially deleted
 using the <code>rtcDeleteGeometry</code> function call. The folling
-example illustrates creating a user geometry:</p>
+example illustrates creating an array with two user geometries:</p>
 
-<pre><code>void userIntersectFunction(void* userGeom, RTCRay& ray) {
-  if (ray misses userGeom) return;
+<pre><code>struct UserObject { ... };
+
+void userBoundsFunction(UserObject* userGeom, size_t i, RTCBounds& bounds_o) {
+  bounds_o = bounds of userGeom[i];
+}
+
+void userIntersectFunction(UserObject* userGeom, RTCRay& ray, size_t i) {
+  if (ray misses userGeom[i]) return;
   update ray hit information;
 }
 
-void userOccludedFunction(void* userGeom, RTCRay& ray) {
-  if (ray misses userGeom) return;
+void userOccludedFunction(UserObject* userGeom, RTCRay& ray, size_t i) {
+  if (ray misses userGeom[i]) return;
   geomID = 0;
 }
 
 ...
 
-unsigned geomID = rtcNewUserGeometry(scene);
-rtcSetBounds(scene,geomID,lower_x,lower_y,lower_z,upper_x,upper_y,upper_z);
+UserObject* userGeom = new UserObject[2];
+userGeom[0] = ...
+userGeom[1] = ...
+unsigned geomID = rtcNewUserGeometry(scene,2);
 rtcSetUserData(scene,geomID,userGeom);
-rtcSetIntersectFunction(scene,geomID,&userIntersectFunction);
-rtcSetOccludedFunction (scene,geomID,&userOccludedFunction);</pre></code>
+rtcSetBounds(scene,geomID,userBoundsFunction);
+rtcSetIntersectFunction(scene,geomID,userIntersectFunction);
+rtcSetOccludedFunction (scene,geomID,userOccludedFunction);</pre></code>
 
 <p>The user intersect function (<code>userIntersectFunction</code>)
-gets as input the pointer provided through the
-<code>rtcSetUserData</code> function call, and the ray to test the
-geometry for intersection with. If the user geometry is missed, the
-function should return without modifying the ray structure. If the
-geometry is hit, the hit information of the ray
-(<code>tfar</code>, <code>u</code>, <code>v</code>, <code>Ng</code>,
-<code>geomID</code>, <code>primID</code>)
-have to get updated.</p>
+and user occluded function (<code>userOccludedFunction</code>) get as
+input the pointer provided through the <code>rtcSetUserData</code>
+function call, a ray, and the index of the geometry to process. For
+ray packets, the user intersect and occluded functions also get a
+pointer to a valid mask as input. The user provided functions should
+not modify any ray that is disabled by that valid mask.</p>
 
-<p>The user occluded function (<code>userOccludedFunction</code>) gets
-as input the pointer provided through the <code>rtcSetUserData</code>
-function call, and the ray for the occlusion test. If the user
-geometry is missed, the function should return without modifying the
-ray structure. If the geometry is hit, the <code>geomID</code> member
-of the ray has to get set to 0.</p>
+<p>The user intersect function should return without modifying the ray
+structure if the user geometry is missed. If the geometry is hit, it
+has to update the hit information of the ray (<code>tfar</code>,
+<code>u</code>, <code>v</code>, <code>Ng</code>, <code>geomID</code>,
+<code>primID</code>).</p>
 
-<p>For ray packets, these user intersect and occluded functions also
-get a pointer to a valid mask as input. The user provided functions
-should not modify any ray that is disabled by that valid mask</p>
+<p>Also the user occluded function should return without modifying the
+ray structure if the user geometry is missed. If the geometry is hit,
+it shoud set the <code>geomID</code> member of the ray to 0.</p>
 
 <p>Is is supported to invoke the <code>rtcIntersect</code> and
 <code>rtcOccluded</code> function calls inside such user functions. It
