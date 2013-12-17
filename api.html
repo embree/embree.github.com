@@ -157,8 +157,8 @@ of the ray query is undefined.</p>
 
 <p>A static scene is created by the <code>rtcNewScene</code> call with
 the <code>RTC_SCENE_STATIC</code> flag. Geometries can only be created
-and modified until the first <code>rtcCommit</code> call for some
-static scene. After that call, each access to any geometry of that
+and modified until the first <code>rtcCommit</code> call. After the
+<code>rtcCommit</code> call, each access to any geometry of that
 static scene is invalid, including enabling, disabling, modifying, and
 deletion of geometries. Consequently, geometries that got created
 inside a static scene can only get deleted by deleting the entire
@@ -199,10 +199,17 @@ query.</p>
 
 <table>
   <tr><th>Algorithm Flag</th><th>Description</th></tr>
-  <tr><td>RTC_INTERSECT1</td><td>Enables the <code>rtcIntersect</code> and <code>rtcOccluded</code> functions for this scene</td></tr>
-  <tr><td>RTC_INTERSECT4</td><td>Enables the <code>rtcIntersect4</code> and <code>rtcOccluded4</code> functions for this scene</td></tr>
-  <tr><td>RTC_INTERSECT8</td><td>Enables the <code>rtcIntersect8</code> and <code>rtcOccluded8</code> functions for this scene</td></tr>
-  <tr><td>RTC_INTERSECT16</td><td>Enables the <code>rtcIntersect16</code> and <code>rtcOccluded16</code> functions for this scene</td></tr>
+  <tr><td>RTC_INTERSECT1</td><td>Enables the <code>rtcIntersect</code>
+  and <code>rtcOccluded</code> functions (single ray interface) for this scene</td></tr>
+  <tr><td>RTC_INTERSECT4</td><td>Enables the
+  <code>rtcIntersect4</code> and <code>rtcOccluded4</code> functions
+  (4-wide packet interface) for this scene</td></tr>
+  <tr><td>RTC_INTERSECT8</td><td>Enables the
+  <code>rtcIntersect8</code> and <code>rtcOccluded8</code> functions
+  (8-wide packet interface ) for this scene</td></tr>
+  <tr><td>RTC_INTERSECT16</td><td>Enables the
+  <code>rtcIntersect16</code> and <code>rtcOccluded16</code> functions
+  (16-wide packet interface) for this scene</td></tr>
 </table>
 
 <h2>Geometries</h2>
