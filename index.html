@@ -85,10 +85,13 @@ Renderer</a>).</p>
 
 <h3>What's New in Embree 2.1?</h3>
 <ul>
-  <li>new future proof API</li>
-  <li>support for dynamic scenes</li>
-  <li>optimizations for AVX2</li>
-  <li>runtime code selection for SSE and AVX/AVX2</li>
+  <li>new future proof API with a strong focus on supporting dynamic scenes</li>
+  <li>new BVH builders: fast adaptive morton code-based (w/o SAH-based top-level rebuild )</li>
+  <li>faster high quality SAH-based BVH builders: 10-15% faster on
+  Xeon Phi</li>
+  <li>optimizations for 8-wide AVX2 (introduced with the
+  Intel Haswell&trade; architecture)</li>
+  <li>runtime code selection for SSE, AVX, and AVX2</li>
 </ul>
 
 <h3>What's New in Embree 2.0?</h3>
