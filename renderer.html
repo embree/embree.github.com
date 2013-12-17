@@ -96,6 +96,12 @@ project compiles with both compilers in 32 bit and 64 bit mode. We
 recommend using 64 bit mode and the Intel Compiler for best
 performance.</p>
 
+<p>To enable AVX and AVX2 for the ISPC code select the build
+configurations <code>ReleaseAVX</code> and
+<code>ReleaseAVX2</code>. You have to compile the Embree kernels with
+the same or higher instruction set than the Embree example
+renderer.</p>
+
 <p>By default, the solution file requires ISPC to be installed
 properly. For compiling the solution without ISPC, simply delete the
 device_ispc project from the solution file.</p>
