@@ -91,9 +91,9 @@ Renderer</a>).</p>
   <li>support for user-defined geometry</li>
   <li>new and improved BVH builders:</li>
 <ul style="padding-left:20px">
-  <li>fast adaptive morton code-based builder (w/o SAH-based top-level
+  <li>fast adaptive Morton code-based builder (w/o SAH-based top-level
   rebuild)</li>
-  <li>standard SAH and morton code-based builder got 10-15% faster on
+  <li>standard SAH and Morton code-based builder got 10-15% faster on
   Xeon Phi</li>
   <li>new SAH-based builder using triangle pre-splits on Xeon Phi</li>
 </ul>    
@@ -103,10 +103,10 @@ Renderer</a>).</p>
 <ul>
 
  BVH build performance for scenes with 2-12 million triangles (including triangle accel generation, excluding memory allocation)
-  <li>Intel&reg; Core&trade; i7-4770K (Haswell-based 4-core CPU @ 3.5 GHz): </li>
+  <li>Intel&reg; Core&trade; i7 (Haswell-based 4-core CPU @ 3.0 GHz): </li>
 <ul style="padding-left:20px">
   <li>7-8 million triangles/s for the SAH-based BVH builder</li>
-  <li>25-30 million triangles/s for the Morton code-based BVH builder</li>
+  <li>30-36 million triangles/s for the Morton code-based BVH builder</li>
 </ul>    
  <li>Intel Xeon Phi&trade; 7120: </li>
 <ul style="padding-left:20px">
@@ -114,15 +114,15 @@ Renderer</a>).</p>
   <li>140-160 million triangles/s for the Morton code-based BVH builder</li>
 </ul>    
  Rendering of the Crown model (crown.ecs) with 4 samples per pixel (-spp 4):
-  <li>Intel&reg; Core&trade; i7-4770K (Haswell-based 4-core CPU @ 3.5 GHz): </li>
+  <li>Intel&reg; Core&trade; i7 (Haswell-based 4-core CPU @ 3.0 GHz): </li>
 <ul style="padding-left:20px">
-  <li>800x960 resolution: 7.3 million rays per sec</li>
-  <li>1920x1080 resolution: 9.8 million rays per sec</li>
+  <li>1024x1024 resolution: 7.8 million rays per sec</li>
+  <li>1920x1080 resolution: 9.9 million rays per sec</li>
 </ul>    
 
  <li>Intel Xeon Phi&trade; 7120: </li>
 <ul style="padding-left:20px">
-  <li>800x960 resolution: X.X million rays per sec</li>
+  <li>1024x1024 resolution: X.X million rays per sec</li>
   <li>1920x1080 resolution: X.X million rays per sec</li>
 </ul>    
 
