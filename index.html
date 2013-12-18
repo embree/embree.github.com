@@ -86,9 +86,7 @@ Renderer</a>).</p>
 <h3>What's New in Embree 2.1?</h3>
 <ul>
   <li>new future proof API with a strong focus on supporting dynamic scenes</li>
-  <li>lots of optimizations for 8-wide AVX2 (Intel Haswell&trade;
-  architecture), e.g. entire Embree renderer is 10% faster with AVX2
-  when rendering the crown model</li>
+  <li>lots of optimizations for 8-wide AVX2 (Intel Haswell&trade; architecture)</li>
   <li>automatic runtime code selection for SSE, AVX, and AVX2</li>
   <li>new and improved BVH builders:</li>
 <ul style="padding-left:20px">
@@ -107,12 +105,12 @@ Renderer</a>).</p>
   <li>Intel&reg; Core&trade; i7-4770K (Haswell-based 4-core CPU @ 3.5 GHz): </li>
 <ul style="padding-left:20px">
   <li>7-8 million triangles/s for the SAH-based BVH builder</li>
-  <li>25-30 million triangles/s for the Morton-based BVH builder</li>
+  <li>25-30 million triangles/s for the Morton code-based BVH builder</li>
 </ul>    
  <li>Intel Xeon Phi&trade; 7120: </li>
 <ul style="padding-left:20px">
   <li>37-40 million triangles/s for the SAH-based BVH builder</li>
-  <li>140-160 million triangles/s for the Morton-based BVH builder</li>
+  <li>140-160 million triangles/s for the Morton code-based BVH builder</li>
 </ul>    
  Rendering of the Crown model (crown.ecs) with 4 samples per pixel (-spp 4):
   <li>Intel&reg; Core&trade; i7-4770K (Haswell-based 4-core CPU @ 3.5 GHz): </li>
