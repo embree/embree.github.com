@@ -183,6 +183,40 @@ your system:
   Tools -> Options -> Text Editor -> File Extension and add the isph
   and ispc extension for the "Microsoft Visual C++" editor.</p>
 
+<h2>Running the Tutorials</h2>
+
+<p>Some tutorials come as C++ and ISPC version, e.g.:</p>
+
+<pre><code>./tutorial00
+./tutorial00_ispc
+</pre></code>
+
+<p>You can select an initial camera using the -vp (camera position), -vi
+(camera lookat point), -vu (camera up vector), and -fov (field of
+view) command line parameters:</p>
+
+<pre><code>./tutorial00 -vp 10 10 10 -vi 0 0 0</pre></code>
+
+<p>You can select the initial windows size using the -size command line
+parameter, or start the tutorials in fullscreen using the -fullscreen
+parameter:</p>
+
+<pre><code>./tutorial00 -size 1024 1024
+./tutorial00 -fullscreen
+</pre></code>
+
+<p>Implementation specific parameters can be passed to the ray tracing
+core through the -rtcore command line parameter, e.g.:</p>
+
+<pre><code>./tutorial00 -rtcore verbose=2,threads=1,accel=bvh4.triangle1</pre></code>
+
+<p>The navigation in the interactive display mode follows the camera
+orbit model, where the camera revolves around the current center of
+interest. With the left mouse button you can rotate around the center
+of interest (the point initially set with -vi). Holding Control
+pressed while klicking the left mouse button rotates the camera around
+its location. You can also use the arrow keys for navigation.</p>
+
       </section>
     </div>
     
