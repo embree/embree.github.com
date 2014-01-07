@@ -526,8 +526,8 @@ scene, and a ray as input. The user has to initialize the ray origin
 segment has to be in the range [0,inf], thus ranges that start behind
 the ray origin are not valid, but ranges can reach to infinity. The
 geometry ID (<code>geomID</code> member) has to get initialized to
-<code>INVALID_GEOMETRY_ID</code> (-1). If the scene contains instances, also the
-instance ID (<code>instID</code>) has to get initialized to <code>INVALID_GEOMETRY_ID</code>
+<code>RTC_INVALID_GEOMETRY_ID</code> (-1). If the scene contains instances, also the
+instance ID (<code>instID</code>) has to get initialized to <code>RTC_INVALID_GEOMETRY_ID</code>
 (-1). If the scene contains linear motion blur, also the ray time
 (<code>time</code>) has to get initialized to a value in the range [0,1]. If ray masks are enabled at compile
 time, also the ray mask (<code>mask</code>) has to get initialized. After tracing
@@ -548,9 +548,9 @@ ray.org = ray_origin;
 ray.dir = ray_direction;
 ray.tnear = 0.0f;
 ray.tfar = inf;
-ray.geomID = INVALID_GEOMETRY_ID;
-ray.primID = INVALID_GEOMETRY_ID;
-ray.instID = INVALID_GEOMETRY_ID;
+ray.geomID = RTC_INVALID_GEOMETRY_ID;
+ray.primID = RTC_INVALID_GEOMETRY_ID;
+ray.instID = RTC_INVALID_GEOMETRY_ID;
 ray.mask = 0xFFFFFFFF;
 ray.time = 0.0f;
 rtcIntersect(scene,ray);
