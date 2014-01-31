@@ -25,7 +25,8 @@
         <ul>
           <li><a href="index.html">Overview</a></li>
           <li><a href="downloads.html">Downloads</a></li>
-          <li id="selected"><a href="api.html">Embree API</a></li>
+          <li><a href="tutorials.html">Tutorials</a></li>
+          <li id="selected"><a href="api.html">API</a></li>
           <li><a href="renderer.html">Renderer</a></li>
         </ul>
       </div>
@@ -47,7 +48,9 @@ blur), instanced geometry, and user defined geometry. Supported ray
 queries are, finding the closest scene intersection along a ray, and
 testing a ray segment for any intersection with the scene. Single
 rays, as well as packets of rays in a struct of array layout can be
-used for packet sizes of 1, 4, 8, and 16.</p>
+used for packet sizes of 1, 4, 8, and 16. Filter callback functions
+are supported, that get invoked for every intersection encountered
+during traversal.</p>
 
 <p>The Embree API exists in a C++ and ISPC version. This document
 describes the C++ version of the API, the ISPC version is almost
@@ -109,7 +112,7 @@ the user forgot to perform an <code>rtcCommit</code>).</p>
   <tr><td>RTC_INVALID_OPERATION</td><td>The operation is not allowed
  for the specified object.</td>
  <tr><td>RTC_OUT_OF_MEMORY</td><td>There is not enough memory left to
- execute the command.</td></tr>
+ <tr><td>RTC_UNSUPPORTED_CPU</td><td>The CPU is not supported as it does not support SSE2.</td></tr>
 </table>
 
 <h2>Scene</h2>
@@ -302,7 +305,7 @@ ray will intersect the scene with the vertices of the two time steps
 linearly interpolated to this specified time. Each ray can specify a
 different time, even inside a ray packet.</p>
 
-<p>A 30 bit geometry mask can be assigned to triangle mesh geometries
+<p>A 32 bit geometry mask can be assigned to triangle mesh geometries
 using the <code>rtcSetMask</code> call.</p>
 
 <pre><code>rtcSetMask(scene,geomID,mask);</code></pre>
@@ -455,6 +458,63 @@ space.</code>
 
 <p>See tutorial04 for an example of how to use instances.</p>
 
+<h3>Buffer Sharing</h3> 
+
+<p>Embree supports sharing of buffers with the application. Each buffer
+that can be mapped for a specific geometry can also be shared with the
+application, by pass a pointer, offset, and stride of the application
+side buffer using the <code>rtcSetBuffer</code> API function.</p>
+
+<pre><code>void rtcSetBuffer(RTCScene scene, unsigned geomID, RTCBufferType type, 
+                  void* ptr, size_t offset, size_t stride);</code></pre>
+
+<p>The <code>rtcSetBuffer</code> function has to get called before any
+call to <code>rtcMapBuffer</code> for that buffer, otherwise the
+buffer will get allocated internally and the call to
+<code>rtcSetBuffer</code> will fail. The buffer has to remain valid as
+long as the geometry exists, and the user is responsible to free the
+buffer when the geometry gets deleted. 
+
+When a buffer is shared, it is safe to modify that buffer without
+mapping and unmapping it. However, for dynamic scenes one still has to
+call <code>rtcModified</code> for modified geometries and the buffer
+data has to stay constant from the <code>rtcCommit</code> call to
+after the last ray query invokation.</p>
+
+<p>The <code>offset</code> parameter specifies a byte offset to the
+start of the first element and the <code>stride</code> parameter
+specifies a byte stride between the different elements of the shared
+buffer. This support for offset and stride allows the application
+quite some freedom in the data layout of these buffers, however, some
+restrictions apply. Index buffers always store 32 bit indices and
+vertex buffers always store single precision floating point data. The
+start address ptr+offset and stride always have to be aligned to 4
+bytes on Xeon CPUs and 16 bytes on Xeon Phi accelerators, otherwise
+the <code>rtcSetBuffer</code> function will fail. For vertex buffers,
+the 4 bytes after the z-coordinate of the last vertex have to be
+readable memory, thus padding is required for some layouts.</p>
+
+<p>The following is an example of howto create a mesh with shared index
+and vertex buffers:</p>
+
+<pre><code>unsigned geomID = rtcNewTriangleMesh(scene,geomFlags,numTriangles,numVertices,1);
+rtcSetBuffer(scene,geomID,RTC_VERTEX_BUFFER,vertexPtr,0,3*sizeof(float));
+rtcSetBuffer(scene,geomID,RTC_INDEX_BUFFER ,indexPtr ,0,3*sizeof(int));
+</code></pre>
+
+<p>Sharing buffers can significantly reduce the memory required by the
+application, thus we recommend using this feature. When enabling the
+<code>RTC_COMPACT</code> scene flag, the spatial index structures of
+Embree might also share the vertex buffer, resulting in even higher
+memory savings.</p>
+
+<p>The support for offset and stride is enabled by default, but can
+get disabled at compile time using the
+<code>RTCORE_BUFFER_STRIDE</code> parameter in cmake. Disabling this
+feature enables the default offset and stride which increases
+performance of spatial index structure build, thus can be useful for
+dynamic content.</p>
+
 <h2>Ray Queries</h2>
 
 <p>The API supports finding the closest hit of a ray segment with the
@@ -486,10 +546,9 @@ does not change. The ray contains the following data members:</p>
   <tr><td>tnear</td><td>in</td><td>start of ray segment</td></tr>
   <tr><td>tfar</td><td>in/out</td><td>end of ray segment, set to hit distance after intersection</td></tr>
   <tr><td>time</td><td>in</td><td>time used for motion blur</td></tr>
-  <tr><td>mask</td><td>in</td><td>ray mask to mask out geometries (30
-  bits used)</td></tr>
+  <tr><td>mask</td><td>in</td><td>ray mask to mask out geometries</td></tr>
 
-  <tr><td>Ng</td><td>out</td><td>not normalized geometry normal</td></tr>
+  <tr><td>Ng</td><td>out</td><td>unnormalized geometry normal</td></tr>
   <tr><td>u</td><td>out</td><td>barycentric u-coordinate of hit</td></tr>
   <tr><td>v</td><td>out</td><td>barycentric v-coordinate of hit</td></tr>
   <tr><td>geomID</td><td>out</td><td>geometry ID of hit geometry</td></tr>
@@ -558,10 +617,76 @@ rtcIntersect(scene,ray);
 <p>Testing if any geometry intersects with the ray segment is done
 through the <code>rtcOccluded</code> functions. Initialization has to
 be done as for <code>rtcIntersect</code>. If some geometry got found
-along the ray segment, the geometry ID (<code>geomID</code>) will get set to 0. No
-other member of the ray will get modified.</p>
+along the ray segment, the geometry ID (<code>geomID</code>) will get
+set to 0. Other hit information of the ray is undefined after
+calling <code>rtcOccluded</code>.</p>
 
 <p>See tutorial00 for an example of how to trace rays.</p>
+
+<h2>Filter Functions</h2>
+
+<p>The API supports per geometry filter callback functions that are
+invoked for each intersection found during the
+<code>rtcIntersect</code> or <code>rtcOccluded</code> calls. The
+former ones are called intersection filter functions, the latter ones
+occlusion filter functions. The filter functions can be used to
+implement various useful features, such as rejecting a hit to
+implement backface culling, accumulating opacity for shadow shadows,
+counting the number of surfaces along a ray, collecting all hits along
+a ray, etc. The filter functions are only supported for triangle mesh
+geometry, including triangle meshes with motion blur.</p>
+
+<p>The filter functions provided by the user have to have the
+following signature:</p>
+
+<pre><code>
+void FilterFunc  (                   void* userPtr, RTCRay&   ray);
+void FilterFunc4 (const void* valid, void* userPtr, RTCRay4&  ray);
+void FilterFunc8 (const void* valid, void* userPtr, RTCRay8&  ray);
+void FilterFunc16(const void* valid, void* userPtr, RTCRay16& ray);
+</code></pre>
+
+<p>The <code>valid</code> pointer points to a valid mask of the same
+format as expected as input by the ray query functions. The
+<code>userPtr</code> is a user pointer optionally set per geometry
+through the <code>rtcSetUserData</code> function. The ray passed to
+the filter function is the ray structure initially provided to the ray
+query function by the user. For that reason, it is safe to extend the
+ray by additional data and access this data inside the filter function
+(e.g. to accumulate opacity). All hit information inside the ray is
+valid. If the hit geometry is instanced, the <code>instID</code>
+member of the ray is valid and the ray origin, direction, and geometry
+normal visible through the ray are in object space. The filter
+function can reject a hit by setting the <code>geomID</code> member of
+the ray to <code>RTC_INVALID_GEOMETRY_ID</code>, otherwise the hit is
+accepted. The filter function is not allowed to modify the ray input
+data (<code>org</code>, <code>dir</code>, <code>tnear</code>,
+<code>tfar</code>), but can modify the hit data of the ray
+(<code>u</code>,<code>v</code>,<code>Ng</code>,<code>geomID</code>,<code>primID</code>).</p>
+
+<p>The intersection filter functions for different ray types are set
+for some geometry of a scene using the following API functions:</p>
+
+<pre><code>
+void rtcSetIntersectionFilterFunction  (RTCScene scene, unsigned geomID, RTCFilterFunc   func);
+void rtcSetIntersectionFilterFunction4 (RTCScene scene, unsigned geomID, RTCFilterFunc4  func);
+void rtcSetIntersectionFilterFunction8 (RTCScene scene, unsigned geomID, RTCFilterFunc8  func);
+void rtcSetIntersectionFilterFunction16(RTCScene scene, unsigned geomID, RTCFilterFunc16 func);
+</code></pre>
+
+<p>These functions are invoked during execution of the
+<code>rtcIntersect</code> type queries of the matching ray type. The
+occlusion filter functions are set using the following API
+functions:</p>
+
+<pre><code>
+void rtcSetOcclusionFilterFunction   (RTCScene scene, unsigned geomID, RTCFilterFunc   func);
+void rtcSetOcclusionFilterFunction4  (RTCScene scene, unsigned geomID, RTCFilterFunc4  func);
+void rtcSetOcclusionFilterFunction8  (RTCScene scene, unsigned geomID, RTCFilterFunc8  func);
+void rtcSetOcclusionFilterFunction16 (RTCScene scene, unsigned geomID, RTCFilterFunc16 func);
+</code></pre>
+
+<p>See tutorial05 for an example of how to use the filter functions.</p>
 
       </div>
     </div>
