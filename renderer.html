@@ -50,47 +50,29 @@ Renderer is released as Open Source under the <a
  href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0
 license</a>.</p>
       
-<p>In ealier versions of Embree this photo-realistic renderer was part
-of the Embree kernel repository. In fact, this path tracer was
-initially rather tightly coupled to the Embree kernels, and has over
-time evolved into something that eventually became bigger than the
-kernels themselves.</p>
-
-<p>In the process of re-focusing Embree on the actual kernels (the
-part where most users are interest in) and to make it easier to use
-the kernels without having to understand the whole project, starting
-in version 2.1 we have created a more strict separation between the
-actual kernels and the sample codes that use those kernels.</p>
-
-<p>Consequently, we have moved the Embree Example Renderer into a
-separate repository. This path tracer is still being maintained, and
-is still kept in sync with the Embree kernels; but it has to be
-checked out and built separately from the Embree kernels.</p>
-
-<p></p>
-
 <p>The example renderer is only available in source form and can be
 downloaded using the following ZIP file:</p>
 
 <p>We provide binaries for the Embree Example Renderer for Linux (64
 bit), MacOS (64 bit), and Windows (64 bit):</p>
 
-<p><a href="http://github.com/embree/embree-renderer-bin/archive/v2.1_linux.zip?embree-2.1-linux.zip">embree-renderer-2.1-linux.zip</a></p>
-<p><a href="http://github.com/embree/embree-renderer-bin/archive/v2.1_macos.zip?embree-2.1-macos.zip">embree-renderer-2.1-macos.zip</a></p>
-<p><a href="http://github.com/embree/embree-renderer-bin/archive/v2.1_win.zip?embree-2.1-win.zip">embree-renderer-2.1-win.zip</a></p>
+<p><a href="http://github.com/embree/embree-renderer-bin/archive/v2.2_linux.zip">embree-renderer-2.2-linux.zip</a></p>
+<p><a href="http://github.com/embree/embree-renderer-bin/archive/v2.2_macos.zip">embree-renderer-2.2-macos.zip</a></p>
+<p><a href="http://github.com/embree/embree-renderer-bin/archive/v2.2_win.zip">embree-renderer-2.2-win.zip</a></p>
 
 <p>If you need to recompile the Embree Example Renderer for your
 platform, please download the sources and follow the compilation
 instructions below:</p>
 
-<p><a href="http://github.com/embree/embree-renderer/archive/v2.1.zip?embree-renderer-2.1.zip">embree-renderer-2.1.zip</a></p>
+<p><a href="http://github.com/embree/embree-renderer/archive/v2.2.zip">embree-renderer-2.2.zip</a></p>
+<p><a href="http://github.com/embree/embree-renderer/archive/v2.1.zip">embree-renderer-2.1.zip</a></p>
 
 <p>Alternatively you can also use <code>git</code> to get the latest Embree Example
-Renderer 2.1:</p>
+Renderer 2.2:</p>
       
 <pre><code>$ git clone https://github.com/embree/embree-renderer.git embree-renderer
 $ cd embree-renderer
-$ git checkout v2.1</code></pre>
+$ git checkout v2.2</code></pre>
 
 <p>If you encounter bugs please report them to the <a
   href="https://github.com/embree/embree-renderer/issues">GitHub Issue
@@ -159,8 +141,8 @@ the EMBREE_INCLUDE_PATH and EMBREE_LIBRARY variables.</p>
 administrator rights) some additional configurations are required to
 use Embree from its build folder. Set the EMBREE_INCLUDE_PATH to the
 embree_root_directory/include folder and the EMBREE_LIBRARY to
-embree_root_directory/build/libembree.2.1.0.dylib for MacOS or
-embree_root_directory/build/libembree.so.2.1.0 for Linux. Under Linux
+embree_root_directory/build/libembree.2.2.0.dylib for MacOS or
+embree_root_directory/build/libembree.so.2.2.0 for Linux. Under Linux
 you have to additionally add embree_root_directory/build to your
 LD_LIBRARY_PATH. This last step is not required under MacOS.</p>
 
