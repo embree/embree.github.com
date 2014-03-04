@@ -137,14 +137,15 @@ you will get link errors.</p>
 <p>If you installed Embree, CMake will find it automatically and set
 the EMBREE_INCLUDE_PATH and EMBREE_LIBRARY variables.</p>
 
-<p>If you cannot install Embree on your system (e.g. when you don't have
-administrator rights) some additional configurations are required to
-use Embree from its build folder. Set the EMBREE_INCLUDE_PATH to the
-embree_root_directory/include folder and the EMBREE_LIBRARY to
+<p>If you cannot install Embree on your system (e.g. when you don't
+have administrator rights) some additional configurations are required
+to use Embree from its build folder. Set the EMBREE_INCLUDE_PATH to
+the embree_root_directory/include folder and the EMBREE_LIBRARY to
 embree_root_directory/build/libembree.2.2.0.dylib for MacOS or
 embree_root_directory/build/libembree.so.2.2.0 for Linux. Under Linux
 you have to additionally add embree_root_directory/build to your
-LD_LIBRARY_PATH. This last step is not required under MacOS.</p>
+LD_LIBRARY_PATH (and SINK_LD_LIBRARY_PATH in case you want to
+use Embree on Xeon Phi).</p>
 
 </p>Press c (for configure) and g (for generate) to generate a Makefile
 and leave the configuration. The code can now be compiled by executing
