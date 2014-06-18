@@ -40,7 +40,7 @@
 
 <h2>Supported Platforms</h2>
 
-<p>Embree supports Windows, Linux and MacOS, each in 32bit and 64bit
+<p>Embree supports Windows, Linux and Mac OS X, each in 32bit and 64bit
 modes. The code compiles with the Intel Compiler, the Microsoft
 Compiler, GCC and CLANG. Using the Intel Compiler improves performance
 by approximately 10%. Performance also varies across different
@@ -55,14 +55,12 @@ Compiler.</p>
 
 <h2>Downloading Embree</h2>
       
-<p>We provide binaries for Embree for Linux (64 bit), MacOS (64 bit), and
+<p>We provide binaries for Embree for Linux (64 bit), Mac OS X (64 bit), and
 Windows (64 bit):</p>
-
-<p><a href="http://github.com/embree/embree-bin/archive/v2.3_linux.zip">embree-bin-2.3_linux.zip</a></p>
-<p><a href="http://github.com/embree/embree-bin/archive/v2.3_win.zip">embree-bin-2.3_win.zip</a></p>
-<p><a href="http://github.com/embree/embree-bin/archive/v2.3_macos.zip">embree-bin-2.3_macos.zip</a></p>
-
-<p>Please note that these binaries are compiled with enabled RTCORE_INTERSECTION_FILTER and RTCORE_BUFFER_STRIDE flags.</p>
+ 
+<p><a href="http://github.com/embree/embree-bin/archive/v2.3.1_linux.zip">embree-bin-2.3.1_linux.zip</a></p>
+<p><a href="http://github.com/embree/embree-bin/archive/v2.3.1_win.zip">embree-bin-2.3.1_win.zip</a></p>
+<p><a href="http://github.com/embree/embree-bin/archive/v2.3.1_macos.zip">embree-bin-2.3.1_macos.zip</a></p>
 
 <p>Previous version:</p>
 
@@ -73,19 +71,20 @@ Windows (64 bit):</p>
 <p>If you need to recompile Embree for your platform, please download
 the sources and follow the compilation instructions below:</p>
 
+<p><a href="http://github.com/embree/embree/archive/v2.3.1.zip">embree-2.3.1.zip</a></p>
 <p><a href="http://github.com/embree/embree/archive/v2.3.zip">embree-2.3.zip</a></p>
 <p><a href="http://github.com/embree/embree/archive/v2.2.zip">embree-2.2.zip</a></p>
 <p><a href="http://github.com/embree/embree/archive/v2.1.zip">embree-2.1.zip</a></p>
 <p><a href="http://github.com/embree/embree/archive/v2.0.zip">embree-2.0.zip</a></p>
 <p><a href="http://github.com/embree/embree/archive/v1.1.zip">embree-1.1.zip</a></p>
         
-<p>Alternatively you can also use <code>git</code> to get the latest Embree 2.3:</p>
+<p>Alternatively you can also use <code>git</code> to get the latest Embree 2.3.1:</p>
 <p><pre><code>$ git clone https://github.com/embree/embree.git embree
 $ cd embree
-$ git checkout v2.3</code></pre><p>
+$ git checkout v2.3.1</code></pre><p>
       
 <p>You can also check out Embree with subversion:</p>
-<p><pre><code>$ svn checkout https://github.com/embree/embree.git/branches/v2.3 embree
+<p><pre><code>$ svn checkout https://github.com/embree/embree.git/branches/v2.3.1 embree
 $ cd embree</code></pre><p>
 
 <p>If you encounter bugs please report them to the <a
@@ -105,7 +104,7 @@ folder structure:</p>
 </dl>
 
 
-<h2>Compiling Embree on Linux and MacOS</h2>
+<h2>Compiling Embree on Linux and Mac OS X</h2>
 
 <p>Embree requires the Intel SPMD Compiler (ISPC) to compile. We have
 tested ISPC version 1.6.0 and 1.7.0, but more recent versions of ISPC should
@@ -116,19 +115,26 @@ the path to the ispc executable permanently into your PATH.</p>
 <p><pre><code>export PATH=path-to-ispc:$PATH</code></pre></p>
 
 <p>You additionally have to install CMake and the developer version of
-GLUT. Under MaxOS, these dependencies can be installed using
+GLUT. Under Mac OS X, these dependencies can be installed using
 <a href="http://www.macports.org/">MacPorts</a>:</p>
 
 <p><pre><code>sudo port install cmake freeglut</code></pre></p>
 
-<p>Under Linux you can install these dependencies using yum. Depending
+<p>Under Linux you can install these dependencies
+  using <code>yum</code> or <code>apt-get</code>. Depending
 on your Linux distribution, some of these packages might already be
 installed or might have slightly different names.</p>
 
+<p>Type the following to install the dependencies using <code>yum</code>:</p>
  <p><pre><code>sudo yum install cmake.x86_64
 sudo yum install freeglut.x86_64 freeglut-devel.x86_64
 sudo yum install libXmu.x86_64 libXi.x86_64 
 sudo yum install libXmu-devel.x86_64 libXi-devel.x86_64</code></pre></p>
+
+<p>Type the following to install the dependencies using <code>apt-get</code>:</p>
+ <p><pre><code>sudo apt-get install cmake-curses-gui
+sudo apt-get install freeglut3-dev
+sudo apt-get install libxmu-dev libxi-dev</code></pre></p>
         
 <p>Finally you can compile Embree using CMake. Create a build directory
 and execute "ccmake .." inside this directory.</p>
@@ -171,23 +177,18 @@ parameters that can be configured:</p>
   <tr><td>RTCORE_INTERSECTION_FILTER</td><td>Enables the intersection filter feature.</td><td>ON</td></tr>
   <tr><td>RTCORE_BUFFER_STRIDE</td>      <td>Enables buffer stride feature.</td><td>ON</td></tr>
   <tr><td>RTCORE_RAY_MASK</td>           <td>Enables the ray masking feature.</td><td>OFF</td></tr>
-  <tr><td>RTCORE_SPINLOCKS</td>          <td>Enables faster spinlocks for some builders.</td><td>ON (Linux), OFF (MacOS, Windows)</td></tr>
+  <tr><td>RTCORE_SPINLOCKS</td>          <td>Enables faster spinlocks
+  for some builders.</td><td>ON (Linux), OFF (Mac OS X, Windows)</td></tr>
 
-  <tr><td>TARGET_SSE2</td>          <td>Enables SSE2 for ISPC tutorials. SSE2 kernels are always build.</td><td>ON</td></tr>
-  <tr><td>TARGET_SSE41</td>         <td>Enables SSE4.1 for kernels and ISPC tutorials.</td><td>ON</td></tr>
-  <tr><td>TARGET_AVX</td>           <td>Enables AVX for kernels and ISPC tutorials.</td><td>ON</td></tr>
-  <tr><td>TARGET_AVX2</td>           <td>Enables AVX2 for kernels and ISPC tutorials.</td><td>ON</td></tr>
-  <tr><td>TARGET_XEON_PHI</td>       <td>Enables generation of Xeon Phi&trade; version of kernels and tutorials.</td><td>OFF</td></tr>
+  <tr><td>XEON_ISA</td>            <td>Select highest ISA on Xeon&trade CPUs (SSE2, SSE3, SSSE3, SSE4.1, SSE4.2, AVX, AVX-I, AVX2)</td><td>AVX2</td></tr>
+  <tr><td>XEON_PHI_ISA</td>        <td>Enables generation of Xeon Phi&trade; version of kernels and tutorials.</td><td>OFF</td></tr>
 </table>
 
 <p>You need at least Intel Compiler 11.1 or GCC 4.4 to enable AVX and
 Intel Compiler 12.1 or GCC 4.7 to enable AVX2. </p>
 
-<p>If the intersection filter feature is not required, some additional
-performance (between 1%-8%) can be achieved when disabling this
-feature at compile time. The buffer stride feature has no impact on
-rendering performance, but disabling can increase performance for
-building spatial hierarchies, in particular on Xeon Phi&trade;.</p>
+<p>Enabling the buffer stride feature reduces performance for
+building spatial hierarchies on Xeon Phi&trade;.</p>
 
  <h2>Compiling Embree on Windows</h2>
 
