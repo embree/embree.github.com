@@ -84,16 +84,26 @@ included in the Embree kernel package is now available in a separate
 GIT repository (see <a href="renderer.html">Embree Example
 Renderer</a>).</p>
 
-<h3>What's New in Embree 2.3.2?</h3>
+<h3>New features in Embree 2.3.3</h3>
+<ul>
+  <li> BVH builders robust for bad input data. (Xeon&trade;)</li>
+  <li> Motion blur support for hair geometry (Xeon&trade;)</li>
+  <li> Improved motion blur performance for triangle geometry (Xeon&trade;)</li>
+  <li> Improved robust ray tracing mode (Xeon&trade;)</li>
+  <li> Added rtcCommitThread API call for easier integration into existing tasking systems (Xeon&trade; and Xeon Phi&trade;)</li>
+  <li> Added support for recording and replaying all rtcIntersect/rtcOccluded calls (Xeon&trade; and Xeon Phi&trade;)</li>
+</ul>    
+
+<h3>New features in Embree 2.3.2</h3>
 <ul>
   <li> Improved mixed AABB/OBB-BVH for hair geometry (Xeon Phi&trade;)</li>
   <li> Reduced amount of pre-allocated memory for BVH builders (Xeon Phi&trade;)</li>
-  <li> New 64bit morton code builder (Xeon Phi&trade;)</li>
-  <li> (Enhanced) morton code-based builders use now tree rotations to improve BVH quality (Xeon Phi&trade;)</li>
+  <li> New 64bit morton code BVH builder (Xeon Phi&trade;)</li>
+  <li> (Enhanced) morton code BVH builders use now tree rotations to improve BVH quality (Xeon Phi&trade;)</li>
   <li> Bug fixes (Xeon&trade; and Xeon Phi&trade;)</li>
 </ul>    
 
-<h3>What's New in Embree 2.3.1?</h3>
+<h3>New features in Embree 2.3.1</h3>
 <ul>
   <li>High quality BVH mode improves spatial splits which result in up to
   30% performance improvement for some scenes (Xeon&trade;).</li>
@@ -103,7 +113,7 @@ Renderer</a>).</p>
   <li>Memory conservative BVH for Xeon Phi&trade; now uses BVH node quantization to lower memory footprint (requires half the memory footprint of the default BVH)</li>
 </ul>    
 
-<h3>What's New in Embree 2.3?</h3>
+<h3>New features in Embree 2.3</h3>
 <ul>
   <li>Support for ray tracing hair geometry (Xeon&trade; and Xeon Phi&trade;)</li>
   <li>Catching errors through error callback function</li>
@@ -114,7 +124,7 @@ Renderer</a>).</p>
   <li>Lots of code cleanups/simplifications/improvements (Xeon&trade; and Xeon Phi&trade;)</li>
 </ul>    
 
-<h3>What's New in Embree 2.2?</h3>
+<h3>New features in Embree 2.2</h3>
 <ul>
   <li>Support for Motion Blur on Xeon Phi&trade;</li>
   <li>Support for intersection filter callback functions</li>
@@ -123,7 +133,7 @@ Renderer</a>).</p>
   <li>Experimental support for 8-wide (AVX/AVX2) and 16-wide BVHs (Xeon Phi&trade;)</li>
 </ul>    
 
-<h3>What's New in Embree 2.1?</h3>
+<h3>New features in Embree 2.1</h3>
 <ul>
   <li>new future proof API with a strong focus on supporting dynamic scenes</li>
   <li>lots of optimizations for 8-wide AVX2 (Intel Haswell&trade; architecture)</li>
@@ -171,8 +181,7 @@ Rendering of the Crown model (crown.ecs) with 4 samples per pixel
   </ul>    
 </ul>
 
-
-<h3>What's New in Embree 2.0?</h3>
+<h3>New features in Embree 2.0</h3>
 <ul>
   <li>support for the Intel Xeon Phi&trade; coprocessor platform </li>
   <li>support for high-performance "packet" kernels on SSE, AVX, and Xeon Phi&trade;</li>
