@@ -264,6 +264,7 @@ td {
   border: 0px solid #373737;
   color: #222;
   background-color: #fff;
+  vertical-align:top;
  }
 
 form {
