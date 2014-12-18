@@ -67,6 +67,7 @@ h1, h2, h3, h4, h5, h6 {
   color:#222222;
   font-family: 'Lucida Grande', 'Calibri', Helvetica, Arial, sans-serif;
   letter-spacing: -1px;
+  clear: both;
 }
 
 h1 {
@@ -276,6 +277,13 @@ form {
   width: 100%;
   max-width: 100%;
 }*/
+
+.figure img {
+  width: 100px;
+  max-width: 100px;
+  float: left;
+  padding: 0 2em 1ex 0;
+}
 
 /*******************************************************************************
 Full-Width Styles
