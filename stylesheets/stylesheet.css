@@ -230,8 +230,9 @@ dl dt {
 }
 
 dl dd {
-  padding-left: 20px;
+  padding-left: 40px;
   font-style: italic;
+  margin: 5px 0 15px 0;
 }
 
 dl p {

@@ -52,66 +52,70 @@
 <p>You can use the following keys:</p>
 <dl>
 <dt>F1</dt>
-<dd><p>Default shading</p>
+<dd>Default shading
 </dd>
 <dt>F2</dt>
-<dd><p>Gray EyeLight shading</p>
+<dd>Gray EyeLight shading
 </dd>
 <dt>F3</dt>
-<dd><p>Wireframe shading</p>
+<dd>Wireframe shading
 </dd>
 <dt>F4</dt>
-<dd><p>UV Coordinate visualization</p>
+<dd>UV Coordinate visualization
 </dd>
 <dt>F5</dt>
-<dd><p>Geometry normal visualization</p>
+<dd>Geometry normal visualization
 </dd>
 <dt>F6</dt>
-<dd><p>Geometry ID visualization</p>
+<dd>Geometry ID visualization
 </dd>
 <dt>F7</dt>
-<dd><p>Geometry ID and Primitive ID visualization</p>
+<dd>Geometry ID and Primitive ID visualization
 </dd>
 <dt>F8</dt>
-<dd><p>Simple shading with 16 rays per pixel for benchmarking.</p>
+<dd>Simple shading with 16 rays per pixel for benchmarking.
 </dd>
 <dt>F9</dt>
-<dd><p>Switches to render cost visualization. Pressing again reduces brightness.</p>
+<dd>Switches to render cost visualization. Pressing again reduces brightness.
 </dd>
 <dt>F10</dt>
-<dd><p>Switches to render cost visualization. Pressing again increases brightness.</p>
+<dd>Switches to render cost visualization. Pressing again increases brightness.
 </dd>
 <dt>f</dt>
-<dd><p>Enters or leaves full screen mode.</p>
+<dd>Enters or leaves full screen mode.
 </dd>
 <dt>c</dt>
-<dd><p>Prints camera parameters.</p>
+<dd>Prints camera parameters.
 </dd>
 <dt>ESC</dt>
-<dd><p>Exists the tutorial.</p>
+<dd>Exits the tutorial.
 </dd>
 <dt>q</dt>
-<dd><p>Exists the tutorial.</p>
+<dd>Exits the tutorial.
 </dd>
 </dl>
 <h2 id="tutorial00">Tutorial00</h2>
 <div class="figure">
 <img src="images/tutorial00.jpg" />
+
 </div>
 <p>This tutorial demonstrates the creation of a static cube and ground plane using triangle meshes. It also demonstrates the use of the <code>rtcIntersect</code> and <code>rtcOccluded</code> functions to render primary visibility and hard shadows. The cube sides are colored based on the ID of the hit primitive.</p>
 <h2 id="tutorial01">Tutorial01</h2>
 <div class="figure">
 <img src="images/tutorial01.jpg" />
+
 </div>
 <p>This tutorial demonstrates the creation of a dynamic scene, consisting of several deformed spheres. Half of the spheres use the <code>RTC_GEOMETRY_DEFORMABLE</code> flag, which allows Embree to use a refitting strategy for these spheres, the other half uses the <code>RTC_GEOMETRY_DYNAMIC</code> flag, causing a rebuild of their spatial data structure each frame. The spheres are colored based on the ID of the hit sphere geometry.</p>
 <h2 id="tutorial02">Tutorial02</h2>
 <div class="figure">
 <img src="images/tutorial02.jpg" />
+
 </div>
 <p>This tutorial shows the use of user defined geometry, to re-implement instancing and to add analytic spheres. A two level scene is created, with a triangle mesh as ground plane, and several user geometries, that instance other scenes with a small number of spheres of different kind. The spheres are colored using the instance ID and geometry ID of the hit sphere, to demonstrate how the same geometry, instanced in different ways can be distinguished.</p>
 <h2 id="tutorial03">Tutorial03</h2>
 <div class="figure">
 <img src="images/tutorial03.jpg" />
+
 </div>
 <p>This tutorial demonstrates a simple OBJ viewer that traces primary visibility rays only. A scene consisting of multiple meshes is created, each mesh sharing the index and vertex buffer with the application. Demonstrated is also how to support additional per vertex data, such as shading normals.</p>
 <p>You need to specify an OBJ file at the command line for this tutorial to work:</p>
@@ -119,16 +123,19 @@
 <h2 id="tutorial04">Tutorial04</h2>
 <div class="figure">
 <img src="images/tutorial04.jpg" />
+
 </div>
 <p>This tutorial demonstrates the in-build instancing feature of Embree, by instancing a number of other scenes build from triangulated spheres. The spheres are again colored using the instance ID and geometry ID of the hit sphere, to demonstrate how the same geometry, instanced in different ways can be distinguished.</p>
 <h2 id="tutorial05">Tutorial05</h2>
 <div class="figure">
 <img src="images/tutorial05.jpg" />
+
 </div>
 <p>This tutorial demonstrates the use of filter callback functions to efficiently implement transparent objects. The filter function used for primary rays, lets the ray pass through the geometry if it is entirely transparent. Otherwise the shading loop handles the transparency properly, by potentially shooting secondary rays. The filter function used for shadow rays accumulates the transparency of all surfaces along the ray, and terminates traversal if an opaque occluder is hit.</p>
 <h2 id="tutorial06">Tutorial06</h2>
 <div class="figure">
 <img src="images/tutorial06.jpg" />
+
 </div>
 <p>This tutorial is a simple path tracer, building on tutorial03.</p>
 <p>You need to specify an OBJ file and light source at the command line for this tutorial to work:</p>
@@ -136,21 +143,25 @@
 <h2 id="tutorial07">Tutorial07</h2>
 <div class="figure">
 <img src="images/tutorial07.jpg" />
+
 </div>
 <p>This tutorial demonstrates the use of the hair geometry to render a hairball.</p>
 <h2 id="tutorial08">Tutorial08</h2>
 <div class="figure">
 <img src="images/tutorial08.jpg" />
+
 </div>
 <p>This tutorial demonstrates the use of Catmull Clark subdivision surfaces. Per default the edge tessellation level is set adaptively based on the distance to the camera origin. Embree currently supports three different modes for efficiently handling subdivision surfaces in various rendering scenarios. These three modes can be selected at the command line, e.g. <code>-lazy</code> builds internal per subdivision patch data structures on demand, <code>-cache</code> uses a small (per thread) tessellation cache for caching per patch data, and <code>-pregenerate</code> to generate and store most per patch data during the initial build process. The <code>cache</code> mode is most effective for coherent rays while providing a fixed memory footprint. The <code>pregenerate</code> modes is most effective for incoherent ray distributions while requiring more memory. The <code>lazy</code> mode works similar to the <code>pregenerate</code> mode but provides a middle ground in terms of memory consumption as it only builds and stores data only when the corresponding patch is accessed during the ray traversal. The <code>cache</code> mode is currently a bit more efficient at handling dynamic scenes where only the edge tessellation levels are changing per frame.</p>
 <h2 id="tutorial09">Tutorial09</h2>
 <div class="figure">
 <img src="images/tutorial09.jpg" />
+
 </div>
 <p>This tutorial demonstrates the use of Catmull Clark subdivision surfaces with procedural displacement mapping using a constant edge tessellation level.</p>
 <h2 id="tutorial10">Tutorial10</h2>
 <div class="figure">
 <img src="images/tutorial10.jpg" />
+
 </div>
 <p>This tutorial loads an .obj file and renders the mesh as a Catmull Clark subdivision surface object. The edge tessellation level is chosen adaptively based on the distance to the camera.</p>
       </div>
