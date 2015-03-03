@@ -215,9 +215,9 @@ ul, ol, dl {
   margin-bottom: 15px
 }
 
-ul li {
-  list-style: inside;
-  padding-left: 20px;
+ul {
+  list-style: outside;
+  padding-left: 2em;
 }
 
 ol li {
@@ -309,6 +309,7 @@ Full-Width Styles
 	position: relative;
 
   max-width: 640px;
+  min-width: 520px;
   margin: 0 auto;
 }
 #nbar {
