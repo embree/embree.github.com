@@ -111,11 +111,6 @@ b {
   font-weight: bold;
 }
 
-footer p {
-  color: #f2f2f2;
-  font-weight: bold;
-}
-
 a {
   text-decoration: none;
   color: #007edf;
@@ -304,48 +299,78 @@ Full-Width Styles
 /* Navbar */
 
 #nav {
-	height: 30px;
-	background: #0071C5;
-	position: relative;
+  height: 30px;
+  background: #0071C5;
+  position: relative;
 
   max-width: 640px;
   min-width: 520px;
   margin: 0 auto;
 }
 #nbar {
-	position: relative;
-	width: auto;
-	height: 30px;
-	margin: 0;
-	padding : 0 0 0 0;
-	font: bold 12px/25px Verdana, Arial, Tahoma, Sans-serif;
+  position: relative;
+  width: auto;
+  height: 30px;
+  margin: 0;
+  padding : 0 0 0 0;
+  font: bold 12px/25px Verdana, Arial, Tahoma, Sans-serif;
 }
 #nbar ul {
-	float: left;
-	list-style : none;
-	margin: 0;
-	padding: 0;
-	padding-top: 2px;
+  float: left;
+  list-style : none;
+  margin: 0;
+  padding: 0;
+  padding-top: 2px;
 }
 #nbar ul li {
-	display: inline;
+  display: inline;
 }
 #nbar ul li a {
-	display: block;
-	float: left;
-	padding: 0 10px;
-	color: #BFBFBF;
-	text-decoration: none;
+  display: block;
+  float: left;
+  padding: 0 10px;
+  color: #BFBFBF;
+  text-decoration: none;
 }
 #nbar ul li a:hover {
-	color: #FAFAFA;
+  color: #FAFAFA;
 }
 #nbar ul li#selected a {
-	color: #fff;
+  color: #fff;
 }
 #content-wrap {
-	margin-top: 5px;
+  margin-top: 5px;
 }
+
+/* Footer */
+
+#footer {
+  height: 30px;
+  background: #0071C5;
+  position: relative;
+
+  width: 100%;
+  max-width: 640px;
+  min-width: 520px;
+
+  font: bold 12px/25px Verdana, Arial, Tahoma, Sans-serif;
+  color: #f2f2f2;
+
+  text-align: center;
+  display: block;
+  padding: 6px 0 0 0;
+  margin: 0 auto;
+  color: #BFBFBF;
+}
+#footer a {
+  color: #BFBFBF;
+  text-decoration: none;
+  padding-left: 2em;
+}
+#footer a:hover {
+  color: #FAFAFA;
+}
+
 
 #forkme_banner {
   display: block;
