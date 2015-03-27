@@ -46,6 +46,17 @@
 <p>Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays). For standard CPUs, the single-ray traversal kernels in Embree provide the best performance for incoherent workloads and are very easy to integrate into existing rendering applications. For Xeon Phi, a renderer written in ISPC using the default hybrid ray/packet traversal algorithms have shown to perform best, but requires writing the renderer in ISPC. In general for coherent workloads, ISPC outperforms the single ray mode on each platform. Embree also supports dynamic scenes by implementing high performance two-level spatial index structure construction algorithms.</p>
 <p>In addition to the ray tracing kernels, Embree provides some tutorials to demonstrate how to use the <a href="api.html">Embree API</a>. The example photorealistic renderer that was originally included in the Embree kernel package is now available in a separate GIT repository (see <a href="renderer.html">Embree Example Renderer</a>).</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.5.0">New Features in Embree 2.5.0</h3>
+<ul>
+<li>Improved hierarchy build performance on both Intel® Xeon® and Intel® Xeon Phi™</li>
+<li>Vastly improved tessellation cache for ray tracing subdivision surfaces</li>
+<li>Added <code>rtcGetUserData</code> API call to query per geometry user pointer set through <code>rtcSetUserData</code>.</li>
+<li>Added support for memory monitor callback functions to track and limit memory consumption.</li>
+<li>Added support for progress monitor callback functions to track build progress and cancel long build operations.</li>
+<li>BVH builders can be used to build user defined hierarchies inside the application (see <a href="tutorials.html#tutorial11">tutorial11</a>)</li>
+<li>Switched to TBB as default tasking system on Xeon to get even faster hierarchy build times and better integration for applications that also use TBB.</li>
+<li><code>rtcCommit</code> can get called from multiple TBB threads to join the hierarchy build operations</li>
+</ul>
 <h3 id="new-features-in-embree-2.4">New Features in Embree 2.4</h3>
 <ul>
 <li>Support for Catmull Clark subdivision surfaces (triangle/quad base primitives)</li>
@@ -54,11 +65,11 @@
 </ul>
 <h3 id="new-features-in-embree-2.3.3">New Features in Embree 2.3.3</h3>
 <ul>
-<li>BVH builders more robustly handle invalid input data (Intel® Xeon® processor family)</li>
+<li>BVH builders more robustly handle invalid input data (Intel Xeon processor family)</li>
 <li>Motion blur support for hair geometry (Xeon)</li>
 <li>Improved motion blur performance for triangle geometry (Xeon)</li>
 <li>Improved robust ray tracing mode (Xeon)</li>
-<li>Added <code>rtcCommitThread</code> API call for easier integration into existing tasking systems (Xeon and Intel® Xeon Phi™ coprocessor)</li>
+<li>Added <code>rtcCommitThread</code> API call for easier integration into existing tasking systems (Xeon and Intel Xeon Phi coprocessor)</li>
 <li>Added support for recording and replaying all <code>rtcIntersect</code>/<code>rtcOccluded</code> calls (Xeon and Xeon Phi)</li>
 </ul>
 <h3 id="new-features-in-embree-2.3.2">New Features in Embree 2.3.2</h3>
@@ -109,17 +120,17 @@
 </ul></li>
 </ul>
 <h3 id="example-performance-numbers-for-embree-2.1">Example Performance Numbers for Embree 2.1</h3>
-<p>BVH rebuild performance (including triangle accel generation, excluding memory allocation) for scenes with 2-12 million triangles:</p>
+<p>BVH rebuild performance (including triangle accel generation, excluding memory allocation) for scenes with 2–12 million triangles:</p>
 <ul>
 <li>Intel® Core™ i7 (Haswell-based CPU, 4 cores @ 3.0 GHz)
 <ul>
-<li>7-8 million triangles/s for the SAH-based BVH builder</li>
-<li>30-36 million triangles/s for the Morton code-based BVH builder</li>
+<li>7–8 million triangles/s for the SAH-based BVH builder</li>
+<li>30–36 million triangles/s for the Morton code-based BVH builder</li>
 </ul></li>
 <li>Intel® Xeon Phi™ 7120
 <ul>
-<li>37-40 million triangles/s for the SAH-based BVH builder</li>
-<li>140-160 million triangles/s for the Morton code-based BVH builder</li>
+<li>37–40 million triangles/s for the SAH-based BVH builder</li>
+<li>140–160 million triangles/s for the Morton code-based BVH builder</li>
 </ul></li>
 </ul>
 <p>Rendering of the Crown model (<code>crown.ecs</code>) with 4 samples per pixel (<code>-spp 4</code>):</p>

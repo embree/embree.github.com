@@ -42,7 +42,7 @@
       <div id="main_content" class="inner">
 <h1 id="embree-tutorials">Embree Tutorials</h1>
 <p>Embree comes with a set of tutorials aimed at helping users understand how Embree can be used and extended. All tutorials exist in an ISPC and C version to demonstrate the two versions of the API. Look for files named <code>tutorialXX_device.ispc</code> for the ISPC implementation of the tutorial, and files named <code>tutorialXX_device.cpp</code> for the single ray C++ version of the tutorial. To start the C++ version use the <code>tutorialXX</code> executables, to start the ISPC version use the <code>tutorialXX_ispc</code> executables.</p>
-<p>Under Linux Embree also comes with an ISPC version of all tutorials for the Intel® Xeon Phi™ coprocessor. The executables of this version of the tutorials are named <code>tutorialXX_xeonphi</code> and only work if a Xeon Phi coprocessor is present in the system. The Xeon Phi version of the tutorials get started on the host CPU, just like all other tutorials, and will connect automatically to one installed Xeon Phi coprocessor in the system.</p>
+<p>Under Linux Embree also comes with an ISPC version of all tutorials for the Intel® Xeon Phi™ coprocessor. The executables of this version of the tutorials are named <code>tutorialXX_xeonphi</code> and only work if a Xeon Phi coprocessor is present in the system. The Xeon Phi version of the tutorials get started on the host CPU, just like all other tutorials, and will connect automatically to one installed Xeon Phi coprocessor in the system. For the Intel® Xeon Phi™ coprocessor to find to Embree library you have to add the path to <code>libembree_xeonphi.so</code> to the <code>SINK_LD_LIBRARY_PATH</code> variable.</p>
 <p>For all tutorials, you can select an initial camera using the <code>-vp</code> (camera position), <code>-vi</code> (camera look-at point), <code>-vu</code> (camera up vector), and <code>-fov</code> (vertical field of view) command line parameters:</p>
 <pre><code>./tutorial00 -vp 10 10 10 -vi 0 0 0</code></pre>
 <p>You can select the initial windows size using the <code>-size</code> command line parameter, or start the tutorials in fullscreen using the <code>-fullscreen</code> parameter:</p>
@@ -166,6 +166,8 @@
 
 </div>
 <p>This tutorial loads an .obj file and renders the mesh as a Catmull Clark subdivision surface object. The edge tessellation level is chosen adaptively based on the distance to the camera.</p>
+<h2 id="tutorial11">Tutorial11</h2>
+<p>This tutorial demonstrates how to use the templated hierarchy builders of Embree to build a bounding volume hierarchy with a user defined memory layout using a high quality SAH builder and very fast morton builder.</p>
       </div>
 
       <div id="footer">
