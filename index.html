@@ -46,6 +46,13 @@
 <p>Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays). For standard CPUs, the single-ray traversal kernels in Embree provide the best performance for incoherent workloads and are very easy to integrate into existing rendering applications. For Xeon Phi, a renderer written in ISPC using the default hybrid ray/packet traversal algorithms have shown to perform best, but requires writing the renderer in ISPC. In general for coherent workloads, ISPC outperforms the single ray mode on each platform. Embree also supports dynamic scenes by implementing high performance two-level spatial index structure construction algorithms.</p>
 <p>In addition to the ray tracing kernels, Embree provides some tutorials to demonstrate how to use the <a href="api.html">Embree API</a>. The example photorealistic renderer that was originally included in the Embree kernel package is now available in a separate GIT repository (see <a href="renderer.html">Embree Example Renderer</a>).</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.5.1">New Features in Embree 2.5.1</h3>
+<ul>
+<li>On dual socket workstations, the initial BVH build performance almost doubled through a better memory allocation scheme.</li>
+<li>Reduced memory usage for subdivision surface objects with crease features</li>
+<li>rtcCommit performance is robust against unset “flush to zero” and “denormals are zero” flags. However, enabling these flags in your application is still recommended.</li>
+<li>Internal cleanups and bugfixes.</li>
+</ul>
 <h3 id="new-features-in-embree-2.5.0">New Features in Embree 2.5.0</h3>
 <ul>
 <li>Improved hierarchy build performance on both Intel® Xeon® and Intel® Xeon Phi™</li>
