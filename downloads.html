@@ -90,7 +90,7 @@ $ cd embree</code></pre>
 <p>Embree supported the Intel® SPMD Program Compiler (ISPC), which allows straight forward parallelization of an entire renderer. If you do not want to use ISPC then you can disable <code>ENABLE_ISPC_SUPPORT</code> in CMake. Otherwise, download and install the ISPC binaries (we have tested ISPC version 1.8.0) from <a href="https://ispc.github.io/downloads.html">ispc.github.io</a>. After installation, put the path to <code>ispc</code> permanently into your <code>PATH</code> environment variable or you need to correctly set the <code>ISPC_EXECUTABLE</code> variable during CMake configuration.</p>
 <p>You additionally have to install CMake 2.8.11 or higher and the developer version of GLUT.</p>
 <p>Under Mac OS X, all these dependencies can be installed using <a href="http://www.macports.org/">MacPorts</a>:</p>
-<pre><code>sudo port install cmake tbb freeglut </code></pre>
+<pre><code>sudo port install cmake tbb freeglut</code></pre>
 <p>Depending on you Linux distribution you can install these dependencies using <code>yum</code> or <code>apt-get</code>. Some of these packages might already be installed or might have slightly different names.</p>
 <p>Type the following to install the dependencies using <code>yum</code>:</p>
 <pre><code>sudo yum install cmake.x86_64

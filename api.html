@@ -286,7 +286,7 @@ rtcUnmapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
 Triangle* triangles = (Triangle*) rtcMapBuffer(scene, geomID, RTC_INDEX_BUFFER);
 <span class="co">// fill triangle indices here</span>
 rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
-<p>Also see <a href="tutorials.html#tutorial00">tutorial00</a> for an example of how to create triangle meshes.</p>
+<p>Also see tutorial <a href="tutorials.html#triangle-geometry">Triangle Geometry</a> for an example of how to create triangle meshes.</p>
 <h3 id="subdivision-surfaces">Subdivision Surfaces</h3>
 <p>Catmull-Clark subdivision surfaces for meshes consisting of triangle and quad primitives (even mixed inside one mesh) are supported, including support for edge creases, vertex creases, holes, and non-manifold geometry.</p>
 <p>A subdivision surface is created using the <code>rtcNewSubdivisionMesh</code> function call, and deleted again using the <code>rtcDeleteGeometry</code> function call.</p>
@@ -307,7 +307,7 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>Optionally, the application can fill the sparse edge crease buffers to make some edges appear sharper. The edge crease index buffer (<code>RTC_EDGE_CREASE_INDEX_BUFFER</code>) contains <code>numEdgeCreases</code> many pairs of 32 bit vertex indices that specify unoriented edges. The edge crease weight buffer (<code>RTC_EDGE_CREASE_WEIGHT_BUFFER</code>) stores for each of theses crease edges a positive floating point weight. The larger this weight, the sharper the edge. Specifying a weight of infinity is supported and marks an edge as infinitely sharp. Storing an edge multiple times with the same crease weight is allowed, but has lower performance. Storing an edge multiple times with different crease weights results in undefined behavior. For a stored edge (i,j), the reverse direction edges (j,i) does not have to get stored, as both are considered the same edge.</p>
 <p>Optionally, the application can fill the sparse vertex crease buffers to make some vertices appear sharper. The vertex crease index buffer (<code>RTC_VERTEX_CREASE_INDEX_BUFFER</code>), contains <code>numVertexCreases</code> many 32 bit vertex indices to specify a set of vertices. The vertex crease weight buffer (<code>RTC_VERTEX_CREASE_WEIGHT_BUFFER</code>) specifies for each of these vertices a positive floating point weight. The larger this weight, the sharper the vertex. Specifying a weight of infinity is supported and makes the vertex infinitely sharp. Storing a vertex multiple times with the same crease weight is allowed, but has lower performance. Storing a vertex multiple times with different crease weights results in undefined behavior.</p>
 <p>Like for triangle meshes, the user can also specify a geometry mask and additional flags that choose the strategy to handle that subdivision mesh in dynamic scenes.</p>
-<p>Also see <a href="tutorials.html#tutorial08">tutorial08</a> for an example of how to create subdivision surfaces.</p>
+<p>Also see tutorial <a href="tutorials.html#subdivision-geometry">Subdivision Geometry</a> for an example of how to create subdivision surfaces.</p>
 <h3 id="hair-geometry">Hair Geometry</h3>
 <p>Hair geometries are supported, which consist of multiple hairs represented as cubic Bézier curves with varying radius per control point. Individual hairs are considered to be subpixel sized which allows the implementation to approximate the intersection calculation. This in particular means that zooming onto one hair might show geometric artifacts.</p>
 <p>Hair geometries are created using the <code>rtcNewHairGeometry</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
@@ -327,7 +327,7 @@ rtcUnmapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
 <span class="dt">int</span>* curves = (<span class="dt">int</span>*) rtcMapBuffer(scene, geomID, RTC_INDEX_BUFFER);
 <span class="co">// fill indices here</span>
 rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
-<p>Also see <a href="tutorials.html#tutorial07">tutorial07</a> for an example of how to create and use hair geometry.</p>
+<p>Also see tutorial <a href="tutorials.html#hair">Hair</a> for an example of how to create and use hair geometry.</p>
 <h3 id="user-defined-geometry">User Defined Geometry</h3>
 <p>User defined geometries make it possible to extend Embree with arbitrary types of geometry. This is achieved by introducing arrays of user geometries as a special geometry type. These objects do not contain a single user geometry, but a set of such geometries, each specified by an index. The user has to provide a user data pointer, bounding function as well as user defined intersect and occluded functions to create a set of user geometries. The user geometry to process is specified by passing its user data pointer and index to each invocation of the bounding, intersect, and occluded function. The bounding function is used to query the bounds of each user geometry. When performing ray queries, Embree will invoke the user intersect (and occluded) functions to test rays for intersection (and occlusion) with the specified user defined geometry.</p>
 <p>As Embree supports different ray packet sizes, one potentially has to provide different versions of user intersect and occluded function pointers for these packet sizes. However, the ray packet size of the called user function always matches the packet size of the originally invoked ray query function. Consequently, an application only operating on single rays only has to provide single ray intersect and occluded function pointers.</p>
@@ -363,7 +363,7 @@ rtcSetOccludedFunction(scene, geomID, userOccludedFunction);</code></pre>
 <p>The user intersect function (<code>userIntersectFunction</code>) and user occluded function (<code>userOccludedFunction</code>) get as input the pointer provided through the <code>rtcSetUserData</code> function call, a ray, and the index of the geometry to process. For ray packets, the user intersect and occluded functions also get a pointer to a valid mask as input. The user provided functions should not modify any ray that is disabled by that valid mask.</p>
 <p>The user intersect function should return without modifying the ray structure if the user geometry is missed. If the geometry is hit, it has to update the hit information of the ray (<code>tfar</code>, <code>u</code>, <code>v</code>, <code>Ng</code>, <code>geomID</code>, <code>primID</code>).</p>
 <p>Also the user occluded function should return without modifying the ray structure if the user geometry is missed. If the geometry is hit, it should set the <code>geomID</code> member of the ray to 0.</p>
-<p>See <a href="tutorials.html#tutorial02">tutorial02</a> for an example of how to use the user defined geometries.</p>
+<p>See tutorial <a href="tutorials.html#user-geometry">User Geometry</a> for an example of how to use the user defined geometries.</p>
 <h3 id="instances">Instances</h3>
 <p>Embree supports instancing of scenes inside another scene by some transformation. As the instanced scene is stored only a single time, even if instanced to multiple locations, this feature can be used to create extremely large scenes. Only single level instancing is supported by Embree natively, however, multi-level instancing can principally be implemented through user geometries.</p>
 <p>Instances are created using the <code>rtcNewInstance</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call. To instantiate a scene, one first has to generate the scene B to instantiate. Now one can add an instance of this scene inside a scene A the following way:</p>
@@ -400,7 +400,7 @@ rtcSetTransform(sceneA, instID, RTC_MATRIX_COLUMN_MAJOR, &amp;column_matrix_3x4)
 </table>
 <p>Passing homogeneous 4×4 matrices is possible as long as the last row is (0, 0, 0, 1). If this homogeneous matrix is laid out in row major form, use the <code>RTC_MATRIX_ROW_MAJOR</code> layout. If this homogeneous matrix is laid out in column major form, use the <code>RTC_MATRIX_COLUMN_MAJOR_ALIGNED16</code> mode. In both cases, Embree will ignore the last row of the matrix.</p>
 <p>The transformation passed to <code>rtcSetTransform</code> transforms from the local space of the instantiated scene to world space.</p>
-<p>See <a href="tutorials.html#tutorial04">tutorial04</a> for an example of how to use instances.</p>
+<p>See tutorial <a href="tutorials.html#instanced-geometry">Instanced Geometry</a> for an example of how to use instances.</p>
 <h2 id="ray-queries">Ray Queries</h2>
 <p>The API supports finding the closest hit of a ray segment with the scene (<code>rtcIntersect</code> functions), and determining if any hit between a ray segment and the scene exists (<code>rtcOccluded</code> functions).</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcIntersect  (                   RTCScene scene, RTCRay&amp;   ray);
@@ -501,7 +501,7 @@ ray.mask = <span class="bn">0xFFFFFFFF</span>;
 ray.time = <span class="fl">0.f</span>;
 rtcIntersect(scene, ray);</code></pre>
 <p>Testing if any geometry intersects with the ray segment is done through the <code>rtcOccluded</code> functions. Initialization has to be done as for <code>rtcIntersect</code>. If some geometry got found along the ray segment, the geometry ID (<code>geomID</code>) will get set to 0. Other hit information of the ray is undefined after calling <code>rtcOccluded</code>.</p>
-<p>See <a href="tutorials.html#tutorial00">tutorial00</a> for an example of how to trace rays.</p>
+<p>See tutorial <a href="tutorials.html#triangle-geometry">Triangle Geometry</a> for an example of how to trace rays.</p>
 <h2 id="buffer-sharing">Buffer Sharing</h2>
 <p>Embree supports sharing of buffers with the application. Each buffer that can be mapped for a specific geometry can also be shared with the application, by pass a pointer, offset, and stride of the application side buffer using the <code>rtcSetBuffer</code> API function.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetBuffer(RTCScene scene, <span class="dt">unsigned</span> geomID, RTCBufferType type,
@@ -549,7 +549,7 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <span class="dt">void</span> rtcSetOcclusionFilterFunction4 (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc4 );
 <span class="dt">void</span> rtcSetOcclusionFilterFunction8 (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc8 );
 <span class="dt">void</span> rtcSetOcclusionFilterFunction16(RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc16);</code></pre>
-<p>See <a href="tutorials.html#tutorial05">tutorial05</a> for an example of how to use the filter functions.</p>
+<p>See tutorial <a href="tutorials.html#intersection-filter">Intersection Filter</a> for an example of how to use the filter functions.</p>
 <h2 id="displacement-mapping-functions">Displacement Mapping Functions</h2>
 <p>The API supports displacement mapping for subdivision meshes. A displacement function can be set for some subdivision mesh using the <code>rtcSetDisplacementFunction</code> API call.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetDisplacementFunction(RTCScene, <span class="dt">unsigned</span> geomID, RTCDisplacementFunc, RTCBounds*);</code></pre>
@@ -563,7 +563,7 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <p>The displacement function is called with the user data pointer of the geometry (<code>ptr</code>), the geometry ID (<code>geomID</code>) and primitive ID (<code>primID</code>) of a patch to displace. For this patch, a number N of points to displace are specified in a struct of array layout. For each point to displace the local patch UV coordinates (<code>u</code> and <code>v</code> arrays), the normalized geometry normal (<code>nx</code>, <code>ny</code>, and <code>nz</code> arrays), as well as world space position (<code>px</code>, <code>py</code>, and <code>pz</code> arrays) are provided. The task of the displacement function is to use this information and move the world space position inside the allowed specified bounds around the point.</p>
 <p>All passed arrays are guaranteed to be 64 bytes aligned, and properly padded to make wide vector processing inside the displacement function possible.</p>
 <p>The displacement mapping functions might get called during the <code>rtcCommit</code> call, or lazily during the <code>rtcIntersect</code> or <code>rtcOccluded</code> calls.</p>
-<p>Also see <a href="tutorials.html#tutorial09">tutorial09</a> for an example of how to use the displacement mapping functions.</p>
+<p>Also see tutorial <a href="tutorials.html#displacement-geometry">Displacement Geometry</a> for an example of how to use the displacement mapping functions.</p>
 <h2 id="sharing-threads-with-embree">Sharing Threads with Embree</h2>
 <p>On some implementations, Embree supports using the application threads when building internal data structures, by using the</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcCommitThread(RTCScene, <span class="dt">unsigned</span> threadIndex, <span class="dt">unsigned</span> threadCount);</code></pre>
