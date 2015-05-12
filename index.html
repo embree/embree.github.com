@@ -48,20 +48,20 @@
 <h2 id="version-history">Version History</h2>
 <h3 id="new-features-in-embree-2.5.1">New Features in Embree 2.5.1</h3>
 <ul>
-<li>On dual socket workstations, the initial BVH build performance almost doubled through a better memory allocation scheme.</li>
+<li>On dual socket workstations, the initial BVH build performance almost doubled through a better memory allocation scheme</li>
 <li>Reduced memory usage for subdivision surface objects with crease features</li>
 <li>rtcCommit performance is robust against unset “flush to zero” and “denormals are zero” flags. However, enabling these flags in your application is still recommended.</li>
-<li>Internal cleanups and bugfixes.</li>
+<li>Internal cleanups and bugfixes</li>
 </ul>
 <h3 id="new-features-in-embree-2.5.0">New Features in Embree 2.5.0</h3>
 <ul>
 <li>Improved hierarchy build performance on both Intel® Xeon® and Intel® Xeon Phi™</li>
 <li>Vastly improved tessellation cache for ray tracing subdivision surfaces</li>
-<li>Added <code>rtcGetUserData</code> API call to query per geometry user pointer set through <code>rtcSetUserData</code>.</li>
-<li>Added support for memory monitor callback functions to track and limit memory consumption.</li>
-<li>Added support for progress monitor callback functions to track build progress and cancel long build operations.</li>
-<li>BVH builders can be used to build user defined hierarchies inside the application (see <a href="tutorials.html#tutorial11">tutorial11</a>)</li>
-<li>Switched to TBB as default tasking system on Xeon to get even faster hierarchy build times and better integration for applications that also use TBB.</li>
+<li>Added <code>rtcGetUserData</code> API call to query per geometry user pointer set through <code>rtcSetUserData</code></li>
+<li>Added support for memory monitor callback functions to track and limit memory consumption</li>
+<li>Added support for progress monitor callback functions to track build progress and cancel long build operations</li>
+<li>BVH builders can be used to build user defined hierarchies inside the application (see tutorial <a href="tutorials.html#bvh-builder">BVH Builder</a>)</li>
+<li>Switched to TBB as default tasking system on Xeon to get even faster hierarchy build times and better integration for applications that also use TBB</li>
 <li><code>rtcCommit</code> can get called from multiple TBB threads to join the hierarchy build operations</li>
 </ul>
 <h3 id="new-features-in-embree-2.4">New Features in Embree 2.4</h3>
