@@ -92,7 +92,7 @@ $ cd embree</code></pre>
 </dl>
 <h1 id="compiling-embree">Compiling Embree</h1>
 <h2 id="linux-and-mac-osx">Linux and Mac OS X</h2>
-<p>To compile Embree you need a modern C++ compiler that supports C++11. Embree is tested with Intel® Compiler 15.0.2, CLANG 3.4.2, and GCC 4.8.2. If the GCC that comes with your Fedora/Redhat/CentOS distribution is too old then you can run the provided script <code>scripts/install_linux_gcc.sh</code> to locally install a recent GCC into <code>$HOME/devtools-2</code>.</p>
+<p>To compile Embree you need a modern C++ compiler that supports C++11. Embree is tested with Intel® Compiler 15.0.2, CLANG 3.4.2, and GCC 4.8.2. If the GCC that comes with your Fedora/Red Hat/CentOS distribution is too old then you can run the provided script <code>scripts/install_linux_gcc.sh</code> to locally install a recent GCC into <code>$HOME/devtools-2</code>.</p>
 <p>Embree supports to use the Intel® Threading Building Blocks (TBB) as tasking system. For performance and flexibility reasons we recommend to use Embree with the Intel® Threading Building Blocks (TBB) and best also use TBB inside your application. Optionally you can disable TBB in Embree through the <code>RTCORE_TASKING_SYSTEM</code> CMake variable.</p>
 <p>Embree supported the Intel® SPMD Program Compiler (ISPC), which allows straight forward parallelization of an entire renderer. If you do not want to use ISPC then you can disable <code>ENABLE_ISPC_SUPPORT</code> in CMake. Otherwise, download and install the ISPC binaries (we have tested ISPC version 1.8.2) from <a href="https://ispc.github.io/downloads.html">ispc.github.io</a>. After installation, put the path to <code>ispc</code> permanently into your <code>PATH</code> environment variable or you need to correctly set the <code>ISPC_EXECUTABLE</code> variable during CMake configuration.</p>
 <p>You additionally have to install CMake 2.8.11 or higher and the developer version of GLUT.</p>
@@ -110,7 +110,7 @@ sudo yum install libXmu-devel.x86_64 libXi-devel.x86_64</code></pre>
 sudo apt-get install libtbb-dev
 sudo apt-get install freeglut3-dev
 sudo apt-get install libxmu-dev libxi-dev</code></pre>
-<p>Finally you can compile Embree using CMake. Create a build directory inside the Embree root directory and execute “ccmake ..” inside this build directory.</p>
+<p>Finally you can compile Embree using CMake. Create a build directory inside the Embree root directory and execute <code>ccmake ..</code> inside this build directory.</p>
 <pre><code>mkdir build
 cd build
 ccmake ..</code></pre>
