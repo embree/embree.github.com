@@ -54,13 +54,20 @@
 <p>Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays). For standard CPUs, the single-ray traversal kernels in Embree provide the best performance for incoherent workloads and are very easy to integrate into existing rendering applications. For Xeon Phi, a renderer written in ISPC using the default hybrid ray/packet traversal algorithms have shown to perform best, but requires writing the renderer in ISPC. In general for coherent workloads, ISPC outperforms the single ray mode on each platform. Embree also supports dynamic scenes by implementing high performance two-level spatial index structure construction algorithms.</p>
 <p>In addition to the ray tracing kernels, Embree provides some tutorials to demonstrate how to use the <a href="api.html">Embree API</a>. The example photorealistic renderer that was originally included in the Embree kernel package is now available in a separate GIT repository (see <a href="renderer.html">Embree Example Renderer</a>).</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.6.1">New Features in Embree 2.6.1</h3>
+<ul>
+<li><p>Major performance improvements for ray tracing subdivision surfaces, e.g. up to 2x faster for scenes where only the tessellation levels are changing per frame, and up to 3x faster for scenes with lots of crease features.</p></li>
+<li><p>Initial support for architectures supporting the new 16-wide AVX512 ISA.</p></li>
+<li><p>Implemented intersection filter callback support for subdivision surfaces.</p></li>
+<li><p>Added <code>RTC_IGNORE_INVALID_RAYS</code> CMake option which makes the ray intersectors more robust against full tree traversal caused by invalid ray inputs (e.g. INF, NAN, etc).</p></li>
+</ul>
 <h3 id="new-features-in-embree-2.6.0">New Features in Embree 2.6.0</h3>
 <ul>
 <li>Added <code>rtcInterpolate</code> function to interpolate per vertex attributes</li>
 <li>Added <code>rtcSetBoundaryMode</code> function that can be used to select the boundary handling for subdivision surfaces</li>
 <li>Fixed a traversal bug that caused rays with very small ray direction components to miss geometry</li>
 <li>Performance improvements for the robust traversal mode</li>
-<li>Fixed deadlock when calling rtcCommit from multiple threads on same scene.</li>
+<li>Fixed deadlock when calling <code>rtcCommit</code> from multiple threads on same scene</li>
 </ul>
 <h3 id="new-features-in-embree-2.5.1">New Features in Embree 2.5.1</h3>
 <ul>
