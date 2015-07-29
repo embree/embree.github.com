@@ -129,7 +129,7 @@
 </div>
 <p>This tutorial demonstrates a simple OBJ viewer that traces primary visibility rays only. A scene consisting of multiple meshes is created, each mesh sharing the index and vertex buffer with the application. Demonstrated is also how to support additional per vertex data, such as shading normals.</p>
 <p>You need to specify an OBJ file at the command line for this tutorial to work:</p>
-<pre><code>./tutorial03 -i model.obj</code></pre>
+<pre><code>./viewer -i model.obj</code></pre>
 <h2 id="instanced-geometry">Instanced Geometry</h2>
 <div class="figure">
 <img src="images/instanced_geometry.jpg" />
@@ -147,9 +147,15 @@
 <img src="images/pathtracer.jpg" />
 
 </div>
-<p>This tutorial is a simple path tracer, building on tutorial03.</p>
+<p>This tutorial is a simple path tracer, building on the viewer tutorial.</p>
 <p>You need to specify an OBJ file and light source at the command line for this tutorial to work:</p>
-<pre><code>./tutorial06 -i model.obj -ambientlight 1 1 1</code></pre>
+<pre><code>./pathtracer -i model.obj -ambientlight 1 1 1</code></pre>
+<p>As example models we provide the “Austrian Imperial Crown” model by <a href="www.loramel.net">Martin Lubich</a> and the “Asian Dragon” model from the <a href="http://graphics.stanford.edu/data/3Dscanrep/">Stanford 3D Scanning Repository</a>.</p>
+<p><a href="https://github.com/embree/models/releases/download/release/crown.zip">crown.zip</a></p>
+<p><a href="https://github.com/embree/models/releases/download/release/asian_dragon.zip">asian_dragon.zip</a></p>
+<p>To render these models execute the following:</p>
+<pre><code>./pathtracer -c crown/crown.ecs
+./pathtracer -c asian_dragon/asian_dragon.ecs</code></pre>
 <h2 id="hair">Hair</h2>
 <div class="figure">
 <img src="images/hair_geometry.jpg" />
