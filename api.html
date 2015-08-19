@@ -27,6 +27,7 @@ code > span.ot { color: #007020; }
 code > span.al { color: #ff0000; font-weight: bold; }
 code > span.fu { color: #06287e; }
 code > span.er { color: #ff0000; font-weight: bold; }
+div.sourceCode { overflow-x: initial; }
     </style>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -63,6 +64,10 @@ code > span.er { color: #ff0000; font-weight: bold; }
       </div>
 
     </div>
+
+    <a id="news_banner" href="https://github.com/embree/embree/releases">
+      We recently released Embree v2.6.2!
+    </a>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
@@ -166,6 +171,7 @@ rtcDeleteScene(scene);</code></pre>
 <p>A dynamic scene is created by invoking <code>rtcNewScene</code> with the <code>RTC_SCENE_DYNAMIC</code> flag. Different geometries can now be created inside that scene. Geometries are enabled by default. Once the scene geometry is specified, an <code>rtcCommit</code> call will finish the scene description and trigger building of internal data structures. After the <code>rtcCommit</code> call it is safe to perform ray queries of the type specified at scene construction time. Geometries can get disabled (<code>rtcDisable</code> call), enabled again (<code>rtcEnable</code> call), and deleted (<code>rtcDeleteGeometry</code> call). Geometries can also get modified, including their vertex and index arrays. After the modification of some geometry, <code>rtcUpdate</code> or <code>rtcUpdateBuffer</code> has to get called for that geometry to specify which buffers got modified. Each modified buffer can specified separately using the <code>rtcUpdateBuffer</code> function. In contrast the <code>rtcUpdate</code> function simply tags each buffer of some geometry as modified. If geometries got enabled, disabled, deleted, or modified an <code>rtcCommit</code> call has to get invoked before performing any ray queries for the scene, otherwise the effect of the ray query is undefined. During in <code>rtcCommit</code> call modifications to the scene are not allowed.</p>
 <p>A static scene is created by the <code>rtcNewScene</code> call with the <code>RTC_SCENE_STATIC</code> flag. Geometries can only get created, enabled, disabled and modified until the first <code>rtcCommit</code> call. After the <code>rtcCommit</code> call, each access to any geometry of that static scene is invalid. Geometries that got created inside a static scene can only get deleted by deleting the entire scene.</p>
 <p>The modification of geometry, building of hierarchies using <code>rtcCommit</code>, and tracing of rays have always to happen separately, never at the same time.</p>
+<p>Embree silently ignores primitives that would cause numerical issues, e.g. primitives containing NaNs, INFs, or values greater than 1.844E18f.</p>
 <p>The following flags can be used to tune the used acceleration structure. These flags are only hints and may be ignored by the implementation.</p>
 <table>
 <caption>Acceleration structure flags for <code>rtcNewScene</code>.</caption>
@@ -658,6 +664,11 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <p>Currently we support to configure the size of the internal software cache that is used to handle subdivision surfaces by setting the <code>RTC_SOFTWARE_CACHE_SIZE</code> parameter to the desired size of the cache in bytes:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetParameter1i(RTC_SOFTWARE_CACHE_SIZE, bytes);</code></pre>
 <p>The software cache cannot get configured while any Embree API call is executed. Best configure the size of the cache only once at application start.</p>
+<h2 id="limiting-number-of-build-threads">Limiting number of Build Threads</h2>
+<p>You can use the TBB API to limit the number of threads used by Embree during hierarchy construction. Therefore just create a global taskscheduler_init object, initialized with the number of threads to use:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;tbb/tbb.h&gt;</span>
+
+tbb::task_scheduler_init init(numThreads);</code></pre>
       </div>
 
       <div id="footer">
