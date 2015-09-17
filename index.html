@@ -46,7 +46,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.6.2!
+      We recently released Embree v2.7.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -58,6 +58,15 @@
 <p>Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays). For standard CPUs, the single-ray traversal kernels in Embree provide the best performance for incoherent workloads and are very easy to integrate into existing rendering applications. For Xeon Phi, a renderer written in ISPC using the default hybrid ray/packet traversal algorithms have shown to perform best, but requires writing the renderer in ISPC. In general for coherent workloads, ISPC outperforms the single ray mode on each platform. Embree also supports dynamic scenes by implementing high performance two-level spatial index structure construction algorithms.</p>
 <p>In addition to the ray tracing kernels, Embree provides some tutorials to demonstrate how to use the <a href="api.html">Embree API</a>. The example photorealistic renderer that was originally included in the Embree kernel package is now available in a separate GIT repository (see <a href="renderer.html">Embree Example Renderer</a>).</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.7.0">New Features in Embree 2.7.0</h3>
+<ul>
+<li>Added device concept to Embree to allow different components of an application to use Embree without interfering with each other.</li>
+<li>Fixed memory leak in twolevel builder used for dynamic scenes.</li>
+<li>Fixed bug in tesselation cache that caused crashes for subdivision surfaces.</li>
+<li>Fixed bug in internal task scheduler that caused deadlocks when using rtcCommitThread.</li>
+<li>Improved hit-distance accuracy for thin triangles in robust mode.</li>
+<li>Added support to disable ray packet support in cmake.</li>
+</ul>
 <h3 id="new-features-in-embree-2.6.2">New Features in Embree 2.6.2</h3>
 <ul>
 <li>Fixed bug triggered by instantiating motion blur geometry.</li>

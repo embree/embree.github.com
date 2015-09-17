@@ -66,7 +66,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.6.2!
+      We recently released Embree v2.7.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -78,10 +78,10 @@ div.sourceCode { overflow-x: initial; }
 <p>The user is supposed to include the <code>embree2/rtcore.h</code>, and the <code>embree2/rtcore_ray.h</code> file, but none of the other header files. If using the ISPC version of the API, the user should include <code>embree2/rtcore.isph</code> and <code>embree2/rtcore_ray.isph</code>.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree2/rtcore.h&gt;</span>
 <span class="ot">#include &lt;embree2/rtcore_ray.h&gt;</span></code></pre>
-<p>All API calls carry the prefix <code>rtc</code> which stands for <strong>r</strong>ay <strong>t</strong>racing <strong>c</strong>ore. Before invoking any API call, the Embree ray tracing core has to get initialized through the <code>rtcInit</code> call. Before the application exits it should call <code>rtcExit</code>. Initializing Embree again after an <code>rtcExit</code> is allowed.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcInit(NULL);
+<p>All API calls carry the prefix <code>rtc</code> which stands for <strong>r</strong>ay <strong>t</strong>racing <strong>c</strong>ore. Embree supports a device concept, which allows different components of the application to use the API without interfering with each other. You have to create at least one Embree device through the <code>rtcNewDevice</code> call. Before the application exits it should delete all devices by invoking <code>rtcDeleteDevice</code>. An application typically creates a single device only, and should create only a small number of devices.</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">RTCDevice device = rtcNewDevice(NULL);
 ...
-rtcExit();</code></pre>
+rtcDeleteDevice(device);</code></pre>
 <p>It is strongly recommended to have the <code>Flush to Zero</code> and <code>Denormals are Zero</code> mode of the MXCSR control and status register enabled for each thread before calling the <code>rtcIntersect</code> and <code>rtcOccluded</code> functions. Otherwise, under some circumstances special handling of denormalized floating point numbers can significantly reduce application and Embree performance. When using Embree together with the Intel® Threading Building Blocks, it is sufficient to execute the following code at the beginning of the application main thread (before the creation of the tbb::task_scheduler_init object):</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;xmmintrin.h&gt;</span>
 <span class="ot">#include &lt;pmmintrin.h&gt;</span>
@@ -90,17 +90,17 @@ _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
 _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre>
 <p>Embree processes some implementation specific configuration from the following locations in the specified order:</p>
 <ol style="list-style-type: decimal">
-<li>configuration string passed to the <code>rtcInit</code> function</li>
+<li>configuration string passed to the <code>rtcNewDevice</code> function</li>
 <li><code>.embree2</code> file in the application folder</li>
 <li><code>.embree2</code> file in the home folder</li>
 </ol>
-<p>This way the configuration for the application can be changed globally (either through the <code>rtcInit</code> call or through the <code>.embree2</code> file in the application folder) and each user has the option to modify the configuration to fit its needs.</p>
+<p>This way the configuration for the application can be changed globally (either through the <code>rtcNewDevice</code> call or through the <code>.embree2</code> file in the application folder) and each user has the option to modify the configuration to fit its needs.</p>
 <p>The threads calling the API functions should have at least 4MB of stack space allocated. Also every Intel® Threading Building Blocks (TBB) worker thread needs at least 4MB of stack space (which is the default for TBB).</p>
 <p>API calls that access geometries are only thread safe as long as different geometries are accessed. Accesses to one geometry have to get sequenced by the application. All other API calls are thread safe. The API calls are re-entrant, it is thus safe to trace new rays and create new geometry when intersecting a user defined object.</p>
-<p>Each user thread has its own error flag in the API. If an error occurs when invoking some API function, this flag is set to an error code if it stores no previous error. The <code>rtcGetError</code> function reads and returns the currently stored error and clears the error flag again.</p>
-<p>Possible error codes returned by <code>rtcGetError</code> are:</p>
+<p>Each user thread has its own error flag per device. If an error occurs when invoking some API function, this flag is set to an error code if it stores no previous error. The <code>rtcDeviceGetError</code> function reads and returns the currently stored error and clears the error flag again.</p>
+<p>Possible error codes returned by <code>rtcDeviceGetError</code> are:</p>
 <table>
-<caption>Return values of <code>rtcGetError</code>.</caption>
+<caption>Return values of <code>rtcDeviceGetError</code>.</caption>
 <colgroup>
 <col width="33%" />
 <col width="62%" />
@@ -142,15 +142,15 @@ _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre>
 </tr>
 </tbody>
 </table>
-<p>Using the <code>rtcSetErrorFunction</code> call, it is also possible to set a callback function that is called whenever an error occurs. The callback function gets passed the error code, as well as some string that describes the error further. Passing <code>NULL</code> to <code>rtcSetErrorFunction</code> disables the set callback function again. The previously described error flags are also set if an error callback function is present.</p>
+<p>Using the <code>rtcDeviceSetErrorFunction</code> call, it is also possible to set a callback function that is called whenever an error occurs for a device. The callback function gets passed the error code, as well as some string that describes the error further. Passing <code>NULL</code> to <code>rtcDeviceSetErrorFunction</code> disables the set callback function again. The previously described error flags are also set if an error callback function is present.</p>
 <h2 id="scene">Scene</h2>
-<p>A scene is a container for a set of geometries of potentially different types. A scene is created using the <code>rtcNewScene</code> function call, and destroyed using the <code>rtcDeleteScene</code> function call. Two types of scenes are supported, dynamic and static scenes. Different flags specify the type of scene to create and the type of ray query operations that can later be performed on the scene. The following example creates a scene that supports dynamic updates and the single ray <code>rtcIntersect</code> and <code>rtcOccluded</code> calls.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">RTCScene scene = rtcNewScene(RTC_SCENE_DYNAMIC, RTC_INTERSECT1);
+<p>A scene is a container for a set of geometries of potentially different types. A scene is created using the <code>rtcDeviceNewScene</code> function call, and destroyed using the <code>rtcDeleteScene</code> function call. Two types of scenes are supported, dynamic and static scenes. Different flags specify the type of scene to create and the type of ray query operations that can later be performed on the scene. The following example creates a scene that supports dynamic updates and the single ray <code>rtcIntersect</code> and <code>rtcOccluded</code> calls.</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">RTCScene scene = rtcDeviceNewScene(device, RTC_SCENE_DYNAMIC, RTC_INTERSECT1);
 ...
 rtcDeleteScene(scene);</code></pre>
-<p>Using the following scene flags the user can select between creating a static and dynamic scene.</p>
+<p>Using the following scene flags the user can select between creating a static or dynamic scene.</p>
 <table>
-<caption>Dynamic type flags for <code>rtcNewScene</code>.</caption>
+<caption>Dynamic type flags for <code>rtcDeviceNewScene</code>.</caption>
 <thead>
 <tr class="header">
 <th align="left">Scene Flag</th>
@@ -168,13 +168,13 @@ rtcDeleteScene(scene);</code></pre>
 </tr>
 </tbody>
 </table>
-<p>A dynamic scene is created by invoking <code>rtcNewScene</code> with the <code>RTC_SCENE_DYNAMIC</code> flag. Different geometries can now be created inside that scene. Geometries are enabled by default. Once the scene geometry is specified, an <code>rtcCommit</code> call will finish the scene description and trigger building of internal data structures. After the <code>rtcCommit</code> call it is safe to perform ray queries of the type specified at scene construction time. Geometries can get disabled (<code>rtcDisable</code> call), enabled again (<code>rtcEnable</code> call), and deleted (<code>rtcDeleteGeometry</code> call). Geometries can also get modified, including their vertex and index arrays. After the modification of some geometry, <code>rtcUpdate</code> or <code>rtcUpdateBuffer</code> has to get called for that geometry to specify which buffers got modified. Each modified buffer can specified separately using the <code>rtcUpdateBuffer</code> function. In contrast the <code>rtcUpdate</code> function simply tags each buffer of some geometry as modified. If geometries got enabled, disabled, deleted, or modified an <code>rtcCommit</code> call has to get invoked before performing any ray queries for the scene, otherwise the effect of the ray query is undefined. During in <code>rtcCommit</code> call modifications to the scene are not allowed.</p>
-<p>A static scene is created by the <code>rtcNewScene</code> call with the <code>RTC_SCENE_STATIC</code> flag. Geometries can only get created, enabled, disabled and modified until the first <code>rtcCommit</code> call. After the <code>rtcCommit</code> call, each access to any geometry of that static scene is invalid. Geometries that got created inside a static scene can only get deleted by deleting the entire scene.</p>
+<p>A dynamic scene is created by invoking <code>rtcDeviceNewScene</code> with the <code>RTC_SCENE_DYNAMIC</code> flag. Different geometries can now be created inside that scene. Geometries are enabled by default. Once the scene geometry is specified, an <code>rtcCommit</code> call will finish the scene description and trigger building of internal data structures. After the <code>rtcCommit</code> call it is safe to perform ray queries of the type specified at scene construction time. Geometries can get disabled (<code>rtcDisable</code> call), enabled again (<code>rtcEnable</code> call), and deleted (<code>rtcDeleteGeometry</code> call). Geometries can also get modified, including their vertex and index arrays. After the modification of some geometry, <code>rtcUpdate</code> or <code>rtcUpdateBuffer</code> has to get called for that geometry to specify which buffers got modified. Each modified buffer can specified separately using the <code>rtcUpdateBuffer</code> function. In contrast the <code>rtcUpdate</code> function simply tags each buffer of some geometry as modified. If geometries got enabled, disabled, deleted, or modified an <code>rtcCommit</code> call has to get invoked before performing any ray queries for the scene, otherwise the effect of the ray query is undefined. During in <code>rtcCommit</code> call modifications to the scene are not allowed.</p>
+<p>A static scene is created by the <code>rtcDeviceNewScene</code> call with the <code>RTC_SCENE_STATIC</code> flag. Geometries can only get created, enabled, disabled and modified until the first <code>rtcCommit</code> call. After the <code>rtcCommit</code> call, each access to any geometry of that static scene is invalid. Geometries that got created inside a static scene can only get deleted by deleting the entire scene.</p>
 <p>The modification of geometry, building of hierarchies using <code>rtcCommit</code>, and tracing of rays have always to happen separately, never at the same time.</p>
 <p>Embree silently ignores primitives that would cause numerical issues, e.g. primitives containing NaNs, INFs, or values greater than 1.844E18f.</p>
 <p>The following flags can be used to tune the used acceleration structure. These flags are only hints and may be ignored by the implementation.</p>
 <table>
-<caption>Acceleration structure flags for <code>rtcNewScene</code>.</caption>
+<caption>Acceleration structure flags for <code>rtcDeviceNewScene</code>.</caption>
 <colgroup>
 <col width="34%" />
 <col width="62%" />
@@ -206,7 +206,7 @@ rtcDeleteScene(scene);</code></pre>
 </table>
 <p>The following flags can be used to tune the traversal algorithm that is used by Embree. These flags are only hints and may be ignored by the implementation.</p>
 <table>
-<caption>Traversal algorithm flags for <code>rtcNewScene</code>.</caption>
+<caption>Traversal algorithm flags for <code>rtcDeviceNewScene</code>.</caption>
 <thead>
 <tr class="header">
 <th align="left">Scene Flag</th>
@@ -220,9 +220,9 @@ rtcDeleteScene(scene);</code></pre>
 </tr>
 </tbody>
 </table>
-<p>The second argument of the <code>rtcNewScene</code> function are algorithm flags, that allow to specify which ray queries are required by the application. Calling for a scene a ray query API function that is different to the ones specified at scene creation time is not allowed. Further, the application should only pass ray query requirements that are really needed, to give Embree most freedom in choosing the best algorithm. E.g. in case Embree implements no packet traversers for some highly optimized data structure for single rays, then this data structure cannot be used if the user enables any ray packet query.</p>
+<p>The second argument of the <code>rtcDeviceNewScene</code> function are algorithm flags, that allow to specify which ray queries are required by the application. Calling for a scene a ray query API function that is different to the ones specified at scene creation time is not allowed. Further, the application should only pass ray query requirements that are really needed, to give Embree most freedom in choosing the best algorithm. E.g. in case Embree implements no packet traversers for some highly optimized data structure for single rays, then this data structure cannot be used if the user enables any ray packet query.</p>
 <table>
-<caption>Enabled algorithm flags for <code>rtcNewScene</code>.</caption>
+<caption>Enabled algorithm flags for <code>rtcDeviceNewScene</code>.</caption>
 <colgroup>
 <col width="25%" />
 <col width="72%" />
@@ -411,7 +411,7 @@ rtcSetOccludedFunction(scene, geomID, userOccludedFunction);</code></pre>
 <p>Instances are created using the <code>rtcNewInstance</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call. To instantiate a scene, one first has to generate the scene B to instantiate. Now one can add an instance of this scene inside a scene A the following way:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> instID = rtcNewInstance(sceneA, sceneB);
 rtcSetTransform(sceneA, instID, RTC_MATRIX_COLUMN_MAJOR, &amp;column_matrix_3x4);</code></pre>
-<p>One has to call <code>rtcCommit</code> on scene B before one calls <code>rtcCommit</code> on scene A. When modifying scene B one has to call <code>rtcUpdate</code> for all instances of that scene. If a ray hits the instance, then the <code>geomID</code> and <code>primID</code> members of the ray are set to the geometry ID and primitive ID of the primitive hit in scene B, and the <code>instID</code> member of the ray is set to the instance ID returned from the <code>rtcNewInstance</code> function.</p>
+<p>Both scenes have to belong to the same device. One has to call <code>rtcCommit</code> on scene B before one calls <code>rtcCommit</code> on scene A. When modifying scene B one has to call <code>rtcUpdate</code> for all instances of that scene. If a ray hits the instance, then the <code>geomID</code> and <code>primID</code> members of the ray are set to the geometry ID and primitive ID of the primitive hit in scene B, and the <code>instID</code> member of the ray is set to the instance ID returned from the <code>rtcNewInstance</code> function.</p>
 <p>The <code>rtcSetTransform</code> call can be passed an affine transformation matrix with different data layouts:</p>
 <table>
 <caption>Matrix layouts for <code>rtcSetTransform</code>.</caption>
@@ -643,13 +643,13 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <p><em>Note:</em> Due to some limitation of the task_arena implementation of the Intel® Threading Building Blocks, threads that call <code>rtcCommit</code> to join a running build will just wait for the build to finish. Thus the join mode does just not work properly when using TBB, and might cause the build to run sequential (if all threads want to join).</p>
 <p><em>Note:</em> The join mode works properly with the internal tasking scheduler of Embree.</p>
 <h2 id="memory-monitor-callback">Memory Monitor Callback</h2>
-<p>Using the memory monitor callback mechanism, the application can track the memory consumption of Embree, and optionally terminate API calls that consume too much memory.</p>
+<p>Using the memory monitor callback mechanism, the application can track the memory consumption of an Embree device, and optionally terminate API calls that consume too much memory.</p>
 <p>The user provided memory monitor callback function has to have the following signature:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> (*RTCMemoryMonitorFunc)(<span class="dt">const</span> ssize_t bytes, <span class="dt">const</span> <span class="dt">bool</span> post);</code></pre>
-<p>A single such callback function can be registered by calling</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetMemoryMonitorFunction(RTCMemoryMonitorFunc func);</code></pre>
-<p>and deregistered again by calling it with <code>NULL</code>. Once registered Embree will invoke the callback function before or after it allocates or frees important memory blocks. The callback function might get called from multiple threads concurrently.</p>
-<p>The application can track the current memory usage of the Embree library by atomically accumulating the provided <code>bytes</code> input parameter. This parameter will be &gt;0 for allocations and &lt;0 for deallocations. The <code>post</code> input parameter is true if the callback function was invoked after the allocation or deallocation, otherwise it is false.</p>
+<p>A single such callback function per device can be registered by calling</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcDeviceSetMemoryMonitorFunction(RTCDevice device, RTCMemoryMonitorFunc func);</code></pre>
+<p>and deregistered again by calling it with <code>NULL</code>. Once registered the Embree device will invoke the callback function before or after it allocates or frees important memory blocks. The callback function might get called from multiple threads concurrently.</p>
+<p>The application can track the current memory usage of the Embree device by atomically accumulating the provided <code>bytes</code> input parameter. This parameter will be &gt;0 for allocations and &lt;0 for deallocations. The <code>post</code> input parameter is true if the callback function was invoked after the allocation or deallocation, otherwise it is false.</p>
 <p>Embree will continue its operation normally when returning true from the callback function. If false is returned, Embree will cancel the current operation with the RTC_OUT_OF_MEMORY error code. Cancelling will only happen when the callback was called for allocations (bytes &gt; 0), otherwise the cancel request will be ignored. If a callback that was invoked before the allocation happens (<code>post == false</code>) cancels the operation, then the <code>bytes</code> parameter should not get accumulated, as the allocation will never happen. If a callback that was called after the allocation happened (<code>post == true</code>) cancels the operation, then the <code>bytes</code> parameter should get accumulated, as the allocation properly happened. Issuing multiple cancel requests for the same operation is allowed.</p>
 <h2 id="progress-monitor-callback">Progress Monitor Callback</h2>
 <p>The progress monitor callback mechanism can be used to report progress of hierarchy build operations and to cancel long lasting build operations.</p>
@@ -660,9 +660,9 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <p>and deregistered again by calling it with <code>NULL</code> for the callback function. Once registered Embree will invoke the callback function multiple times during hierarchy build operations of the scene, by providing the <code>userPtr</code> pointer that was set at registration time, and a double <code>n</code> in the range <span class="math">[0, 1]</span> estimating the completion amount of the operation. The callback function might get called from multiple threads concurrently.</p>
 <p>When returning <code>true</code> from the callback function, Embree will continue the build operation normally. When returning <code>false</code> Embree will cancel the build operation with the RTC_CANCELLED error code. Issuing multiple cancel requests for the same build operation is allowed.</p>
 <h2 id="configuring-embree">Configuring Embree</h2>
-<p>Some internal parameters can get configured using the <code>rtcSetParameter1i</code> API call.</p>
+<p>Some internal device parameters can get configured using the <code>rtcDeviceSetParameter1i</code> API call.</p>
 <p>Currently we support to configure the size of the internal software cache that is used to handle subdivision surfaces by setting the <code>RTC_SOFTWARE_CACHE_SIZE</code> parameter to the desired size of the cache in bytes:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetParameter1i(RTC_SOFTWARE_CACHE_SIZE, bytes);</code></pre>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcDeviceSetParameter1i(device, RTC_SOFTWARE_CACHE_SIZE, bytes);</code></pre>
 <p>The software cache cannot get configured while any Embree API call is executed. Best configure the size of the cache only once at application start.</p>
 <h2 id="limiting-number-of-build-threads">Limiting number of Build Threads</h2>
 <p>You can use the TBB API to limit the number of threads used by Embree during hierarchy construction. Therefore just create a global taskscheduler_init object, initialized with the number of threads to use:</p>
