@@ -66,7 +66,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.7.1!
+      We recently released Embree v2.8.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -95,7 +95,6 @@ _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre>
 <li><code>.embree2</code> file in the home folder</li>
 </ol>
 <p>This way the configuration for the application can be changed globally (either through the <code>rtcNewDevice</code> call or through the <code>.embree2</code> file in the application folder) and each user has the option to modify the configuration to fit its needs.</p>
-<p>The threads calling the API functions should have at least 4MB of stack space allocated. Also every Intel® Threading Building Blocks (TBB) worker thread needs at least 4MB of stack space (which is the default for TBB).</p>
 <p>API calls that access geometries are only thread safe as long as different geometries are accessed. Accesses to one geometry have to get sequenced by the application. All other API calls are thread safe. The API calls are re-entrant, it is thus safe to trace new rays and create new geometry when intersecting a user defined object.</p>
 <p>Each user thread has its own error flag per device. If an error occurs when invoking some API function, this flag is set to an error code if it stores no previous error. The <code>rtcDeviceGetError</code> function reads and returns the currently stored error and clears the error flag again.</p>
 <p>Possible error codes returned by <code>rtcDeviceGetError</code> are:</p>
@@ -142,6 +141,7 @@ _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre>
 </tr>
 </tbody>
 </table>
+<p>When the device construction fails <code>rtcNewDevice</code> returns NULL as device. To detect the error code of a such a failed device construction pass NULL as device to the <code>rtcDeviceGetError</code> function. For all other invokations of <code>rtcDeviceGetError</code> a proper device pointer has to get specified.</p>
 <p>Using the <code>rtcDeviceSetErrorFunction</code> call, it is also possible to set a callback function that is called whenever an error occurs for a device. The callback function gets passed the error code, as well as some string that describes the error further. Passing <code>NULL</code> to <code>rtcDeviceSetErrorFunction</code> disables the set callback function again. The previously described error flags are also set if an error callback function is present.</p>
 <h2 id="scene">Scene</h2>
 <p>A scene is a container for a set of geometries of potentially different types. A scene is created using the <code>rtcDeviceNewScene</code> function call, and destroyed using the <code>rtcDeleteScene</code> function call. Two types of scenes are supported, dynamic and static scenes. Different flags specify the type of scene to create and the type of ray query operations that can later be performed on the scene. The following example creates a scene that supports dynamic updates and the single ray <code>rtcIntersect</code> and <code>rtcOccluded</code> calls.</p>
@@ -261,11 +261,7 @@ rtcDeleteScene(scene);</code></pre>
 <p>For dynamic scenes, the assigned geometry IDs fulfill the following properties. As long as no geometry got deleted, all IDs are assigned sequentially, starting from 0. If geometries got deleted, the implementation will reuse IDs later on in an implementation dependent way. Consequently sequential assignment is no longer guaranteed, but a compact range of IDs. These rules allow the application to manage a dynamic array to efficiently map from geometry IDs to its own geometry representation.</p>
 <p>For static scenes, geometry IDs are assigned sequentially starting at 0. This allows the application to use a fixed size array to map from geometry IDs to its own geometry representation.</p>
 <p>Alternatively the application can also use the <code>void rtcSetUserData (RTCScene scene, unsigned geomID, void* ptr)</code> function to set a pointer <code>ptr</code> to its own geometry representation, and later read out this pointer again using the <code>void* rtcGetUserData (RTCScene scene, unsigned geomID)</code> function.</p>
-<h3 id="triangle-meshes">Triangle Meshes</h3>
-<p>Triangle meshes are created using the <code>rtcNewTriangleMesh</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
-<p>The number of triangles, the number of vertices, and optionally the number of time steps (1 for normal meshes, and 2 for linear motion blur) have to get specified at construction time of the mesh. The user can also specify additional flags that choose the strategy to handle that mesh in dynamic scenes. The following example demonstrates how to create a triangle mesh without motion blur:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewTriangleMesh(scene, geomFlags, numTriangles, numVertices);</code></pre>
-<p>The following geometry flags can be specified at construction time of the triangle mesh:</p>
+<p>The following geometry flags can be specified at construction time of most geometries:</p>
 <table>
 <caption>Flags for the creation of new geometries.</caption>
 <colgroup>
@@ -281,18 +277,23 @@ rtcDeleteScene(scene);</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">RTC_GEOMETRY_STATIC</td>
-<td align="left">The mesh is considered static and should get modified rarely by the application. This flag has to get used in static scenes.</td>
+<td align="left">The geometry is considered static and should get modified rarely by the application. This flag has to get used in static scenes.</td>
 </tr>
 <tr class="even">
 <td align="left">RTC_GEOMETRY_DEFORMABLE</td>
-<td align="left">The mesh is considered to deform in a coherent way, e.g. a skinned character. The connectivity of the mesh has to stay constant, thus modifying the index array is not allowed. The implementation is free to choose a BVH refitting approach for handling meshes tagged with that flag.</td>
+<td align="left">The geometry is considered to deform in a coherent way, e.g. a skinned character. The connectivity of the geometry has to stay constant, thus modifying the index array is not allowed. The implementation is free to choose a BVH refitting approach for handling meshes tagged with that flag.</td>
 </tr>
 <tr class="odd">
 <td align="left">RTC_GEOMETRY_DYNAMIC</td>
-<td align="left">The mesh is considered highly dynamic and changes frequently, possibly in an unstructured way. Embree will rebuild data structures from scratch for this type of mesh.</td>
+<td align="left">The geometry is considered highly dynamic and changes frequently, possibly in an unstructured way. Embree will rebuild data structures from scratch for this type of mesh.</td>
 </tr>
 </tbody>
 </table>
+<h3 id="triangle-meshes">Triangle Meshes</h3>
+<p>Triangle meshes are created using the <code>rtcNewTriangleMesh</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
+<p>The number of triangles, number of vertices, and optionally the number of time steps (1 for normal meshes, and 2 for linear motion blur) have to get specified at construction time of the mesh. The user can also specify additional flags that choose the strategy to handle that mesh in dynamic scenes. The following example demonstrates how to create a triangle mesh without motion blur:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewTriangleMesh(scene, geomFlags,
+   numTriangles, numVertices, <span class="dv">1</span>);</code></pre>
 <p>The triangle indices can be set by mapping and writing to the index buffer (<code>RTC_INDEX_BUFFER</code>) and the triangle vertices can be set by mapping and writing into the vertex buffer (<code>RTC_VERTEX_BUFFER</code>). The index buffer contains an array of three 32 bit indices, while the vertex buffer contains an array of three float values aligned to 16 bytes. The 4th component of the aligned vertices can be arbitrary. All buffers have to get unmapped before an <code>rtcCommit</code> call to the scene.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Vertex   { <span class="dt">float</span> x, y, z, a; };
 <span class="kw">struct</span> Triangle { <span class="dt">int</span> v0, v1, v2; };
@@ -312,6 +313,24 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 </div>
 <p>Some texture coordinates <code>t0,t1,t2</code> can be linearly interpolated over the triangle the following way:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-u-v)*t0 + u*(t1-t0) + v*(t2-t0)</code></pre>
+<h3 id="quad-meshes">Quad Meshes</h3>
+<p>Quad meshes are created using the <code>rtcNewQuadMesh</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
+<p>The number of quads, number of vertices, and optionally the number of time steps (1 for normal meshes, and 2 for linear motion blur) have to get specified at construction time of the mesh. The user can also specify additional flags that choose the strategy to handle that mesh in dynamic scenes. The following example demonstrates how to create a quad mesh without motion blur:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewQuadMesh(scene, geomFlags,
+   numTriangles, numVertices, <span class="dv">1</span>);</code></pre>
+<p>The quad indices can be set by mapping and writing to the index buffer (<code>RTC_INDEX_BUFFER</code>) and the quad vertices can be set by mapping and writing into the vertex buffer (<code>RTC_VERTEX_BUFFER</code>). The index buffer contains an array of four 32 bit indices, while the vertex buffer contains an array of three float values aligned to 16 bytes. The 4th component of the aligned vertices can be arbitrary. All buffers have to get unmapped before an <code>rtcCommit</code> call to the scene.</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Vertex { <span class="dt">float</span> x, y, z, a; };
+<span class="kw">struct</span> Quad   { <span class="dt">int</span> v0, v1, v2, v3; };
+
+Vertex* vertices = (Vertex*) rtcMapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
+<span class="co">// fill vertices here</span>
+rtcUnmapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
+
+Quad* quads = (Quad*) rtcMapBuffer(scene, geomID, RTC_INDEX_BUFFER);
+<span class="co">// fill quad indices here</span>
+rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
+<p>The quad is internally handled as a pair of two triangles <code>v0,v1,v3</code> and <code>v2,v3,v1</code>, with the u’/v’ coordinates of the second triangle corrected by <code>u = 1-u'</code> and <code>v = 1-v'</code> to make a parametrization where u and v go from 0 to 1.</p>
+<p>Te encode a triangle as quad just replicate the last triangle vertex (<code>v0,v1,v2</code> -&gt; <code>v0,v1,v2,v2</code>). This way the quad mesh can be used to represent a mesh with triangles and quads.</p>
 <h3 id="subdivision-surfaces">Subdivision Surfaces</h3>
 <p>Catmull-Clark subdivision surfaces for meshes consisting of triangle and quad primitives (even mixed inside one mesh) are supported, including support for edge creases, vertex creases, holes, and non-manifold geometry.</p>
 <p>A subdivision surface is created using the <code>rtcNewSubdivisionMesh</code> function call, and deleted again using the <code>rtcDeleteGeometry</code> function call.</p>
@@ -350,7 +369,27 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>The user can also specify a geometry mask and additional flags that choose the strategy to handle that subdivision mesh in dynamic scenes.</p>
 <p>The implementation of subdivision surfaces uses an internal software cache, which can get configured to some desired size (see <a href="#configuring-embree">Configuring Embree</a>).</p>
 <p>Also see tutorial <a href="tutorials.html#subdivision-geometry">Subdivision Geometry</a> for an example of how to create subdivision surfaces.</p>
-<h3 id="hair-geometry">Hair Geometry</h3>
+<h3 id="line-segment-hair-geometry">Line Segment Hair Geometry</h3>
+<p>Line segments are supported to render hair geometry. A line segment consists of a start and and point, and start and end radius. Individual line segments are considered to be subpixel sized which allows the implementation to approximate the intersection calculation. This in particular means that zooming onto one line segment might show geometric artifacts.</p>
+<p>Line segments are created using the <code>rtcNewLineSegments</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
+<p>The number of line segments, the number of vertices, and optionally the number of time steps (1 for normal curves, and 2 for linear motion blur) have to get specified at construction time of the line segment geometry.</p>
+<p>The segment indices can be set by mapping and writing to the index buffer (<code>RTC_INDEX_BUFFER</code>) and the vertices can be set by mapping and writing into the vertex buffer (<code>RTC_VERTEX_BUFFER</code>). In case of linear motion blur, two vertex buffers (<code>RTC_VERTEX_BUFFER0</code> and <code>RTC_VERTEX_BUFFER1</code>) have to get filled, one for each time step.</p>
+<p>The index buffer contains an array of 32 bit indices pointing to the ID of the first of two vertices, while the vertex buffer stores all control points in the form of a single precision position and radius stored in <code>x</code>, <code>y</code>, <code>z</code>, <code>r</code> order in memory. The radii have to be greater or equal zero. All buffers have to get unmapped before an <code>rtcCommit</code> call to the scene.</p>
+<p>Like for triangle meshes, the user can also specify a geometry mask and additional flags that choose the strategy to handle that mesh in dynamic scenes.</p>
+<p>The following example demonstrates how to create some line segment geometry:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewLineSegments(scene, geomFlags, numCurves,
+  numVertices, <span class="dv">1</span>);
+
+<span class="kw">struct</span> Vertex { <span class="dt">float</span> x, y, z, r; };
+
+Vertex* vertices = (Vertex*) rtcMapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
+<span class="co">// fill vertices here</span>
+rtcUnmapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
+
+<span class="dt">int</span>* curves = (<span class="dt">int</span>*) rtcMapBuffer(scene, geomID, RTC_INDEX_BUFFER);
+<span class="co">// fill indices here</span>
+rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
+<h3 id="bezier-curve-hair-geometry">Bezier Curve Hair Geometry</h3>
 <p>Hair geometries are supported, which consist of multiple hairs represented as cubic Bézier curves with varying radius per control point. Individual hairs are considered to be subpixel sized which allows the implementation to approximate the intersection calculation. This in particular means that zooming onto one hair might show geometric artifacts.</p>
 <p>Hair geometries are created using the <code>rtcNewHairGeometry</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
 <p>The number of hair curves, the number of vertices, and optionally the number of time steps (1 for normal curves, and 2 for linear motion blur) have to get specified at construction time of the hair geometry.</p>
@@ -371,37 +410,43 @@ rtcUnmapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
 rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>Also see tutorial <a href="tutorials.html#hair">Hair</a> for an example of how to create and use hair geometry.</p>
 <h3 id="user-defined-geometry">User Defined Geometry</h3>
-<p>User defined geometries make it possible to extend Embree with arbitrary types of geometry. This is achieved by introducing arrays of user geometries as a special geometry type. These objects do not contain a single user geometry, but a set of such geometries, each specified by an index. The user has to provide a user data pointer, bounding function as well as user defined intersect and occluded functions to create a set of user geometries. The user geometry to process is specified by passing its user data pointer and index to each invocation of the bounding, intersect, and occluded function. The bounding function is used to query the bounds of each user geometry. When performing ray queries, Embree will invoke the user intersect (and occluded) functions to test rays for intersection (and occlusion) with the specified user defined geometry.</p>
+<p>User defined geometries make it possible to extend Embree with arbitrary types of geometry. This is achieved by introducing arrays of user geometries as a special geometry type. These objects do not contain a single user geometry, but a set of such geometries, each specified by an index. The user has to provide a data pointer per user geometry, a bounding function closure (function and user pointer) as well as user defined intersect and occluded functions to create a set of user geometries. The user geometry to process is specified by passing its geometry user data pointer and index to each invocation of the bounding, intersect, and occluded function. The bounding function is used to query the bounds of all timesteps of each user geometry. When performing ray queries, Embree will invoke the user intersect (and occluded) functions to test rays for intersection (and occlusion) with the specified user defined geometry.</p>
 <p>As Embree supports different ray packet sizes, one potentially has to provide different versions of user intersect and occluded function pointers for these packet sizes. However, the ray packet size of the called user function always matches the packet size of the originally invoked ray query function. Consequently, an application only operating on single rays only has to provide single ray intersect and occluded function pointers.</p>
-<p>User geometries are created using the <code>rtcNewUserGeometry</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call. The following example illustrates creating an array with two user geometries:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> UserObject { ... };
+<p>User geometries are created using the <code>rtcNewUserGeometry</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call. The the <code>rtcNewUserGeometry2</code> function additionally gets a numTimeSteps paramter, which specifies the number of timesteps for motion blur. The following example illustrates creating an array with two user geometries:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> numTimeSteps = <span class="dv">2</span>;
+<span class="kw">struct</span> UserObject { ... };
 
-<span class="dt">void</span> userBoundsFunction(UserObject* userGeom, size_t i, RTCBounds&amp; bounds) {
-  bounds = &lt;bounds of userGeom[i]&gt;;
+<span class="dt">void</span> userBoundsFunction(<span class="dt">void</span>* userPtr, UserObject* userGeomPtr, size_t i, RTCBounds* bounds)
+{
+  <span class="kw">for</span> (size_t i=<span class="dv">0</span>; i&lt;numTimeSteps; i++)
+    bounds[i] = &lt;bounds of userGeomPtr[i] at time i&gt;;
 }
 
-<span class="dt">void</span> userIntersectFunction(UserObject* userGeom, RTCRay&amp; ray, size_t i) {
-  <span class="kw">if</span> (&lt;ray misses userGeom[i]&gt;)
+<span class="dt">void</span> userIntersectFunction(UserObject* userGeomPtr, RTCRay&amp; ray, size_t i)
+{
+  <span class="kw">if</span> (&lt;ray misses userGeomPtr[i] at time ray.time&gt;)
     <span class="kw">return</span>;
   &lt;update ray hit information&gt;;
 }
 
-<span class="dt">void</span> userOccludedFunction(UserObject* userGeom, RTCRay&amp; ray, size_t i) {
-  <span class="kw">if</span> (&lt;ray misses userGeom[i]&gt;)
+<span class="dt">void</span> userOccludedFunction(UserObject* userGeomPtr, RTCRay&amp; ray, size_t i)
+{
+  <span class="kw">if</span> (&lt;ray misses userGeomPtr[i] at time ray.time&gt;)
     <span class="kw">return</span>;
   geomID = <span class="dv">0</span>;
 }
 
 ...
 
-UserObject* userGeom = <span class="kw">new</span> UserObject[<span class="dv">2</span>];
-userGeom[<span class="dv">0</span>] = ...
-userGeom[<span class="dv">1</span>] = ...
-<span class="dt">unsigned</span> geomID = rtcNewUserGeometry(scene, <span class="dv">2</span>);
-rtcSetUserData(scene, geomID, userGeom);
-rtcSetBoundsFunction(scene, geomID, userBoundsFunction);
+UserObject* userGeomPtr = <span class="kw">new</span> UserObject[<span class="dv">2</span>];
+userGeomPtr[<span class="dv">0</span>] = ...
+userGeomPtr[<span class="dv">1</span>] = ...
+<span class="dt">unsigned</span> geomID = rtcNewUserGeometry2(scene, <span class="dv">2</span>, numTimeSteps);
+rtcSetUserData(scene, geomID, userGeomPtr);
+rtcSetBoundsFunction2(scene, geomID, userBoundsFunction, userPtr);
 rtcSetIntersectFunction(scene, geomID, userIntersectFunction);
 rtcSetOccludedFunction(scene, geomID, userOccludedFunction);</code></pre>
+<p>The user bounds function (<code>userBoundsFunction</code>) get as input the pointer provided at the <code>rtcSetBoundsFunction2</code> function call, the geometry user pointer provided through the <code>rtcSetUserData</code> function call, the i’th geometry to calculate the bounds for, and a pointer to an array of bounds to fill (one bound for each timestep specified when creating the user geometry).</p>
 <p>The user intersect function (<code>userIntersectFunction</code>) and user occluded function (<code>userOccludedFunction</code>) get as input the pointer provided through the <code>rtcSetUserData</code> function call, a ray, and the index of the geometry to process. For ray packets, the user intersect and occluded functions also get a pointer to a valid mask as input. The user provided functions should not modify any ray that is disabled by that valid mask.</p>
 <p>The user intersect function should return without modifying the ray structure if the user geometry is missed. If the geometry is hit, it has to update the hit information of the ray (<code>tfar</code>, <code>u</code>, <code>v</code>, <code>Ng</code>, <code>geomID</code>, <code>primID</code>).</p>
 <p>Also the user occluded function should return without modifying the ray structure if the user geometry is missed. If the geometry is hit, it should set the <code>geomID</code> member of the ray to 0.</p>
