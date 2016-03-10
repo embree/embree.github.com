@@ -275,8 +275,7 @@ form {
 }*/
 
 .figure img {
-  width: 100px;
-  max-width: 100px;
+  width: 250px;
   float: left;
   padding: 0 2em 1ex 0;
 }
