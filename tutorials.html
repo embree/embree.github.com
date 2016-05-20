@@ -45,7 +45,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.9.0!
+      We recently released Embree v2.10.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -53,7 +53,6 @@
       <div id="main_content" class="inner">
 <h1 id="embree-tutorials">Embree Tutorials</h1>
 <p>Embree comes with a set of tutorials aimed at helping users understand how Embree can be used and extended. All tutorials exist in an ISPC and C version to demonstrate the two versions of the API. Look for files named <code>tutorialname_device.ispc</code> for the ISPC implementation of the tutorial, and files named <code>tutorialname_device.cpp</code> for the single ray C++ version of the tutorial. To start the C++ version use the <code>tutorialname</code> executables, to start the ISPC version use the <code>tutorialname_ispc</code> executables.</p>
-<p>Under Linux Embree also comes with an ISPC version of all tutorials for the Intel® Xeon Phi™ coprocessor. The executables of this version of the tutorials are named <code>tutorialname_xeonphi</code> and only work if a Xeon Phi™ coprocessor is present in the system. The Xeon Phi™ version of the tutorials get started on the host CPU, just like all other tutorials, and will connect automatically to one installed Xeon Phi™ coprocessor in the system. For the Intel® Xeon Phi™ coprocessor to find to Embree library you have to add the path to <code>libembree_xeonphi.so</code> to the <code>SINK_LD_LIBRARY_PATH</code> variable.</p>
 <p>For all tutorials, you can select an initial camera using the <code>-vp</code> (camera position), <code>-vi</code> (camera look-at point), <code>-vu</code> (camera up vector), and <code>-fov</code> (vertical field of view) command line parameters:</p>
 <pre><code>./triangle_geometry -vp 10 10 10 -vi 0 0 0</code></pre>
 <p>You can select the initial windows size using the <code>-size</code> command line parameter, or start the tutorials in fullscreen using the <code>-fullscreen</code> parameter:</p>
@@ -133,6 +132,13 @@
 <p>This tutorial demonstrates a simple OBJ viewer that traces primary visibility rays only. A scene consisting of multiple meshes is created, each mesh sharing the index and vertex buffer with the application. Demonstrated is also how to support additional per vertex data, such as shading normals.</p>
 <p>You need to specify an OBJ file at the command line for this tutorial to work:</p>
 <pre><code>./viewer -i model.obj</code></pre>
+<h2 id="stream-viewer">Stream Viewer</h2>
+<div class="figure">
+<img src="images/viewer_stream.jpg" />
+
+</div>
+<p>This tutorial demonstrates a simple OBJ viewer that demonstrates the use of ray streams. You need to specify an OBJ file at the command line for this tutorial to work:</p>
+<pre><code>./viewer_stream -i model.obj</code></pre>
 <h2 id="instanced-geometry">Instanced Geometry</h2>
 <div class="figure">
 <img src="images/instanced_geometry.jpg" />
@@ -165,6 +171,12 @@
 
 </div>
 <p>This tutorial demonstrates the use of the hair geometry to render a hairball.</p>
+<h2 id="bézier-curves">Bézier Curves</h2>
+<div class="figure">
+<img src="images/curve_geometry.jpg" />
+
+</div>
+<p>This tutorial demonstrates the use of the Bézier curve geometry.</p>
 <h2 id="subdivision-geometry">Subdivision Geometry</h2>
 <div class="figure">
 <img src="images/subdivision_geometry.jpg" />
