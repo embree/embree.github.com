@@ -65,7 +65,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.10.0!
+      We recently released Embree v2.11.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -395,13 +395,13 @@ rtcUnmapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
 <span class="dt">int</span>* curves = (<span class="dt">int</span>*) rtcMapBuffer(scene, geomID, RTC_INDEX_BUFFER);
 <span class="co">// fill indices here</span>
 rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
-<h3 id="bezier-hair-geometry">Bezier Hair Geometry</h3>
+<h3 id="bézier-hair-geometry">Bézier Hair Geometry</h3>
 <p>Hair geometries are supported, which consist of multiple hairs represented as cubic Bézier curves with varying radius per control point. Individual hairs are considered to be subpixel sized which allows the implementation to approximate the intersection calculation. This in particular means that zooming onto one hair might show geometric artifacts.</p>
 <p>Hair geometries are created using the <code>rtcNewHairGeometry</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
 <p>The number of hair curves, the number of vertices, and optionally the number of time steps (1 for normal curves, and 2 for linear motion blur) have to get specified at construction time of the hair geometry.</p>
 <p>The curve indices can be set by mapping and writing to the index buffer (<code>RTC_INDEX_BUFFER</code>) and the control vertices can be set by mapping and writing into the vertex buffer (<code>RTC_VERTEX_BUFFER</code>). In case of linear motion blur, two vertex buffers (<code>RTC_VERTEX_BUFFER0</code> and <code>RTC_VERTEX_BUFFER1</code>) have to get filled, one for each time step.</p>
 <p>The index buffer contains an array of 32 bit indices pointing to the ID of the first of four control vertices, while the vertex buffer stores all control points in the form of a single precision position and radius stored in <code>x</code>, <code>y</code>, <code>z</code>, <code>r</code> order in memory. The hair radii have to be greater or equal zero. All buffers have to get unmapped before an <code>rtcCommit</code> call to the scene.</p>
-<p>The implementation may choose to subdivide the bezier curve into multiple cylinders-like primitives. The number of cylinders the curve gets subdivided into can be specified per hair geometry through the <code>rtcSetTessellationRate(RTCScene scene, unsigned geomID, float rate)</code> function. By default the tessellation rate for hair curves is 4.</p>
+<p>The implementation may choose to subdivide the Bézier curve into multiple cylinders-like primitives. The number of cylinders the curve gets subdivided into can be specified per hair geometry through the <code>rtcSetTessellationRate(RTCScene scene, unsigned geomID, float rate)</code> function. By default the tessellation rate for hair curves is 4.</p>
 <p>Like for triangle meshes, the user can also specify a geometry mask and additional flags that choose the strategy to handle that mesh in dynamic scenes.</p>
 <p>The following example demonstrates how to create some hair geometry:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewHairGeometry(scene, geomFlags, numCurves, numVertices);
@@ -417,7 +417,7 @@ rtcUnmapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
 rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>Also see tutorial <a href="tutorials.html#hair">Hair</a> for an example of how to create and use hair geometry.</p>
 <h3 id="bézier-curve-geometry">Bézier Curve Geometry</h3>
-<p>The bezier curve geometry consists of multiple cubic Bézier curves with varying radius per control point. The cuve surface is defined as the sweep surface of sweeping a varying radius circle tangential along the Bézier curve. As a limitation, the radius of the curve has to be smaller than the curvature radius of the Bézier curve at each location on the curve. In contrast to hair geometry, the curve geometry is rendered properly even in closeups.</p>
+<p>The Bézier curve geometry consists of multiple cubic Bézier curves with varying radius per control point. The cuve surface is defined as the sweep surface of sweeping a varying radius circle tangential along the Bézier curve. As a limitation, the radius of the curve has to be smaller than the curvature radius of the Bézier curve at each location on the curve. In contrast to hair geometry, the curve geometry is rendered properly even in closeups.</p>
 <p>Curve geometries are created using the <code>rtcNewCurveGeometry</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
 <p>The number of Bézier curves, the number of vertices, and optionally the number of time steps (1 for normal curves, and 2 for linear motion blur) have to get specified at construction time of the curve geometry.</p>
 <p>The curve indices can be set by mapping and writing to the index buffer (<code>RTC_INDEX_BUFFER</code>) and the control vertices can be set by mapping and writing into the vertex buffer (<code>RTC_VERTEX_BUFFER</code>). In case of linear motion blur, two vertex buffers (<code>RTC_VERTEX_BUFFER0</code> and <code>RTC_VERTEX_BUFFER1</code>) have to get filled, one for each time step.</p>

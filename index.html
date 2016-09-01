@@ -45,7 +45,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.10.0!
+      We recently released Embree v2.11.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -57,14 +57,23 @@
 <p>Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays). For standard CPUs, the single-ray traversal kernels in Embree provide the best performance for incoherent workloads and are very easy to integrate into existing rendering applications. For AVX512 enabled machines, a renderer written in ISPC using the default hybrid ray/packet traversal algorithms have shown to perform best, but requires writing the renderer in ISPC. In general for coherent workloads, ISPC outperforms the single ray mode on each platform. Embree also supports dynamic scenes by implementing high performance two-level spatial index structure construction algorithms.</p>
 <p>In addition to the ray tracing kernels, Embree provides some tutorials to demonstrate how to use the <a href="api.html">Embree API</a>. The example photorealistic renderer that was originally included in the Embree kernel package is now available in a separate GIT repository (see <a href="renderer.html">Embree Example Renderer</a>).</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.11.0">New Features in Embree 2.11.0</h3>
+<ul>
+<li>Improved performance for streams of coherent (single) rays flagged with <code>RTC_INTERSECT_COHERENT</code>. For such coherent ray streams, e.g. primary rays, the performance typically improves by 1.3–2×.</li>
+<li>New spatial split BVH builder for triangles, which is 2–6× faster than the previous version and more memory conservative.</li>
+<li>Improved performance and scalability of all standard BVH builders on systems with large core counts.</li>
+<li>Fixed <code>rtcGetBounds</code> for motion blur scenes.</li>
+<li>Thread affinity is now on by default when running on the latest Intel® Xeon Phi™ processor.</li>
+<li>Added AVX512 support for future Intel® Xeon processors.</li>
+</ul>
 <h3 id="new-features-in-embree-2.10.0">New Features in Embree 2.10.0</h3>
 <ul>
 <li>Added a new curve geometry which renders the sweep surface of a circle along a Bézier curve.</li>
-<li>Intersection filters can update the ‘tfar’ ray distance.</li>
+<li>Intersection filters can update the <code>tfar</code> ray distance.</li>
 <li>Geometry types can get disabled at compile time.</li>
 <li>Modified and extended the ray stream API.</li>
 <li>Added new callback mechanism for the ray stream API.</li>
-<li>Improved ray stream performance (up to 5-10%).</li>
+<li>Improved ray stream performance (up to 5–10%).</li>
 <li>Up to 20% faster morton builder on machines with large core counts.</li>
 <li>Lots of optimizations for the second generation Intel® Xeon Phi™ processor codenamed Knights Landing.</li>
 <li>Added experimental support for compressed BVH nodes (reduces node size to 56–62% of uncompressed size). Compression introduces a typical performance overhead of ~10%.</li>
@@ -81,7 +90,7 @@
 </ul>
 <h3 id="new-features-in-embree-2.8.1">New Features in Embree 2.8.1</h3>
 <ul>
-<li>Added support for setting per geometry tessellation rate (supported for subdivision and bezier geometries).</li>
+<li>Added support for setting per geometry tessellation rate (supported for subdivision and Bézier geometries).</li>
 <li>Added support for motion blurred instances.</li>
 </ul>
 <h3 id="new-features-in-embree-2.8.0">New Features in Embree 2.8.0</h3>
