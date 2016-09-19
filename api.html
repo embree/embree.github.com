@@ -15,18 +15,35 @@ table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
 table.sourceCode { width: 100%; line-height: 100%; }
 td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
 td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; }
-code > span.dt { color: #902000; }
-code > span.dv { color: #40a070; }
-code > span.bn { color: #40a070; }
-code > span.fl { color: #40a070; }
-code > span.ch { color: #4070a0; }
-code > span.st { color: #4070a0; }
-code > span.co { color: #60a0b0; font-style: italic; }
-code > span.ot { color: #007020; }
-code > span.al { color: #ff0000; font-weight: bold; }
-code > span.fu { color: #06287e; }
-code > span.er { color: #ff0000; font-weight: bold; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 div.sourceCode { overflow-x: initial; }
     </style>
     <script>
@@ -76,18 +93,18 @@ div.sourceCode { overflow-x: initial; }
 <p>The Embree API exists in a C++ and ISPC version. This document describes the C++ version of the API, the ISPC version is almost identical. The only differences are that the ISPC version needs some ISPC specific <code>uniform</code> type modifiers, and has special functions that operate on ray packets of the native SIMD size the ISPC code is compiled for.</p>
 <p>Embree supports two modes for a scene, the <code>normal mode</code> and <code>stream mode</code>, which require different ray queries and callbacks to be used. The <code>normal mode</code> is the default, but we will switch entirely to the ray <code>stream mode</code> in a later release.</p>
 <p>The user is supposed to include the <code>embree2/rtcore.h</code>, and the <code>embree2/rtcore_ray.h</code> file, but none of the other header files. If using the ISPC version of the API, the user should include <code>embree2/rtcore.isph</code> and <code>embree2/rtcore_ray.isph</code>.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree2/rtcore.h&gt;</span>
-<span class="ot">#include &lt;embree2/rtcore_ray.h&gt;</span></code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree2/rtcore.h&gt;</span>
+<span class="ot">#include &lt;embree2/rtcore_ray.h&gt;</span></code></pre></div>
 <p>All API calls carry the prefix <code>rtc</code> which stands for <strong>r</strong>ay <strong>t</strong>racing <strong>c</strong>ore. Embree supports a device concept, which allows different components of the application to use the API without interfering with each other. You have to create at least one Embree device through the <code>rtcNewDevice</code> call. Before the application exits it should delete all devices by invoking <code>rtcDeleteDevice</code>. An application typically creates a single device only, and should create only a small number of devices.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">RTCDevice device = rtcNewDevice(NULL);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCDevice device = rtcNewDevice(NULL);
 ...
-rtcDeleteDevice(device);</code></pre>
+rtcDeleteDevice(device);</code></pre></div>
 <p>It is strongly recommended to have the <code>Flush to Zero</code> and <code>Denormals are Zero</code> mode of the MXCSR control and status register enabled for each thread before calling the <code>rtcIntersect</code> and <code>rtcOccluded</code> functions. Otherwise, under some circumstances special handling of denormalized floating point numbers can significantly reduce application and Embree performance. When using Embree together with the Intel® Threading Building Blocks, it is sufficient to execute the following code at the beginning of the application main thread (before the creation of the <code>tbb::task_scheduler_init</code> object):</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;xmmintrin.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;xmmintrin.h&gt;</span>
 <span class="ot">#include &lt;pmmintrin.h&gt;</span>
 ...
 _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
-_MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre>
+_MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre></div>
 <p>Embree processes some implementation specific configuration from the following locations in the specified order:</p>
 <ol style="list-style-type: decimal">
 <li>configuration string passed to the <code>rtcNewDevice</code> function</li>
@@ -98,7 +115,7 @@ _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre>
 <p>API calls that access geometries are only thread safe as long as different geometries are accessed. Accesses to one geometry have to get sequenced by the application. All other API calls are thread safe. The API calls are re-entrant, it is thus safe to trace new rays and create new geometry when intersecting a user defined object.</p>
 <p>Each user thread has its own error flag per device. If an error occurs when invoking some API function, this flag is set to an error code if it stores no previous error. The <code>rtcDeviceGetError</code> function reads and returns the currently stored error and clears the error flag again.</p>
 <p>Possible error codes returned by <code>rtcDeviceGetError</code> are:</p>
-<table>
+<table style="width:96%;">
 <caption>Return values of <code>rtcDeviceGetError</code>.</caption>
 <colgroup>
 <col width="33%" />
@@ -145,9 +162,9 @@ _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre>
 <p>Using the <code>rtcDeviceSetErrorFunction</code> call, it is also possible to set a callback function that is called whenever an error occurs for a device. The callback function gets passed the error code, as well as some string that describes the error further. Passing <code>NULL</code> to <code>rtcDeviceSetErrorFunction</code> disables the set callback function again. The previously described error flags are also set if an error callback function is present.</p>
 <h2 id="scene">Scene</h2>
 <p>A scene is a container for a set of geometries of potentially different types. A scene is created using the <code>rtcDeviceNewScene</code> function call, and destroyed using the <code>rtcDeleteScene</code> function call. Two types of scenes are supported, dynamic and static scenes. Different flags specify the type of scene to create and the type of ray query operations that can later be performed on the scene. The following example creates a scene that supports dynamic updates and the single ray <code>rtcIntersect</code> and <code>rtcOccluded</code> calls.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">RTCScene scene = rtcDeviceNewScene(device, RTC_SCENE_DYNAMIC, RTC_INTERSECT1);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCScene scene = rtcDeviceNewScene(device, RTC_SCENE_DYNAMIC, RTC_INTERSECT1);
 ...
-rtcDeleteScene(scene);</code></pre>
+rtcDeleteScene(scene);</code></pre></div>
 <p>Using the following scene flags the user can select between creating a static or dynamic scene.</p>
 <table>
 <caption>Dynamic type flags for <code>rtcDeviceNewScene</code>.</caption>
@@ -173,7 +190,7 @@ rtcDeleteScene(scene);</code></pre>
 <p>The modification of geometry, building of hierarchies using <code>rtcCommit</code>, and tracing of rays have always to happen separately, never at the same time.</p>
 <p>Embree silently ignores primitives that would cause numerical issues, e.g. primitives containing NaNs, INFs, or values greater than 1.844E18f.</p>
 <p>The following flags can be used to tune the used acceleration structure. These flags are only hints and may be ignored by the implementation.</p>
-<table>
+<table style="width:97%;">
 <caption>Acceleration structure flags for <code>rtcDeviceNewScene</code>.</caption>
 <colgroup>
 <col width="34%" />
@@ -221,7 +238,7 @@ rtcDeleteScene(scene);</code></pre>
 </tbody>
 </table>
 <p>The second argument of the <code>rtcDeviceNewScene</code> function are algorithm flags, that allow to specify which ray queries are required by the application. Calling a ray query API function for a scene that is different to the ones specified at scene creation time is not allowed. Further, the application should only pass ray query requirements that are really needed, to give Embree most freedom in choosing the best algorithm. E.g. in case Embree implements no packet traversers for some highly optimized data structure for single rays, then this data structure cannot be used if the user enables any ray packet query.</p>
-<table>
+<table style="width:97%;">
 <caption>Enabled algorithm flags for <code>rtcDeviceNewScene</code>.</caption>
 <colgroup>
 <col width="28%" />
@@ -268,7 +285,7 @@ rtcDeleteScene(scene);</code></pre>
 <p>For static scenes, geometry IDs are assigned sequentially starting at 0. This allows the application to use a fixed size array to map from geometry IDs to its own geometry representation.</p>
 <p>Alternatively the application can also use the <code>void rtcSetUserData (RTCScene scene, unsigned geomID, void* ptr)</code> function to set a user data pointer <code>ptr</code> to its own geometry representation, and later read out this pointer again using the <code>void* rtcGetUserData (RTCScene scene, unsigned geomID)</code> function.</p>
 <p>The following geometry flags can be specified at construction time of geometries:</p>
-<table>
+<table style="width:97%;">
 <caption>Flags for the creation of new geometries.</caption>
 <colgroup>
 <col width="34%" />
@@ -298,10 +315,10 @@ rtcDeleteScene(scene);</code></pre>
 <h3 id="triangle-meshes">Triangle Meshes</h3>
 <p>Triangle meshes are created using the <code>rtcNewTriangleMesh</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
 <p>The number of triangles, number of vertices, and optionally the number of time steps (1 for normal meshes, and 2 for linear motion blur) have to get specified at construction time of the mesh. The user can also specify additional flags that choose the strategy to handle that mesh in dynamic scenes. The following example demonstrates how to create a triangle mesh without motion blur:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewTriangleMesh(scene, geomFlags,
-   numTriangles, numVertices, <span class="dv">1</span>);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewTriangleMesh(scene, geomFlags,
+   numTriangles, numVertices, <span class="dv">1</span>);</code></pre></div>
 <p>The triangle indices can be set by mapping and writing to the index buffer (<code>RTC_INDEX_BUFFER</code>) and the triangle vertices can be set by mapping and writing into the vertex buffer (<code>RTC_VERTEX_BUFFER</code>). The index buffer contains an array of three 32 bit indices, while the vertex buffer contains an array of three float values aligned to 16 bytes. The 4th component of the aligned vertices can be arbitrary. All buffers have to get unmapped before an <code>rtcCommit</code> call to the scene.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Vertex   { <span class="dt">float</span> x, y, z, a; };
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Vertex   { <span class="dt">float</span> x, y, z, a; };
 <span class="kw">struct</span> Triangle { <span class="dt">int</span> v0, v1, v2; };
 
 Vertex* vertices = (Vertex*) rtcMapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
@@ -310,7 +327,7 @@ rtcUnmapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
 
 Triangle* triangles = (Triangle*) rtcMapBuffer(scene, geomID, RTC_INDEX_BUFFER);
 <span class="co">// fill triangle indices here</span>
-rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
+rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre></div>
 <p>Also see tutorial <a href="tutorials.html#triangle-geometry">Triangle Geometry</a> for an example of how to create triangle meshes.</p>
 <p>The parametrization of a triangle uses the first vertex <code>p0</code> as base point, and the vector <code>p1 - p0</code> as u-direction and <code>p2 - p0</code> as v-direction. The following picture additionally illustrates the direction the geometry normal is pointing into.</p>
 <div class="figure">
@@ -318,14 +335,14 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 
 </div>
 <p>Some texture coordinates <code>t0,t1,t2</code> can be linearly interpolated over the triangle the following way:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-u-v)*t0 + u*(t1-t0) + v*(t2-t0)</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-u-v)*t0 + u*(t1-t0) + v*(t2-t0)</code></pre></div>
 <h3 id="quad-meshes">Quad Meshes</h3>
 <p>Quad meshes are created using the <code>rtcNewQuadMesh</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
 <p>The number of quads, number of vertices, and optionally the number of time steps (1 for normal meshes, and 2 for linear motion blur) have to get specified at construction time of the mesh. The user can also specify additional flags that choose the strategy to handle that mesh in dynamic scenes. The following example demonstrates how to create a quad mesh without motion blur:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewQuadMesh(scene, geomFlags,
-   numTriangles, numVertices, <span class="dv">1</span>);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewQuadMesh(scene, geomFlags,
+   numTriangles, numVertices, <span class="dv">1</span>);</code></pre></div>
 <p>The quad indices can be set by mapping and writing to the index buffer (<code>RTC_INDEX_BUFFER</code>) and the quad vertices can be set by mapping and writing into the vertex buffer (<code>RTC_VERTEX_BUFFER</code>). The index buffer contains an array of four 32 bit indices, while the vertex buffer contains an array of three float values aligned to 16 bytes. The 4th component of the aligned vertices can be arbitrary. All buffers have to get unmapped before an <code>rtcCommit</code> call to the scene.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Vertex { <span class="dt">float</span> x, y, z, a; };
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Vertex { <span class="dt">float</span> x, y, z, a; };
 <span class="kw">struct</span> Quad   { <span class="dt">int</span> v0, v1, v2, v3; };
 
 Vertex* vertices = (Vertex*) rtcMapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
@@ -334,13 +351,13 @@ rtcUnmapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
 
 Quad* quads = (Quad*) rtcMapBuffer(scene, geomID, RTC_INDEX_BUFFER);
 <span class="co">// fill quad indices here</span>
-rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
+rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre></div>
 <p>A quad is internally handled as a pair of two triangles <code>v0,v1,v3</code> and <code>v2,v3,v1</code>, with the u’/v’ coordinates of the second triangle corrected by <code>u = 1-u'</code> and <code>v = 1-v'</code> to produce a quad parametrization where u and v go from 0 to 1.</p>
 <p>To encode a triangle as a quad just replicate the last triangle vertex (<code>v0,v1,v2</code> -&gt; <code>v0,v1,v2,v2</code>). This way the quad mesh can be used to represent a mixed mesh which contains triangles and quads.</p>
 <h3 id="subdivision-surfaces">Subdivision Surfaces</h3>
 <p>Catmull-Clark subdivision surfaces for meshes consisting of faces of up to 15 vertices (e.g. triangles, quadrilateral, pentagons, etc.) are supported, including support for edge creases, vertex creases, holes, and non-manifold geometry.</p>
 <p>A subdivision surface is created using the <code>rtcNewSubdivisionMesh</code> function call, and deleted again using the <code>rtcDeleteGeometry</code> function call.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"> <span class="dt">unsigned</span> rtcNewSubdivisionMesh(RTCScene scene, 
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"> <span class="dt">unsigned</span> rtcNewSubdivisionMesh(RTCScene scene, 
                                 RTCGeometryFlags flags,
                                 size_t numFaces,
                                 size_t numEdges,
@@ -349,7 +366,7 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
                                 size_t numVertexCreases,
                                 size_t numCorners,
                                 size_t numHoles,
-                                size_t numTimeSteps);</code></pre>
+                                size_t numTimeSteps);</code></pre></div>
 <p>The number of faces (<code>numFaces</code>), edges/indices (<code>numEdges</code>), vertices (<code>numVertices</code>), edge creases (<code>numEdgeCreases</code>), vertex creases (<code>numVertexCreases</code>), holes (<code>numHoles</code>), and time steps (<code>numTimeSteps</code>) have to get specified at construction time.</p>
 <p>The following buffers have to get setup by the application: the face buffer (<code>RTC_FACE_BUFFER</code>) contains the number edges/indices (3 to 15) of each of the <code>numFaces</code> faces, the index buffer (<code>RTC_INDEX_BUFFER</code>) contains multiple (3 to 15) 32 bit vertex indices for each face and <code>numEdges</code> indices in total, the vertex buffer (<code>RTC_VERTEX_BUFFER</code>) stores <code>numVertices</code> vertices as single precision <code>x</code>, <code>y</code>, <code>z</code> floating point coordinates aligned to 16 bytes. The value of the 4th float used for alignment can be arbitrary.</p>
 <p>Optionally, the application can setup the hole buffer (<code>RTC_HOLE_BUFFER</code>) with <code>numHoles</code> many 32 bit indices of faces that should be considered non-existing.</p>
@@ -363,13 +380,13 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 
 </div>
 <p>Some texture coordinates <code>t0,t1,t2,t3</code> can be bi-linearly interpolated over the quadrilateral the following way:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-v)((<span class="dv">1</span>-u)*t0 + u*t1) + v*((<span class="dv">1</span>-u)*t3 + u*t2) </code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-v)((<span class="dv">1</span>-u)*t0 + u*t1) + v*((<span class="dv">1</span>-u)*t3 + u*t2) </code></pre></div>
 <p>The parametrization for all other face types where the number of vertices is not equal to 4, have a special parametrization where the n’th quadrilateral (that would be obtained by a single subdivision step) is encoded in the higher order bits of the UV coordinates and the local hit location inside this quadrilateral in the lower order bits. The following piece of code extracts the sub-patch ID i and UVs of this subpatch:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">const</span> <span class="dt">unsigned</span> l = floorf(<span class="fl">4.</span><span class="er">0f</span>*U); 
-<span class="dt">const</span> <span class="dt">unsigned</span> h = floorf(<span class="fl">4.</span><span class="er">0f</span>*V); 
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">const</span> <span class="dt">unsigned</span> l = floorf(<span class="fl">4.0f</span>*U); 
+<span class="dt">const</span> <span class="dt">unsigned</span> h = floorf(<span class="fl">4.0f</span>*V); 
 <span class="dt">const</span> <span class="dt">unsigned</span> i = <span class="dv">4</span>*h+l;
-<span class="dt">const</span> <span class="dt">float</span> u = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">4.</span><span class="er">0f</span>*U);
-<span class="dt">const</span> <span class="dt">float</span> v = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">4.</span><span class="er">0f</span>*V);</code></pre>
+<span class="dt">const</span> <span class="dt">float</span> u = <span class="fl">2.0f</span>*fracf(<span class="fl">4.0f</span>*U);
+<span class="dt">const</span> <span class="dt">float</span> v = <span class="fl">2.0f</span>*fracf(<span class="fl">4.0f</span>*V);</code></pre></div>
 <p>To smoothly interpolate texture coordinates over the subdivision surface we recommend using the <code>rtcInterpolate2</code> function, which will apply the standard subdivision rules for interpolation and automatically take care of the special UV encoding for non-quadrilaterals.</p>
 <p>Using the <code>rtcSetBoundaryMode</code> API call one can specify how corner vertices are handled. Specifying <code>RTC_BOUNDARY_NONE</code> ignores all boundary patches, <code>RTC_BOUNDARY_EDGE_ONLY</code> makes all boundaries soft, while <code>RTC_BOUNDARY_EDGE_AND_CORNER</code> makes corner vertices sharp.</p>
 <p>The user can also specify a geometry mask and additional flags that choose the strategy to handle that subdivision mesh in dynamic scenes.</p>
@@ -383,7 +400,7 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>The index buffer contains an array of 32 bit indices pointing to the ID of the first of two vertices, while the vertex buffer stores all control points in the form of a single precision position and radius stored in <code>x</code>, <code>y</code>, <code>z</code>, <code>r</code> order in memory. The radii have to be greater or equal zero. All buffers have to get unmapped before an <code>rtcCommit</code> call to the scene.</p>
 <p>Like for triangle meshes, the user can also specify a geometry mask and additional flags that choose the strategy to handle that mesh in dynamic scenes.</p>
 <p>The following example demonstrates how to create some line segment geometry:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewLineSegments(scene, geomFlags, numCurves,
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewLineSegments(scene, geomFlags, numCurves,
   numVertices, <span class="dv">1</span>);
 
 <span class="kw">struct</span> Vertex { <span class="dt">float</span> x, y, z, r; };
@@ -394,7 +411,7 @@ rtcUnmapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
 
 <span class="dt">int</span>* curves = (<span class="dt">int</span>*) rtcMapBuffer(scene, geomID, RTC_INDEX_BUFFER);
 <span class="co">// fill indices here</span>
-rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
+rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre></div>
 <h3 id="bézier-hair-geometry">Bézier Hair Geometry</h3>
 <p>Hair geometries are supported, which consist of multiple hairs represented as cubic Bézier curves with varying radius per control point. Individual hairs are considered to be subpixel sized which allows the implementation to approximate the intersection calculation. This in particular means that zooming onto one hair might show geometric artifacts.</p>
 <p>Hair geometries are created using the <code>rtcNewHairGeometry</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
@@ -404,7 +421,7 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>The implementation may choose to subdivide the Bézier curve into multiple cylinders-like primitives. The number of cylinders the curve gets subdivided into can be specified per hair geometry through the <code>rtcSetTessellationRate(RTCScene scene, unsigned geomID, float rate)</code> function. By default the tessellation rate for hair curves is 4.</p>
 <p>Like for triangle meshes, the user can also specify a geometry mask and additional flags that choose the strategy to handle that mesh in dynamic scenes.</p>
 <p>The following example demonstrates how to create some hair geometry:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewHairGeometry(scene, geomFlags, numCurves, numVertices);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewHairGeometry(scene, geomFlags, numCurves, numVertices);
 
 <span class="kw">struct</span> Vertex { <span class="dt">float</span> x, y, z, r; };
 
@@ -414,7 +431,7 @@ rtcUnmapBuffer(scene, geomID, RTC_VERTEX_BUFFER);
 
 <span class="dt">int</span>* curves = (<span class="dt">int</span>*) rtcMapBuffer(scene, geomID, RTC_INDEX_BUFFER);
 <span class="co">// fill indices here</span>
-rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
+rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre></div>
 <p>Also see tutorial <a href="tutorials.html#hair">Hair</a> for an example of how to create and use hair geometry.</p>
 <h3 id="bézier-curve-geometry">Bézier Curve Geometry</h3>
 <p>The Bézier curve geometry consists of multiple cubic Bézier curves with varying radius per control point. The cuve surface is defined as the sweep surface of sweeping a varying radius circle tangential along the Bézier curve. As a limitation, the radius of the curve has to be smaller than the curvature radius of the Bézier curve at each location on the curve. In contrast to hair geometry, the curve geometry is rendered properly even in closeups.</p>
@@ -429,26 +446,26 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>User geometries are created using the <code>rtcNewUserGeometry</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call. The the <code>rtcNewUserGeometry2</code> function additionally gets a <code>numTimeSteps</code> parameter, which specifies the number of timesteps (1 or 2) for motion blur.</p>
 <p>When creating a user defined geometry, the user has to set a data pointer, a bounding function closure (function and user pointer) as well as user defined intersect and occluded callback function pointers. The bounding function is used to query the bounds of all timesteps of a user primitive, while the intersect and occluded callback functions are called to intersect the primitive with a ray.</p>
 <p>The bounding function to register has the following signature</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCBoundsFunc2)(<span class="dt">void</span>* userPtr, <span class="dt">void</span>* geomUserPtr, size_t id, RTCBounds* bounds_o);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCBoundsFunc2)(<span class="dt">void</span>* userPtr, <span class="dt">void</span>* geomUserPtr, size_t id, RTCBounds* bounds_o);</code></pre></div>
 <p>and can be registered using the <code>rtcSetBoundsFunction2</code> API function:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetBoundsFunction2(scene, geomID, userBoundsFunction, userPtr);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetBoundsFunction2(scene, geomID, userBoundsFunction, userPtr);</code></pre></div>
 <p>When the bounding callback is called, it is passed a user defined pointer specified at registration time of the bounds function (<code>userPtr</code> parameter), the per geometry user data pointer (<code>geomUserPtr</code> parameter), the ID of the primitive to calculate the bounds for (<code>id</code> parameter), and a memory location to write the calculated bound to (<code>bounds_o</code> parameter). When the user geometry is created with 2 time steps enabled, bounds for both timesteps have to get written to the output location.</p>
 <p>The signature of supported user defined intersect and occluded function in normal mode is as follows:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFunc  ) (                   <span class="dt">void</span>* userDataPtr, RTCRay&amp; ray, size_t item);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFunc  ) (                   <span class="dt">void</span>* userDataPtr, RTCRay&amp; ray, size_t item);
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFunc4 ) (<span class="dt">const</span> <span class="dt">void</span>* valid, <span class="dt">void</span>* userDataPtr, RTCRay4&amp; ray, size_t item);
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFunc8 ) (<span class="dt">const</span> <span class="dt">void</span>* valid, <span class="dt">void</span>* userDataPtr, RTCRay8&amp; ray, size_t item);
-<span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFunc16) (<span class="dt">const</span> <span class="dt">void</span>* valid, <span class="dt">void</span>* userDataPtr, RTCRay16&amp; ray, size_t item);</code></pre>
+<span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFunc16) (<span class="dt">const</span> <span class="dt">void</span>* valid, <span class="dt">void</span>* userDataPtr, RTCRay16&amp; ray, size_t item);</code></pre></div>
 <p>The <code>RTCIntersectFunc</code> callback function operates on single rays and gets passed the user data pointer of the user geometry (<code>userDataPtr</code> parameter), the ray to intersect (<code>ray</code> parameter), and the ID of the primitive to intersect (<code>item</code> parameter). The <code>RTCIntersectFunc4/8/16</code> callback functions operate on ray packets of size 4, 8 and 16 and additionally get an integer valid mask as input (<code>valid</code> parameter). The callback functions should not modify any ray that is disabled by that valid mask.</p>
 <p>In stream mode the following callback function has to get used:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFuncN ) (<span class="dt">const</span> <span class="dt">int</span>*  valid, <span class="dt">void</span>* userDataPtr, <span class="dt">const</span> RTCIntersectContext* context, RTCRayN* rays, size_t N, size_t item);
-<span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFunc1Mp)(                   <span class="dt">void</span>* userDataPtr, <span class="dt">const</span> RTCIntersectContext* context, RTCRay** rays, size_t M, size_t item);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFuncN ) (<span class="dt">const</span> <span class="dt">int</span>*  valid, <span class="dt">void</span>* userDataPtr, <span class="dt">const</span> RTCIntersectContext* context, RTCRayN* rays, size_t N, size_t item);
+<span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFunc1Mp)(                   <span class="dt">void</span>* userDataPtr, <span class="dt">const</span> RTCIntersectContext* context, RTCRay** rays, size_t M, size_t item);</code></pre></div>
 <p>The <code>RTCIntersectFuncN</code> callback function supports ray packets of arbitrary size <code>N</code>. The <code>RTCIntersectFunc1Mp</code> callback function get an array of <code>M</code> pointers to single rays as input.</p>
 <p>The user intersect function should return without modifying the ray structure if the user geometry is missed. Whereas, if an intersection of the user primitive with the ray segment was found, the intersect function has to update the hit information of the ray (<code>tfar</code>, <code>u</code>, <code>v</code>, <code>Ng</code>, <code>geomID</code>, <code>primID</code> components).</p>
 <p>The user occluded function should also return without modifying the ray structure if the user geometry is missed. If the geometry is hit, it should set the <code>geomID</code> member of the ray to 0.</p>
 <p>When performing ray queries using the <code>rtcIntersect</code> and <code>rtcOccluded</code> function, callbacks of type <code>RTCIntersectFunc</code> are invoked for user geometries. Consequently, an application only operating on single rays only has to provide the single ray intersect and occluded callbacks. Similar when calling the <code>rtcIntersect4/8/16</code> and <code>rtcOccluded4/8/16</code> functions, the <code>RTCIntersectFunc4/8/16</code> callbacks of matching packet size and type are called.</p>
 <p>If ray stream mode is enabled for the scene only the <code>RTCIntersectFuncN</code> and <code>RTCIntersectFunc1Mp</code> callback can be used. In this case specifying an <code>RTCIntersectFuncN</code> callback is mandatory and the <code>RTCIntersectFunc1Mp</code> callback is optional. Trying to set a different type of user callback function results in an error.</p>
 <p>The following example illustrates creating an array with two user geometries:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> numTimeSteps = <span class="dv">2</span>;
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">int</span> numTimeSteps = <span class="dv">2</span>;
 <span class="kw">struct</span> UserObject { ... };
 
 <span class="dt">void</span> userBoundsFunction(<span class="dt">void</span>* userPtr, UserObject* userGeomPtr, size_t i, RTCBounds* bounds)
@@ -480,21 +497,21 @@ userGeomPtr[<span class="dv">1</span>] = ...
 rtcSetUserData(scene, geomID, userGeomPtr);
 rtcSetBoundsFunction2(scene, geomID, userBoundsFunction, userPtr);
 rtcSetIntersectFunction(scene, geomID, userIntersectFunction);
-rtcSetOccludedFunction(scene, geomID, userOccludedFunction);</code></pre>
+rtcSetOccludedFunction(scene, geomID, userOccludedFunction);</code></pre></div>
 <p>See tutorial <a href="tutorials.html#user-geometry">User Geometry</a> for an example of how to use the user defined geometries.</p>
 <h3 id="instances">Instances</h3>
 <p>Embree supports instancing of scenes inside another scene by some transformation. As the instanced scene is stored only a single time, even if instanced to multiple locations, this feature can be used to create very large scenes. Only single level instancing is supported by Embree natively, however, multi-level instancing can be implemented through user geometries.</p>
 <p>Instances are created using the <code>rtcNewInstance2 (RTCScene target, RTCScene source, size_t numTimeSteps)</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call. To instantiate a scene, one first has to generate the scene <code>B</code> to instantiate. Now one can add an instance of this scene inside a scene <code>A</code> the following way:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> instID = rtcNewInstance2(sceneA, sceneB, <span class="dv">1</span>);
-rtcSetTransform2(sceneA, instID, RTC_MATRIX_COLUMN_MAJOR, &amp;column_matrix_3x4, <span class="dv">0</span>);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> instID = rtcNewInstance2(sceneA, sceneB, <span class="dv">1</span>);
+rtcSetTransform2(sceneA, instID, RTC_MATRIX_COLUMN_MAJOR, &amp;column_matrix_3x4, <span class="dv">0</span>);</code></pre></div>
 <p>To create some motion blurred instance just pass 2 as the number of timesteps and specify two matrices:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> instID = rtcNewInstance2(sceneA, sceneB, <span class="dv">2</span>);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> instID = rtcNewInstance2(sceneA, sceneB, <span class="dv">2</span>);
 rtcSetTransform2(sceneA, instID, RTC_MATRIX_COLUMN_MAJOR, &amp;column_matrix_t0_3x4, <span class="dv">0</span>);
-rtcSetTransform2(sceneA, instID, RTC_MATRIX_COLUMN_MAJOR, &amp;column_matrix_t1_3x4, <span class="dv">1</span>);</code></pre>
+rtcSetTransform2(sceneA, instID, RTC_MATRIX_COLUMN_MAJOR, &amp;column_matrix_t1_3x4, <span class="dv">1</span>);</code></pre></div>
 <p>Both scenes have to belong to the same device. One has to call <code>rtcCommit</code> on scene <code>B</code> before one calls <code>rtcCommit</code> on scene <code>A</code>. When modifying scene <code>B</code> one has to call <code>rtcUpdate</code> for all instances of that scene. If a ray hits the instance, then the <code>geomID</code> and <code>primID</code> members of the ray are set to the geometry ID and primitive ID of the primitive hit in scene <code>B</code>, and the <code>instID</code> member of the ray is set to the instance ID returned from the <code>rtcNewInstance2</code> function.</p>
 <p>Some special care has to be taken when using user geometries and instances in the same scene. Instantiated user geometries should not set the <code>instID</code> field of the ray as this field is managed by the instancing already. However, non-instantiated user geometries should clear the <code>instID</code> field to <code>RTC_INVALID_GEOMETRY_ID</code>, to later distinguish them from instantiated geometries that have the <code>instID</code> field set.</p>
 <p>The <code>rtcSetTransform2</code> call can be passed an affine transformation matrix with different data layouts:</p>
-<table>
+<table style="width:97%;">
 <caption>Matrix layouts for <code>rtcSetTransform2</code>.</caption>
 <colgroup>
 <col width="48%" />
@@ -601,7 +618,7 @@ rtcSetTransform2(sceneA, instID, RTC_MATRIX_COLUMN_MAJOR, &amp;column_matrix_t1_
 <p>This structure is in struct of array layout (SOA) for API functions accepting ray packets.</p>
 <p>To create a single ray you can use the <code>RTCRay</code> ray type defined in <code>embree2/rtcore_ray.h</code>. To generate a ray packet of size 4, 8, or 16 you can use the <code>RTCRay4</code>, <code>RTCRay8</code>, or <code>RTCRay16</code> types. Alternatively you can also use the <code>RTCRayNt</code> template to generate ray packets of an arbitrary compile time known size.</p>
 <p>When the ray packet size is not known at compile time (e.g. when Embree returns a ray packet in the <code>RTCFilterFuncN</code> callback function), then you can use the helper functions defined in <code>embree2/rtcore_ray.h</code> to access ray packet components:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">float</span>&amp; RTCRayN_org_x(RTCRayN* rays, size_t N, size_t i);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">float</span>&amp; RTCRayN_org_x(RTCRayN* rays, size_t N, size_t i);
 <span class="dt">float</span>&amp; RTCRayN_org_y(RTCRayN* rays, size_t N, size_t i);
 <span class="dt">float</span>&amp; RTCRayN_org_z(RTCRayN* rays, size_t N, size_t i);
 
@@ -624,7 +641,7 @@ rtcSetTransform2(sceneA, instID, RTC_MATRIX_COLUMN_MAJOR, &amp;column_matrix_t1_
 
 <span class="dt">unsigned</span>&amp; RTCRayN_instID(RTCRayN* ptr, size_t N, size_t i);
 <span class="dt">unsigned</span>&amp; RTCRayN_geomID(RTCRayN* ptr, size_t N, size_t i);
-<span class="dt">unsigned</span>&amp; RTCRayN_primID(RTCRayN* ptr, size_t N, size_t i);</code></pre>
+<span class="dt">unsigned</span>&amp; RTCRayN_primID(RTCRayN* ptr, size_t N, size_t i);</code></pre></div>
 <p>These helper functions get a pointer to the ray packet (<code>rays</code> parameter), the packet size <code>N</code>, and returns a reference to some component (e.g. x-component of origin) of the the ith ray of the packet.</p>
 <p>Please note that there is some incompatibility in the layout of a single ray (<code>RTCRay</code> type) and a ray packet of size 1 (<code>RTCRayNt&lt;1&gt;</code> type) as the <code>org</code> and <code>dir</code> component are aligned to 16 bytes for single rays (see <code>embree2/rtcore_ray.h</code>). This incompatibility will get resolved in a future release, but has to be maintained for compatibility currently. Until then, the ray stream API will always use the single ray layout <code>RTCRay</code> for rays packets of size <code>N=1</code>, and the <code>RTCRayNt</code> layout for ray packets of size not equal 1. The helper functions above to access a ray packet of size <code>N</code> take care of this incompatibility.</p>
 <p>Some callback functions get passed a hit structure with the following data members:</p>
@@ -677,7 +694,7 @@ rtcSetTransform2(sceneA, instID, RTC_MATRIX_COLUMN_MAJOR, &amp;column_matrix_t1_
 </table>
 <p>This structure is in struct of array layout (SOA) for hit packets of size <code>N</code>. The layout of a hit packet of size <code>N</code> is defined by the <code>RTCHitNt</code> template in <code>embree2/rtcore_ray.h</code>.</p>
 <p>When the hit packet size is not known at compile time (e.g. when Embree returns a hit packet in the <code>RTCFilterFuncN</code> callback function), you can use the helper functions defined in <code>embree2/rtcore_ray.h</code> to access hit packet components:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span>&amp; RTCHitN_instID(RTCHitN* hits, size_t N, size_t i);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span>&amp; RTCHitN_instID(RTCHitN* hits, size_t N, size_t i);
 <span class="dt">unsigned</span>&amp; RTCHitN_geomID(RTCHitN* hits, size_t N, size_t i);
 <span class="dt">unsigned</span>&amp; RTCHitN_primID(RTCHitN* hits, size_t N, size_t i);
 
@@ -687,41 +704,41 @@ rtcSetTransform2(sceneA, instID, RTC_MATRIX_COLUMN_MAJOR, &amp;column_matrix_t1_
 
 <span class="dt">float</span>&amp; RTCHitN_Ng_x(RTCHitN* hits, size_t N, size_t i);
 <span class="dt">float</span>&amp; RTCHitN_Ng_y(RTCHitN* hits, size_t N, size_t i);
-<span class="dt">float</span>&amp; RTCHitN_Ng_z(RTCHitN* hits, size_t N, size_t i);</code></pre>
+<span class="dt">float</span>&amp; RTCHitN_Ng_z(RTCHitN* hits, size_t N, size_t i);</code></pre></div>
 <p>These helper functions get a pointer to the hit packet (<code>hits</code> parameter), the packet size <code>N</code>, and returns a reference to some component (e.g. u-component) of the the ith hit of the packet.</p>
 <h2 id="ray-queries">Ray Queries</h2>
 <p>The API supports finding the closest hit of a ray segment with the scene (<code>rtcIntersect</code> functions), and determining if any hit between a ray segment and the scene exists (<code>rtcOccluded</code> functions).</p>
 <h3 id="normal-mode">Normal Mode</h3>
 <p>In normal mode the following API functions should be used to trace rays:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcIntersect  (                   RTCScene scene, RTCRay&amp;    ray);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcIntersect  (                   RTCScene scene, RTCRay&amp;    ray);
 <span class="dt">void</span> rtcIntersect4 (<span class="dt">const</span> <span class="dt">void</span>* valid, RTCScene scene, RTCRay4&amp;   ray);
 <span class="dt">void</span> rtcIntersect8 (<span class="dt">const</span> <span class="dt">void</span>* valid, RTCScene scene, RTCRay8&amp;   ray);
 <span class="dt">void</span> rtcIntersect16(<span class="dt">const</span> <span class="dt">void</span>* valid, RTCScene scene, RTCRay16&amp;  ray);
 <span class="dt">void</span> rtcOccluded   (                   RTCScene scene, RTCRay&amp;    ray);
 <span class="dt">void</span> rtcOccluded4  (<span class="dt">const</span> <span class="dt">void</span>* valid, RTCScene scene, RTCRay4&amp;   ray);
 <span class="dt">void</span> rtcOccluded8  (<span class="dt">const</span> <span class="dt">void</span>* valid, RTCScene scene, RTCRay8&amp;   ray);
-<span class="dt">void</span> rtcOccluded16 (<span class="dt">const</span> <span class="dt">void</span>* valid, RTCScene scene, RTCRay16&amp;  ray);</code></pre>
+<span class="dt">void</span> rtcOccluded16 (<span class="dt">const</span> <span class="dt">void</span>* valid, RTCScene scene, RTCRay16&amp;  ray);</code></pre></div>
 <p>The <code>rtcIntersect</code> and <code>rtcOccluded</code> function operate on single rays. The <code>rtcIntersect4</code> and <code>rtcOccluded4</code> functions operate on ray packets of size 4. The <code>rtcIntersect8</code> and <code>rtcOccluded8</code> functions operate on ray packets of size 8, and the <code>rtcIntersect16</code> and <code>rtcOccluded16</code> functions operate on ray packets of size 16.</p>
 <p>For the ray packet mode with packet size of 4, 8, or 16, the user has to provide a pointer to 4, 8, or 16 of 32 bit integers that act as a ray activity mask (<code>valid</code> argument). If one of these integers is set to <code>0x00000000</code> the corresponding ray is considered inactive and if the integer is set to <code>0xFFFFFFFF</code>, the ray is considered active. Rays that are inactive will not update any hit information.</p>
-<p>Finding the closest hit distance is done through the <code>rtcIntersect</code> type functions. These get the activity mask (<code>valid</code> parameter), the scene (<code>scene</code> parameter), and a ray as input (<code>ray</code> parameter). The layout of the ray structure is described in Section <a href="api.html#ray-layout">Ray Layout</a>. The user has to initialize the ray origin (<code>org</code>), ray direction (<code>dir</code>), and ray segment (<code>tnear</code>, <code>tfar</code>). The ray segment has to be in the range <span class="math">[0, ∞]</span>, thus ranges that start behind the ray origin are not valid, but ranges can reach to infinity. The geometry ID (<code>geomID</code> member) has to get initialized to <code>RTC_INVALID_GEOMETRY_ID</code> (-1). If the scene contains instances, also the instance ID (<code>instID</code>) has to get initialized to <code>RTC_INVALID_GEOMETRY_ID</code> (-1). If the scene contains linear motion blur, also the ray time (<code>time</code>) has to get initialized to a value in the range <span class="math">[0, 1]</span>. If ray masks are enabled at compile time, also the ray mask (<code>mask</code>) has to get initialized. After tracing the ray, the hit distance (<code>tfar</code>), geometry normal (<code>Ng</code>), local hit coordinates (<code>u</code>, <code>v</code>), geometry ID (<code>geomID</code>), and primitive ID (<code>primID</code>) are set. If the scene contains instances, also the instance ID (<code>instID</code>) is set, if an instance is hit. The geometry ID corresponds to the ID returned at creation time of the hit geometry, and the primitive ID corresponds to the <span class="math"><em>n</em></span>th primitive of that geometry, e.g. <span class="math"><em>n</em></span>th triangle. The instance ID corresponds to the ID returned at creation time of the instance.</p>
+<p>Finding the closest hit distance is done through the <code>rtcIntersect</code> type functions. These get the activity mask (<code>valid</code> parameter), the scene (<code>scene</code> parameter), and a ray as input (<code>ray</code> parameter). The layout of the ray structure is described in Section <a href="api.html#ray-layout">Ray Layout</a>. The user has to initialize the ray origin (<code>org</code>), ray direction (<code>dir</code>), and ray segment (<code>tnear</code>, <code>tfar</code>). The ray segment has to be in the range <span class="math inline">[0, ∞]</span>, thus ranges that start behind the ray origin are not valid, but ranges can reach to infinity. The geometry ID (<code>geomID</code> member) has to get initialized to <code>RTC_INVALID_GEOMETRY_ID</code> (-1). If the scene contains instances, also the instance ID (<code>instID</code>) has to get initialized to <code>RTC_INVALID_GEOMETRY_ID</code> (-1). If the scene contains linear motion blur, also the ray time (<code>time</code>) has to get initialized to a value in the range <span class="math inline">[0, 1]</span>. If ray masks are enabled at compile time, also the ray mask (<code>mask</code>) has to get initialized. After tracing the ray, the hit distance (<code>tfar</code>), geometry normal (<code>Ng</code>), local hit coordinates (<code>u</code>, <code>v</code>), geometry ID (<code>geomID</code>), and primitive ID (<code>primID</code>) are set. If the scene contains instances, also the instance ID (<code>instID</code>) is set, if an instance is hit. The geometry ID corresponds to the ID returned at creation time of the hit geometry, and the primitive ID corresponds to the <span class="math inline"><em>n</em></span>th primitive of that geometry, e.g. <span class="math inline"><em>n</em></span>th triangle. The instance ID corresponds to the ID returned at creation time of the instance.</p>
 <p>Testing if any geometry intersects with the ray segment is done through the <code>rtcOccluded</code> functions. Initialization has to be done as for <code>rtcIntersect</code>. If some geometry got found along the ray segment, the geometry ID (<code>geomID</code>) will get set to 0. Other hit information of the ray is undefined after calling <code>rtcOccluded</code>.</p>
 <p>In normal mode, data alignment requirements for ray query functions operating on single rays is 16 bytes for the ray. Data alignment requirements for query functions operating on AOS packets of 4, 8, or 16 rays, is 16, 32, and 64 bytes respectively, for the valid mask and the ray. To operate on packets of 4 rays, the CPU has to support SSE, to operate on packets of 8 rays, the CPU has to support AVX-256, and to operate on packets of 16 rays, the CPU has to support AVX512 instructions. Additionally, the required ISA has to be enabled in Embree at compile time to use the desired packet size.</p>
 <p>The following code shows an example of setting up a single ray and traces it through the scene:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">RTCRay ray;
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCRay ray;
 ray.org = ray_origin;
 ray.dir = ray_direction;
-ray.tnear = <span class="fl">0.</span><span class="er">0f</span>;
+ray.tnear = <span class="fl">0.0f</span>;
 ray.tfar = inf;
 ray.instID = RTC_INVALID_GEOMETRY_ID;
 ray.geomID = RTC_INVALID_GEOMETRY_ID;
 ray.primID = RTC_INVALID_GEOMETRY_ID;
 ray.mask = <span class="bn">0xFFFFFFFF</span>;
-ray.time = <span class="fl">0.</span><span class="er">0f</span>;
-rtcIntersect(scene, ray);</code></pre>
+ray.time = <span class="fl">0.0f</span>;
+rtcIntersect(scene, ray);</code></pre></div>
 <p>See tutorial <a href="tutorials.html#triangle-geometry">Triangle Geometry</a> for a complete example of how to trace rays.</p>
 <h3 id="ray-stream-mode">Ray Stream Mode</h3>
 <p>For the stream mode new functions got introduced that operate on streams of rays:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcIntersect1M    (RTCScene scene, <span class="dt">const</span> RTCIntersectContext* context,
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcIntersect1M    (RTCScene scene, <span class="dt">const</span> RTCIntersectContext* context,
                         RTCRay* rays, size_t M, size_t stride);
 <span class="dt">void</span> rtcIntersectNM    (RTCScene scene, <span class="dt">const</span> RTCIntersectContext* context,
                         RTCRayN* rays, size_t N, size_t M, size_t stride);
@@ -733,54 +750,54 @@ rtcIntersect(scene, ray);</code></pre>
 <span class="dt">void</span> rtcOccludedNM     (RTCScene scene, <span class="dt">const</span> RTCIntersectContext* context,
                         RTCRayN* rays, size_t N, size_t M, size_t stride);
 <span class="dt">void</span> rtcOccludedNp     (RTCScene scene, <span class="dt">const</span> RTCIntersectContext* context,
-                        RTCRayNp&amp; rays, size_t N, size_t flags);</code></pre>
+                        RTCRayNp&amp; rays, size_t N, size_t flags);</code></pre></div>
 <p>The <code>rtcIntersectNM</code> and <code>rtcOccludedNM</code> ray stream functions operate on an array of <code>M</code> ray packets of packet size <code>N</code>. The offset in bytes between consecutive ray packets can be specified by the <code>stride</code> parameter. Data alignment requirements for ray streams is 16 bytes. The packet size <code>N</code> has to be larger than 0 and the stream size <code>M</code> can be an arbitrary positive integer including 0. Tracing for example a ray stream consisting of four 8-wide SOA ray packets just requires to set the parameters <code>N</code> to 8, <code>M</code> to 4 and the <code>stride</code> to <code>sizeof(RTCRay8)</code>. A ray in a ray stream is considered inactive during traversal/intersection if its <code>tnear</code> value is larger than its <code>tfar</code> value.</p>
 <p>The ray streams functions <code>rtcIntersect1M</code> and <code>rtcOccluded1M</code> are just a shortcut for single ray streams with a packet size of <code>N=1</code>. The <code>rtcIntersectNp</code> and <code>rtcOccludedNp</code> functions do not require the individual components of the SOA ray packets to be stored sequentially in memory, but at different adresses as specified in the <code>RTCRayNp</code> structure.</p>
 <p>The intersection context passed to the stream version of the ray query functions, can specify some intersection flags to optimize traversal and a <code>userRayExt</code> pointer that can be used to extent the ray with additional data as described in Section <a href="api.html#extending-the-ray-structure">Extending the Ray Structure</a>. The intersection context is propagated to each stream user callback function invoked.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> RTCIntersectContext
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> RTCIntersectContext
 {
   RTCIntersectFlags flags;   <span class="co">//!&lt;</span> intersection flags
   <span class="dt">void</span>* userRayExt;          <span class="co">//!&lt;</span> can be used to pass extended ray data to callbacks
-};</code></pre>
+};</code></pre></div>
 <p>As intersection flag the user can currently specify if Embree should optimize traversal for coherent or incoherent ray distributions.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">enum</span> RTCIntersectFlags
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">enum</span> RTCIntersectFlags
 {
   RTC_INTERSECT_COHERENT   = <span class="dv">0</span>,  <span class="co">//!&lt;</span> optimize <span class="kw">for</span> coherent rays
   RTC_INTERSECT_INCOHERENT = <span class="dv">1</span>   <span class="co">//!&lt;</span> optimize <span class="kw">for</span> incoherent rays
-};</code></pre>
+};</code></pre></div>
 <p>The following code shows an example of setting up a stream of single rays and tracing it through the scene:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">RTCRay rays[<span class="dv">128</span>];
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCRay rays[<span class="dv">128</span>];
 
 <span class="co">/* first setup all rays */</span>
 <span class="kw">for</span> (size_t i=<span class="dv">0</span>; i&lt;<span class="dv">128</span>; i++)
 {
   rays[i].org = calculate_ray_org(i);
   rays[i].dir = calculate_ray_dir(i);
-  rays[i].tnear = <span class="fl">0.</span><span class="er">0f</span>;
+  rays[i].tnear = <span class="fl">0.0f</span>;
   rays[i].tfar = inf;
   rays[i].instID = RTC_INVALID_GEOMETRY_ID;
   rays[i].geomID = RTC_INVALID_GEOMETRY_ID;
   rays[i].primID = RTC_INVALID_GEOMETRY_ID;
   rays[i].mask = <span class="bn">0xFFFFFFFF</span>;
-  rays[i].time = <span class="fl">0.</span><span class="er">0f</span>;
+  rays[i].time = <span class="fl">0.0f</span>;
 }
 
 <span class="co">/* now create a context and trace the ray stream */</span>
 RTCIntersectContext context;
 context.flags = RTC_INTERSECT_INCOHERENT;
 context.userRayExt = <span class="kw">nullptr</span>;
-rtcIntersectNM(scene, &amp;context, &amp;rays, <span class="dv">1</span>, <span class="dv">128</span>, <span class="kw">sizeof</span>(RTCRay));</code></pre>
+rtcIntersectNM(scene, &amp;context, &amp;rays, <span class="dv">1</span>, <span class="dv">128</span>, <span class="kw">sizeof</span>(RTCRay));</code></pre></div>
 <p>See tutorial <a href="tutorials.html#stream-viewer">Stream Viewer</a> for a complete example of how to trace ray streams.</p>
 <h2 id="interpolation-of-vertex-data">Interpolation of Vertex Data</h2>
 <p>Smooth interpolation of per-vertex data is supported for triangle meshes, quad meshs, hair geometry, line segment geometry, and subdivision geometry using the <code>rtcInterpolate2</code> API call. This interpolation function does ignore displacements and always interpolates the underlying base surface.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcInterpolate2(RTCScene scene,
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcInterpolate2(RTCScene scene,
                      <span class="dt">unsigned</span> geomID, <span class="dt">unsigned</span> primID,
                      <span class="dt">float</span> u, <span class="dt">float</span> v,
                      RTCBufferType buffer, 
                      <span class="dt">float</span>* P,
                      <span class="dt">float</span>* dPdu, <span class="dt">float</span>* dPdv,
                      <span class="dt">float</span>* ddPdudu, <span class="dt">float</span>* ddPdvdv, <span class="dt">float</span>* ddPdudv,
-                     size_t numFloats);</code></pre>
+                     size_t numFloats);</code></pre></div>
 <p>This call smoothly interpolates the per-vertex data stored in the specified geometry buffer (<code>buffer</code> parameter) to the u/v location (<code>u</code> and <code>v</code> parameters) of the primitive (<code>primID</code> parameter) of the geometry (<code>geomID</code> parameter) of the specified scene (<code>scene</code> parameter). The interpolation buffer (<code>buffer</code> parameter) has to contain (at least) <code>numFloats</code> floating point values per vertex to interpolate. As interpolation buffer one can specify the <code>RTC_VERTEX_BUFFER0</code> and <code>RTC_VERTEX_BUFFER1</code> as well as one of two special user vertex buffers <code>RTC_USER_VERTEX_BUFFER0</code> and <code>RTC_USER_VERTEX_BUFFER1</code>. These user vertex buffers can only get set using the <code>rtcSetBuffer</code> call, they cannot get managed internally by Embree as they have no default layout. The last element of the buffer has to be padded to 16 bytes, such that it can be read safely using SSE instructions.</p>
 <p>The <code>rtcInterpolate</code> call stores <code>numFloats</code> interpolated floating point values to the memory location pointed to by <code>P</code>. One can avoid storing the interpolated value by setting <code>P</code> to NULL.</p>
 <p>The first order derivative of the interpolation by u and v are stored at the <code>dPdu</code> and <code>dPdv</code> memory locations. One can avoid storing first order derivatives by setting both <code>dPdu</code> and <code>dPdv</code> to NULL.</p>
@@ -789,57 +806,57 @@ rtcIntersectNM(scene, &amp;context, &amp;rays, <span class="dv">1</span>, <span 
 <p>It is explicitly allowed to call this function on disabled geometries. This makes it possible to use a separate subdivision mesh with different vertex creases, edge creases, and boundary handling for interpolation of texture coordinates if that is necessary.</p>
 <p>The applied interpolation will do linear interpolation for triangle and quad meshes, linear interpolation for line segments, cubic Bézier interpolation for hair, and apply the full subdivision rules for subdivision geometry.</p>
 <p>There is also a second interpolate call <code>rtcInterpolateN2</code> that can be used for ray packets.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcInterpolateN2(RTCScene scene, <span class="dt">unsigned</span> geomID, 
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcInterpolateN2(RTCScene scene, <span class="dt">unsigned</span> geomID, 
                      <span class="dt">const</span> <span class="dt">void</span>* valid, <span class="dt">const</span> <span class="dt">unsigned</span>* primIDs,
                      <span class="dt">const</span> <span class="dt">float</span>* u, <span class="dt">const</span> <span class="dt">float</span>* v, size_t numUVs, 
                      RTCBufferType buffer, 
                      <span class="dt">float</span>* dP,
                      <span class="dt">float</span>* dPdu, <span class="dt">float</span>* dPdv,
                      <span class="dt">float</span>* ddPdudu, <span class="dt">float</span>* ddPdvdv, <span class="dt">float</span>* ddPdudv,
-                     size_t numFloats);</code></pre>
+                     size_t numFloats);</code></pre></div>
 <p>This call is similar to the first version, but gets passed <code>numUVs</code> many u/v coordinates and a valid mask (<code>valid</code> parameter) that specifies which of these coordinates are valid. The valid mask points to <code>numUVs</code> integers and a value of -1 denotes valid and 0 invalid. If the valid pointer is NULL all elements are considers valid. The destination arrays are filled in structure of array (SoA) layout.</p>
 <p>See tutorial <a href="tutorials.html#interpolation">Interpolation</a> for an example of using the <code>rtcInterpolate2</code> function.</p>
 <h2 id="buffer-sharing">Buffer Sharing</h2>
 <p>Embree supports sharing of buffers with the application. Each buffer that can be mapped for a specific geometry can also be shared with the application, by pass a pointer, offset, and stride of the application side buffer using the <code>rtcSetBuffer</code> API function.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetBuffer(RTCScene scene, <span class="dt">unsigned</span> geomID, RTCBufferType type,
-                  <span class="dt">void</span>* ptr, size_t offset, size_t stride);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetBuffer(RTCScene scene, <span class="dt">unsigned</span> geomID, RTCBufferType type,
+                  <span class="dt">void</span>* ptr, size_t offset, size_t stride);</code></pre></div>
 <p>The <code>rtcSetBuffer</code> function has to get called before any call to <code>rtcMapBuffer</code> for that buffer, otherwise the buffer will get allocated internally and the call to <code>rtcSetBuffer</code> will fail. The buffer has to remain valid as long as the geometry exists, and the user is responsible to free the buffer when the geometry gets deleted. When a buffer is shared, it is safe to modify that buffer without mapping and unmapping it. However, for dynamic scenes one still has to call <code>rtcUpdate</code> for modified geometries and the buffer data has to stay constant from the <code>rtcCommit</code> call to after the last ray query invocation.</p>
 <p>The <code>offset</code> parameter specifies a byte offset to the start of the first element and the <code>stride</code> parameter specifies a byte stride between the different elements of the shared buffer. This support for offset and stride allows the application quite some freedom in the data layout of these buffers, however, some restrictions apply. Index buffers always store 32 bit indices and vertex buffers always store single precision floating point data. The start address <code>ptr+offset</code> and <code>stride</code> always have to be aligned to 4 bytes, otherwise the <code>rtcSetBuffer</code> function will fail.</p>
 <p>For vertex buffers (<code>RTC_VERTEX_BUFFER</code> and <code>RTC_USER_VERTEX_BUFFER</code>), the last element must be readable using SSE instructions, thus padding the last element to 16 bytes size is required for some layouts.</p>
 <p>The following is an example of how to create a mesh with shared index and vertex buffers:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewTriangleMesh(scene, geomFlags, numTriangles, numVertices);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewTriangleMesh(scene, geomFlags, numTriangles, numVertices);
 rtcSetBuffer(scene, geomID, RTC_VERTEX_BUFFER, vertexPtr, <span class="dv">0</span>, <span class="dv">3</span>*<span class="kw">sizeof</span>(<span class="dt">float</span>));
-rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span>, <span class="dv">3</span>*<span class="kw">sizeof</span>(<span class="dt">int</span>));</code></pre>
+rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span>, <span class="dv">3</span>*<span class="kw">sizeof</span>(<span class="dt">int</span>));</code></pre></div>
 <p>Sharing buffers can significantly reduce the memory required by the application, thus we recommend using this feature. When enabling the <code>RTC_COMPACT</code> scene flag, the spatial index structures of Embree might also share the vertex buffer, resulting in even higher memory savings.</p>
 <h2 id="linear-motion-blur">Linear Motion Blur</h2>
 <p>Triangle meshes and hair geometries with linear motion blur support are created by setting the number of time steps to 2 at geometry construction time. Specifying a number of time steps of 0 or larger than 2 is invalid. For a triangle mesh or hair geometry with linear motion blur, the user has to set the <code>RTC_VERTEX_BUFFER0</code> and <code>RTC_VERTEX_BUFFER1</code> vertex arrays, one for each time step.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewTriangleMesh(scene, geomFlags, numTris, numVertices, <span class="dv">2</span>);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewTriangleMesh(scene, geomFlags, numTris, numVertices, <span class="dv">2</span>);
 rtcSetBuffer(scene, geomID, RTC_VERTEX_BUFFER0, vertex0Ptr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Vertex));
 rtcSetBuffer(scene, geomID, RTC_VERTEX_BUFFER1, vertex1Ptr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Vertex));
-rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Triangle));</code></pre>
-<p>If a scene contains geometries with linear motion blur, the user has to set the <code>time</code> member of the ray to a value in the range <span class="math">[0, 1]</span>. The ray will intersect the scene with the vertices of the two time steps linearly interpolated to this specified time. Each ray can specify a different time, even inside a ray packet.</p>
+rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Triangle));</code></pre></div>
+<p>If a scene contains geometries with linear motion blur, the user has to set the <code>time</code> member of the ray to a value in the range <span class="math inline">[0, 1]</span>. The ray will intersect the scene with the vertices of the two time steps linearly interpolated to this specified time. Each ray can specify a different time, even inside a ray packet.</p>
 <h2 id="user-data-pointer">User Data Pointer</h2>
 <p>A user data pointer can be specified and queried per geometry, to efficiently map from the geometry ID returned by ray queries to the application representation for that geometry.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span>  rtcSetUserData (RTCScene scene, <span class="dt">unsigned</span> geomID, <span class="dt">void</span>* ptr);
-<span class="dt">void</span>* rtcGetUserData (RTCScene scene, <span class="dt">unsigned</span> geomID);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span>  rtcSetUserData (RTCScene scene, <span class="dt">unsigned</span> geomID, <span class="dt">void</span>* ptr);
+<span class="dt">void</span>* rtcGetUserData (RTCScene scene, <span class="dt">unsigned</span> geomID);</code></pre></div>
 <p>The user data pointer of some user defined geometry get additionally passed to the intersect and occluded callback functions of that user geometry. Further, the user data pointer is also passed to intersection filter callback functions attached to some geometry.</p>
 <p>The <code>rtcGetUserData</code> function is on purpose not thread safe with respect to other API calls that modify the scene. Consequently, this function can be used to efficiently query the user data pointer during rendering (also by multiple threads), but should not get called while modifying the scene with other threads.</p>
 <h2 id="geometry-mask">Geometry Mask</h2>
 <p>A 32 bit geometry mask can be assigned to triangle meshes and hair geometries using the <code>rtcSetMask</code> call.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetMask(scene, geomID, mask);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetMask(scene, geomID, mask);</code></pre></div>
 <p>Only if the bitwise <code>and</code> operation of this mask with the mask stored inside the ray is not 0, primitives of this geometry are hit by a ray. This feature can be used to disable selected triangle mesh or hair geometries for specifically tagged rays, e.g. to disable shadow casting for some geometry. This API feature is disabled in Embree by default at compile time, and can be enabled in CMake through the <code>RTCORE_ENABLE_RAY_MASK</code> parameter.</p>
 <h2 id="filter-functions">Filter Functions</h2>
 <p>The API supports per geometry filter callback functions that are invoked for each intersection found during the <code>rtcIntersect</code> or <code>rtcOccluded</code> calls. The former ones are called intersection filter functions, the latter ones occlusion filter functions. The filter functions can be used to implement various useful features, such as accumulating opacity for transparent shadows, counting the number of surfaces along a ray, collecting all hits along a ray, etc. Filter functions can also be used to selectively reject hits to enable backface culling for some geometries. If the backfaces should be culled in general for all geometries then it is faster to enable <code>RTCORE_BACKFACE_CULLING</code> during compilation of Embree instead of using filter functions.</p>
 <h3 id="normal-mode-1">Normal Mode</h3>
 <p>In normal mode the filter functions provided by the user need to have the following signature:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> RTCFilterFunc  (                   <span class="dt">void</span>* userDataPtr, RTCRay&amp;   ray);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> RTCFilterFunc  (                   <span class="dt">void</span>* userDataPtr, RTCRay&amp;   ray);
 <span class="dt">void</span> RTCFilterFunc4 (<span class="dt">const</span> <span class="dt">void</span>* valid, <span class="dt">void</span>* userDataPtr, RTCRay4&amp;  ray);
 <span class="dt">void</span> RTCFilterFunc8 (<span class="dt">const</span> <span class="dt">void</span>* valid, <span class="dt">void</span>* userDataPtr, RTCRay8&amp;  ray);
-<span class="dt">void</span> RTCFilterFunc16(<span class="dt">const</span> <span class="dt">void</span>* valid, <span class="dt">void</span>* userDataPtr, RTCRay16&amp; ray);</code></pre>
+<span class="dt">void</span> RTCFilterFunc16(<span class="dt">const</span> <span class="dt">void</span>* valid, <span class="dt">void</span>* userDataPtr, RTCRay16&amp; ray);</code></pre></div>
 <p>The <code>valid</code> pointer points to an integer valid mask (0 means invalid and -1 means valid). The <code>userDataPtr</code> is a user pointer optionally set per geometry through the <code>rtcSetUserData</code> function. All hit information inside the ray is valid. If the hit geometry is instanced, the <code>instID</code> member of the ray is valid and the ray origin, direction, and geometry normal visible through the ray are in object space.</p>
 <p>The filter function can reject a hit by setting the <code>geomID</code> member of the ray to <code>RTC_INVALID_GEOMETRY_ID</code>, otherwise the hit is accepted. The filter function is not allowed to modify the ray input data (<code>org</code>, <code>dir</code>, <code>time</code>, <code>mask</code>, and <code>tnear</code> members), but can modify the hit data of the ray (<code>u</code>, <code>v</code>, <code>Ng</code>, <code>tfar</code>, <code>geomID</code>, <code>primID</code>, and <code>instID</code> members). Updating the <code>tfar</code> distance to a smaller value is possible without limitation. However, increasing the <code>tfar</code> distance of the ray to a larger value <code>tfar'</code> , does not guarantee intersections between <code>tfar</code> and <code>tfar'</code> to be reported later, as the corresponding subtrees might have gotten culled already.</p>
 <p>The intersection and occlusion filter functions for different ray types are set for some geometry of a scene using the following API functions:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetIntersectionFilterFunction  (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc   filter);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetIntersectionFilterFunction  (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc   filter);
 <span class="dt">void</span> rtcSetIntersectionFilterFunction4 (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc4  filter);
 <span class="dt">void</span> rtcSetIntersectionFilterFunction8 (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc8  filter);
 <span class="dt">void</span> rtcSetIntersectionFilterFunction16(RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc16 filter);
@@ -847,19 +864,19 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <span class="dt">void</span> rtcSetOcclusionFilterFunction  (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc   filter);
 <span class="dt">void</span> rtcSetOcclusionFilterFunction4 (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc4  filter);
 <span class="dt">void</span> rtcSetOcclusionFilterFunction8 (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc8  filter);
-<span class="dt">void</span> rtcSetOcclusionFilterFunction16(RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc16 filter);</code></pre>
+<span class="dt">void</span> rtcSetOcclusionFilterFunction16(RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFunc16 filter);</code></pre></div>
 <p>The intersection and occlusion filter functions of type <code>RTCFilterFunc</code> are only called by the <code>rtcIntersect</code> and <code>rtcOccluded</code> functions. Similar the filter functions of type <code>FilterFunc4</code>, <code>FilterFunc8</code>, and <code>FilterFunc16</code> are called by <code>rtcIntersect4/8/16</code> and <code>rtcOccluded4/8/16</code> of matching width.</p>
 <h3 id="stream-mode">Stream Mode</h3>
 <p>For ray stream mode a new type of filter function <code>RTCFilterFuncN</code> got introduced:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> RTCFilterFuncN (<span class="dt">int</span>* valid,
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> RTCFilterFuncN (<span class="dt">int</span>* valid,
                      <span class="dt">void</span>* userDataPtr,
                      <span class="dt">const</span> RTCIntersectContext* context,
                      RTCRayN* ray,
                      <span class="dt">const</span> RTCHitN* potentialHit,
-                     <span class="dt">const</span> size_t N);</code></pre>
+                     <span class="dt">const</span> size_t N);</code></pre></div>
 <p>The stream intersection and occlusion filter functions of this new type are set for some geometry of a scene using the following API functions:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetIntersectionFilterFunctionN (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFuncN filter);
-<span class="dt">void</span> rtcSetOcclusionFilterFunctionN    (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFuncN filter);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetIntersectionFilterFunctionN (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFuncN filter);
+<span class="dt">void</span> rtcSetOcclusionFilterFunctionN    (RTCScene, <span class="dt">unsigned</span> geomID, RTCFilterFuncN filter);</code></pre></div>
 <p>For the callback <code>RTCFilterFuncN</code>, the <code>valid</code> parameter points to an integer valid mask (0 means invalid and -1 means valid). The <code>userDataPtr</code> is a user pointer optionally set per geometry through the <code>rtcSetUserData</code> function. The <code>context</code> parameter points to the intersection context passed to the ray query function. The <code>ray</code> parameter contains the current ray. All hit data inside the <code>ray</code> are undefined, except the <code>tfar</code> value. The <code>potentialHit</code> parameter points to the new hit to test and update. The <code>N</code> parameter is the number of rays and hits found in the <code>ray</code> and <code>potentialHit</code>. If the hit geometry is instanced, the <code>instID</code> member of the ray is valid and the ray as well as the potential hit are in object space.</p>
 <p>As the ray packet size <code>N</code> can be arbitrary, the ray and hit should get accessed through the helper functions as describe in Section <a href="api.html#ray-layout">Ray Layout</a>.</p>
 <p>The callback function has the task to check for each valid ray whether it wants to accept or reject the corresponding hit. To reject a hit, the filter callback function just has to write <code>0</code> to the integer valid mask of the corresponding ray. The filter function is not allowed to modify the ray input data (<code>org</code>, <code>dir</code>, <code>time</code>, <code>mask</code>, and <code>tnear</code> members), nor the potential hit, nor inactive components.</p>
@@ -868,14 +885,14 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <p>The intersection filter callback of most applications will just copy the <code>potentialHit</code> into the appropiate fields of the ray, but this is not a requirement and the hit data of the ray can get modified arbitrarily. Updating the <code>tfar</code> distance to a smaller value (e.g. the <code>t</code> distance of the potential hit) is possible without limitation. However, increasing the <code>tfar</code> distance of the ray to a larger value <code>tfar'</code> , does not guarantee intersections between <code>tfar</code> and <code>tfar'</code> to be reported later, as the corresponding subtrees might have gotten culled already.</p>
 <h2 id="displacement-mapping-functions">Displacement Mapping Functions</h2>
 <p>The API supports displacement mapping for subdivision meshes. A displacement function can be set for some subdivision mesh using the <code>rtcSetDisplacementFunction</code> API call.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetDisplacementFunction(RTCScene, <span class="dt">unsigned</span> geomID, RTCDisplacementFunc, RTCBounds*);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetDisplacementFunction(RTCScene, <span class="dt">unsigned</span> geomID, RTCDisplacementFunc, RTCBounds*);</code></pre></div>
 <p>A displacement function of <code>NULL</code> will delete an already set displacement function. The bounds parameter is optional. If <code>NULL</code> is passed as bounds, then the displacement shader will get evaluated during the build process to properly bound displaced geometry. If a pointer to some bounds of the displacement are passed, then the implementation can choose to use these bounds to bound displaced geometry. When bounds are specified, then these bounds have to be conservative and should be tight for best performance.</p>
 <p>The displacement function has to have the following type:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCDisplacementFunc)(<span class="dt">void</span>* ptr, <span class="dt">unsigned</span> geomID, <span class="dt">unsigned</span> primID,   
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCDisplacementFunc)(<span class="dt">void</span>* ptr, <span class="dt">unsigned</span> geomID, <span class="dt">unsigned</span> primID,   
                                     <span class="dt">const</span> <span class="dt">float</span>* u,  <span class="dt">const</span> <span class="dt">float</span>* v,    
                                     <span class="dt">const</span> <span class="dt">float</span>* nx, <span class="dt">const</span> <span class="dt">float</span>* ny, <span class="dt">const</span> <span class="dt">float</span>* nz,   
                                     <span class="dt">float</span>* px, <span class="dt">float</span>* py, <span class="dt">float</span>* pz,         
-                                    size_t N);</code></pre>
+                                    size_t N);</code></pre></div>
 <p>The displacement function is called with the user data pointer of the geometry (<code>ptr</code>), the geometry ID (<code>geomID</code>) and primitive ID (<code>primID</code>) of a patch to displace. For this patch, a number N of points to displace are specified in a struct of array layout. For each point to displace the local patch UV coordinates (<code>u</code> and <code>v</code> arrays), the normalized geometry normal (<code>nx</code>, <code>ny</code>, and <code>nz</code> arrays), as well as world space position (<code>px</code>, <code>py</code>, and <code>pz</code> arrays) are provided. The task of the displacement function is to use this information and move the world space position inside the allowed specified bounds around the point.</p>
 <p>All passed arrays are guaranteed to be 64 bytes aligned, and properly padded to make wide vector processing inside the displacement function possible.</p>
 <p>The displacement mapping functions might get called during the <code>rtcCommit</code> call, or lazily during the <code>rtcIntersect</code> or <code>rtcOccluded</code> calls.</p>
@@ -891,7 +908,7 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <p>Not that using the ray ID to access the ray extensions is necessary, as the ray IDs might have changed from the IDs passed to the ray query function. E.g. if you trace a ray packet with 8 rays 0 to 8, then even if a callback gets called with a ray packet of 8 rays, they rays might have gotten reordered. Further, the callback might get called with a subpacket of a size smaller than 8 (e.g. <code>N=5</code>). However, optimizing for the common case in which Embree keeps such a packet intact (thus having a special codepath for <code>N=8</code> and unchanged IDs) can give higher performance.</p>
 <h2 id="sharing-threads-with-embree">Sharing Threads with Embree</h2>
 <p>On some implementations, Embree supports using the application threads when building internal data structures, by using the</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcCommitThread(RTCScene, <span class="dt">unsigned</span> threadIndex, <span class="dt">unsigned</span> threadCount);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcCommitThread(RTCScene, <span class="dt">unsigned</span> threadIndex, <span class="dt">unsigned</span> threadCount);</code></pre></div>
 <p>API call to commit the scene. This function has to get called by all threads that want to cooperate in the scene commit. Each call is provided the scene to commit, the index of the calling thread in the range [0, <code>threadCount</code>-1], and the number of threads that will call into this commit operation for the scene. All threads will return again from this function after the scene commit is finished.</p>
 <p>Multiple such scene commit operations can also be running at the same time, e.g. it is possible to commit many small scenes in parallel using one thread per commit operation. Subsequent commit operations for the same scene can use different number of threads in the <code>rtcCommitThread</code> or use the Embree internal threads using the <code>rtcCommit</code> call.</p>
 <p><em>Note:</em> When using Embree with the Intel® Threading Building Blocks (which is the default) you should not use the <code>rtcCommitThread</code> function. Sharing of your threads with TBB is not possible and TBB will always generate its own set of threads. We recommend to also use TBB inside your application to share threads with the Embree library. When using TBB inside your application do never use the <code>rtcCommitThread</code> function.</p>
@@ -903,23 +920,23 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <h2 id="memory-monitor-callback">Memory Monitor Callback</h2>
 <p>Using the memory monitor callback mechanism, the application can track the memory consumption of an Embree device, and optionally terminate API calls that consume too much memory.</p>
 <p>The user provided memory monitor callback function has to have the following signature:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> (*RTCMemoryMonitorFunc)(<span class="dt">const</span> ssize_t bytes, <span class="dt">const</span> <span class="dt">bool</span> post);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> (*RTCMemoryMonitorFunc)(<span class="dt">const</span> ssize_t bytes, <span class="dt">const</span> <span class="dt">bool</span> post);</code></pre></div>
 <p>A single such callback function per device can be registered by calling</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcDeviceSetMemoryMonitorFunction(RTCDevice device, RTCMemoryMonitorFunc func);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcDeviceSetMemoryMonitorFunction(RTCDevice device, RTCMemoryMonitorFunc func);</code></pre></div>
 <p>and deregistered again by calling it with <code>NULL</code>. Once registered the Embree device will invoke the callback function before or after it allocates or frees important memory blocks. The callback function might get called from multiple threads concurrently.</p>
 <p>The application can track the current memory usage of the Embree device by atomically accumulating the provided <code>bytes</code> input parameter. This parameter will be &gt;0 for allocations and &lt;0 for deallocations. The <code>post</code> input parameter is true if the callback function was invoked after the allocation or deallocation, otherwise it is false.</p>
 <p>Embree will continue its operation normally when returning true from the callback function. If false is returned, Embree will cancel the current operation with the RTC_OUT_OF_MEMORY error code. Cancelling will only happen when the callback was called for allocations (bytes &gt; 0), otherwise the cancel request will be ignored. If a callback that was invoked before the allocation happens (<code>post == false</code>) cancels the operation, then the <code>bytes</code> parameter should not get accumulated, as the allocation will never happen. If a callback that was called after the allocation happened (<code>post == true</code>) cancels the operation, then the <code>bytes</code> parameter should get accumulated, as the allocation properly happened. Issuing multiple cancel requests for the same operation is allowed.</p>
 <h2 id="progress-monitor-callback">Progress Monitor Callback</h2>
 <p>The progress monitor callback mechanism can be used to report progress of hierarchy build operations and to cancel long lasting build operations.</p>
 <p>The user provided progress monitor callback function has to have the following signature:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> (*RTCProgressMonitorFunc)(<span class="dt">void</span>* userPtr, <span class="dt">const</span> <span class="dt">double</span> n);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> (*RTCProgressMonitorFunc)(<span class="dt">void</span>* userPtr, <span class="dt">const</span> <span class="dt">double</span> n);</code></pre></div>
 <p>A single such callback function can be registered per scene by calling</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetProgressMonitorFunction(RTCScene, RTCProgressMonitorFunc, <span class="dt">void</span>* userPtr);</code></pre>
-<p>and deregistered again by calling it with <code>NULL</code> for the callback function. Once registered Embree will invoke the callback function multiple times during hierarchy build operations of the scene, by providing the <code>userPtr</code> pointer that was set at registration time, and a double <code>n</code> in the range <span class="math">[0, 1]</span> estimating the completion amount of the operation. The callback function might get called from multiple threads concurrently.</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetProgressMonitorFunction(RTCScene, RTCProgressMonitorFunc, <span class="dt">void</span>* userPtr);</code></pre></div>
+<p>and deregistered again by calling it with <code>NULL</code> for the callback function. Once registered Embree will invoke the callback function multiple times during hierarchy build operations of the scene, by providing the <code>userPtr</code> pointer that was set at registration time, and a double <code>n</code> in the range <span class="math inline">[0, 1]</span> estimating the completion amount of the operation. The callback function might get called from multiple threads concurrently.</p>
 <p>When returning <code>true</code> from the callback function, Embree will continue the build operation normally. When returning <code>false</code> Embree will cancel the build operation with the RTC_CANCELLED error code. Issuing multiple cancel requests for the same build operation is allowed.</p>
 <h2 id="configuring-embree">Configuring Embree</h2>
 <p>Some internal device parameters can be set and queried using the <code>rtcDeviceSetParameter1i</code> and <code>rtcDeviceGetParameter1i</code> API call. The parameters from the following table are available to set/query:</p>
-<table>
+<table style="width:98%;">
 <caption>Parameters for <code>rtcDeviceSetParameter</code> and <code>rtcDeviceGetParameter</code>.</caption>
 <colgroup>
 <col width="42%" />
@@ -1007,20 +1024,20 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 </tbody>
 </table>
 <p>For example, to configure the size of the internal software cache that is used to handle subdivision surfaces use the <code>RTC_SOFTWARE_CACHE_SIZE</code> parameter to set desired size of the cache in bytes:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcDeviceSetParameter1i(device, RTC_SOFTWARE_CACHE_SIZE, bytes);</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcDeviceSetParameter1i(device, RTC_SOFTWARE_CACHE_SIZE, bytes);</code></pre></div>
 <p>The software cache cannot get configured while any Embree API call is executed. Best configure the size of the cache only once at application start.</p>
 <h2 id="limiting-number-of-build-threads">Limiting number of Build Threads</h2>
 <p>You can use the TBB API to limit the number of threads used by Embree during hierarchy construction. Therefore just create a global taskscheduler_init object, initialized with the number of threads to use:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;tbb/tbb.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;tbb/tbb.h&gt;</span>
 
-tbb::task_scheduler_init init(numThreads);</code></pre>
+tbb::task_scheduler_init init(numThreads);</code></pre></div>
 <h2 id="huge-page-support">Huge Page Support</h2>
 <p>We recommend using 2MB huge pages with Embree as this improves ray tracing performance by about 10%. Huge pages are currently only working under Linux with Embree.</p>
 <p>To enable transparent huge page support under Linux execute the following as root:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">echo always &gt;/sys/kernel/mm/transparent_hugepage/enabled</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">echo always &gt;/sys/kernel/mm/transparent_hugepage/enabled</code></pre></div>
 <p>When transparent huge pages are enabled, the kernel tries to merge 4k pages to 2MB pages when possible as a background job. See the following webpage for more information on transparent huge pages under Linux <a href="https://www.kernel.org/doc/Documentation/vm/transhuge.txt" class="uri">https://www.kernel.org/doc/Documentation/vm/transhuge.txt</a>.</p>
 <p>Using that first approach the transitioning from 4k to 2MB pages might take some time. For that reason Embree also supports allocating 2MB pages directly when a huge page pool is configured. To configure 2GB of adress space for huge page allocation, execute the following as root:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">echo <span class="dv">1000</span> &gt; /proc/sys/vm/nr_overcommit_hugepages</code></pre>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">echo <span class="dv">1000</span> &gt; /proc/sys/vm/nr_overcommit_hugepages</code></pre></div>
 <p>See the following webpage for more information on huge pages under Linux <a href="https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt" class="uri">https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt</a>.</p>
       </div>
 
