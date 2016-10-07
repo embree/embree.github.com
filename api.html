@@ -335,7 +335,7 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre></div>
 
 </div>
 <p>Some texture coordinates <code>t0,t1,t2</code> can be linearly interpolated over the triangle the following way:</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-u-v)*t0 + u*(t1-t0) + v*(t2-t0)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-u-v)*t0 + u*t1 + v*t2</code></pre></div>
 <h3 id="quad-meshes">Quad Meshes</h3>
 <p>Quad meshes are created using the <code>rtcNewQuadMesh</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
 <p>The number of quads, number of vertices, and optionally the number of time steps (1 for normal meshes, and 2 for linear motion blur) have to get specified at construction time of the mesh. The user can also specify additional flags that choose the strategy to handle that mesh in dynamic scenes. The following example demonstrates how to create a quad mesh without motion blur:</p>
