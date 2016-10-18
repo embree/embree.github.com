@@ -45,7 +45,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.11.0!
+      We recently released Embree v2.12.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -57,6 +57,22 @@
 <p>Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays). For standard CPUs, the single-ray traversal kernels in Embree provide the best performance for incoherent workloads and are very easy to integrate into existing rendering applications. For AVX512 enabled machines, a renderer written in ISPC using the default hybrid ray/packet traversal algorithms have shown to perform best, but requires writing the renderer in ISPC. In general for coherent workloads, ISPC outperforms the single ray mode on each platform. Embree also supports dynamic scenes by implementing high performance two-level spatial index structure construction algorithms.</p>
 <p>In addition to the ray tracing kernels, Embree provides some tutorials to demonstrate how to use the <a href="api.html">Embree API</a>. The example photorealistic renderer that was originally included in the Embree kernel package is now available in a separate GIT repository (see <a href="renderer.html">Embree Example Renderer</a>).</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.12.0">New Features in Embree 2.12.0</h3>
+<ul>
+<li>Added support for multi-segment motion blur for all primitive types.</li>
+<li>API support for stream of pointers to single rays (rtcIntersect1Mp and rtcOccluded1Mp)</li>
+<li>Improved BVH refitting performance for dynamic scenes.</li>
+<li>Improved high-quality mode for quads (added spatial split builder for quads)</li>
+<li>Faster dynamic scenes for triangle and quad-based meshes on AVX2 enabled machines.</li>
+<li>Performance and correctness bugfix in optimization for streams of coherent (single) rays.</li>
+<li>Fixed large memory consumption (issue introduced in Embree v2.11.0). If you use Embree v2.11.0 please upgrade to Embree v2.12.0.</li>
+<li>Reduced memory consumption for dynamic scenes containing small meshes.</li>
+<li>Added support to start and affinitize TBB worker threads by passing “start_threads=1,set_affinity=1” to rtcNewDevice. These settings are recommended on systems with a high thread count.</li>
+<li>rtcInterpolate2 can now be called within a displacement shader.</li>
+<li>Added initial support for Microsoft’s Parallel Pattern Library (PPL) as tasking system alternative (for optimial performance TBB is highly recommended).</li>
+<li>Updated to TBB 2017 which is released under the Apache v2.0 license.</li>
+<li>Dropped support for Visual Studio 2012 Win32 compiler. Visual Studio 2012 x64 is still supported.</li>
+</ul>
 <h3 id="new-features-in-embree-2.11.0">New Features in Embree 2.11.0</h3>
 <ul>
 <li>Improved performance for streams of coherent (single) rays flagged with <code>RTC_INTERSECT_COHERENT</code>. For such coherent ray streams, e.g. primary rays, the performance typically improves by 1.3–2×.</li>
