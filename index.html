@@ -60,16 +60,16 @@
 <h3 id="new-features-in-embree-2.12.0">New Features in Embree 2.12.0</h3>
 <ul>
 <li>Added support for multi-segment motion blur for all primitive types.</li>
-<li>API support for stream of pointers to single rays (rtcIntersect1Mp and rtcOccluded1Mp)</li>
+<li>API support for stream of pointers to single rays (<code>rtcIntersect1Mp</code> and <code>rtcOccluded1Mp</code>)</li>
 <li>Improved BVH refitting performance for dynamic scenes.</li>
 <li>Improved high-quality mode for quads (added spatial split builder for quads)</li>
 <li>Faster dynamic scenes for triangle and quad-based meshes on AVX2 enabled machines.</li>
 <li>Performance and correctness bugfix in optimization for streams of coherent (single) rays.</li>
 <li>Fixed large memory consumption (issue introduced in Embree v2.11.0). If you use Embree v2.11.0 please upgrade to Embree v2.12.0.</li>
 <li>Reduced memory consumption for dynamic scenes containing small meshes.</li>
-<li>Added support to start and affinitize TBB worker threads by passing “start_threads=1,set_affinity=1” to rtcNewDevice. These settings are recommended on systems with a high thread count.</li>
-<li>rtcInterpolate2 can now be called within a displacement shader.</li>
-<li>Added initial support for Microsoft’s Parallel Pattern Library (PPL) as tasking system alternative (for optimial performance TBB is highly recommended).</li>
+<li>Added support to start and affinitize TBB worker threads by passing “<code>start_threads=1,set_affinity=1</code>” to <code>rtcNewDevice</code>. These settings are recommended on systems with a high thread count.</li>
+<li><code>rtcInterpolate2</code> can now be called within a displacement shader.</li>
+<li>Added initial support for Microsoft’s Parallel Pattern Library (PPL) as tasking system alternative (for optimal performance TBB is highly recommended).</li>
 <li>Updated to TBB 2017 which is released under the Apache v2.0 license.</li>
 <li>Dropped support for Visual Studio 2012 Win32 compiler. Visual Studio 2012 x64 is still supported.</li>
 </ul>
