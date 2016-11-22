@@ -65,7 +65,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.12.0!
+      We recently released Embree v2.13.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -299,7 +299,7 @@ rtcDeleteScene(scene);</code></pre>
 <p>Triangle meshes are created using the <code>rtcNewTriangleMesh</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
 <p>The number of triangles, number of vertices, and optionally the number of time steps for multi-segment motion blur have to get specified at construction time of the mesh. The user can also specify additional flags that choose the strategy to handle that mesh in dynamic scenes. The following example demonstrates how to create a triangle mesh without motion blur:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewTriangleMesh(scene, geomFlags,
-   numTriangles, numVertices, <span class="dv">1</span>);</code></pre>
+                                     numTriangles, numVertices, <span class="dv">1</span>);</code></pre>
 <p>The triangle indices can be set by mapping and writing to the index buffer (<code>RTC_INDEX_BUFFER</code>) and the triangle vertices can be set by mapping and writing into the vertex buffer (<code>RTC_VERTEX_BUFFER</code>). The index buffer contains an array of three 32 bit indices, while the vertex buffer contains an array of three float values aligned to 16 bytes. The 4th component of the aligned vertices can be arbitrary. All buffers have to get unmapped before an <code>rtcCommit</code> call to the scene.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Vertex   { <span class="dt">float</span> x, y, z, a; };
 <span class="kw">struct</span> Triangle { <span class="dt">int</span> v0, v1, v2; };
@@ -323,7 +323,7 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>Quad meshes are created using the <code>rtcNewQuadMesh</code> function call, and potentially deleted using the <code>rtcDeleteGeometry</code> function call.</p>
 <p>The number of quads, number of vertices, and optionally the number of time steps for multi-segment motion blur have to get specified at construction time of the mesh. The user can also specify additional flags that choose the strategy to handle that mesh in dynamic scenes. The following example demonstrates how to create a quad mesh without motion blur:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewQuadMesh(scene, geomFlags,
-   numTriangles, numVertices, <span class="dv">1</span>);</code></pre>
+                                 numQuads, numVertices, <span class="dv">1</span>);</code></pre>
 <p>The quad indices can be set by mapping and writing to the index buffer (<code>RTC_INDEX_BUFFER</code>) and the quad vertices can be set by mapping and writing into the vertex buffer (<code>RTC_VERTEX_BUFFER</code>). The index buffer contains an array of four 32 bit indices, while the vertex buffer contains an array of three float values aligned to 16 bytes. The 4th component of the aligned vertices can be arbitrary. All buffers have to get unmapped before an <code>rtcCommit</code> call to the scene.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> Vertex { <span class="dt">float</span> x, y, z, a; };
 <span class="kw">struct</span> Quad   { <span class="dt">int</span> v0, v1, v2, v3; };
@@ -340,7 +340,7 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <h3 id="subdivision-surfaces">Subdivision Surfaces</h3>
 <p>Catmull-Clark subdivision surfaces for meshes consisting of faces of up to 15 vertices (e.g. triangles, quadrilateral, pentagons, etc.) are supported, including support for edge creases, vertex creases, holes, and non-manifold geometry.</p>
 <p>A subdivision surface is created using the <code>rtcNewSubdivisionMesh</code> function call, and deleted again using the <code>rtcDeleteGeometry</code> function call.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"> <span class="dt">unsigned</span> rtcNewSubdivisionMesh(RTCScene scene, 
+<pre class="sourceCode cpp"><code class="sourceCode cpp"> <span class="dt">unsigned</span> rtcNewSubdivisionMesh(RTCScene scene,
                                 RTCGeometryFlags flags,
                                 size_t numFaces,
                                 size_t numEdges,
@@ -363,10 +363,10 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 
 </div>
 <p>Some texture coordinates <code>t0,t1,t2,t3</code> can be bi-linearly interpolated over the quadrilateral the following way:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-v)((<span class="dv">1</span>-u)*t0 + u*t1) + v*((<span class="dv">1</span>-u)*t3 + u*t2) </code></pre>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-v)((<span class="dv">1</span>-u)*t0 + u*t1) + v*((<span class="dv">1</span>-u)*t3 + u*t2)</code></pre>
 <p>The parametrization for all other face types where the number of vertices is not equal to 4, have a special parametrization where the n’th quadrilateral (that would be obtained by a single subdivision step) is encoded in the higher order bits of the UV coordinates and the local hit location inside this quadrilateral in the lower order bits. The following piece of code extracts the sub-patch ID i and UVs of this subpatch:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">const</span> <span class="dt">unsigned</span> l = floorf(<span class="fl">4.</span><span class="er">0f</span>*U); 
-<span class="dt">const</span> <span class="dt">unsigned</span> h = floorf(<span class="fl">4.</span><span class="er">0f</span>*V); 
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">const</span> <span class="dt">unsigned</span> l = floorf(<span class="fl">4.</span><span class="er">0f</span>*U);
+<span class="dt">const</span> <span class="dt">unsigned</span> h = floorf(<span class="fl">4.</span><span class="er">0f</span>*V);
 <span class="dt">const</span> <span class="dt">unsigned</span> i = <span class="dv">4</span>*h+l;
 <span class="dt">const</span> <span class="dt">float</span> u = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">4.</span><span class="er">0f</span>*U);
 <span class="dt">const</span> <span class="dt">float</span> v = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">4.</span><span class="er">0f</span>*V);</code></pre>
@@ -384,7 +384,7 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>Like for triangle meshes, the user can also specify a geometry mask and additional flags that choose the strategy to handle that mesh in dynamic scenes.</p>
 <p>The following example demonstrates how to create some line segment geometry:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewLineSegments(scene, geomFlags, numCurves,
-  numVertices, <span class="dv">1</span>);
+                                     numVertices, <span class="dv">1</span>);
 
 <span class="kw">struct</span> Vertex { <span class="dt">float</span> x, y, z, r; };
 
@@ -780,7 +780,7 @@ rtcIntersectNM(scene, &amp;context, &amp;rays, <span class="dv">1</span>, <span 
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcInterpolate2(RTCScene scene,
                      <span class="dt">unsigned</span> geomID, <span class="dt">unsigned</span> primID,
                      <span class="dt">float</span> u, <span class="dt">float</span> v,
-                     RTCBufferType buffer, 
+                     RTCBufferType buffer,
                      <span class="dt">float</span>* P,
                      <span class="dt">float</span>* dPdu, <span class="dt">float</span>* dPdv,
                      <span class="dt">float</span>* ddPdudu, <span class="dt">float</span>* ddPdvdv, <span class="dt">float</span>* ddPdudv,
@@ -793,14 +793,14 @@ rtcIntersectNM(scene, &amp;context, &amp;rays, <span class="dv">1</span>, <span 
 <p>It is explicitly allowed to call this function on disabled geometries. This makes it possible to use a separate subdivision mesh with different vertex creases, edge creases, and boundary handling for interpolation of texture coordinates if that is necessary.</p>
 <p>The applied interpolation will do linear interpolation for triangle and quad meshes, linear interpolation for line segments, cubic Bézier interpolation for hair, and apply the full subdivision rules for subdivision geometry.</p>
 <p>There is also a second interpolate call <code>rtcInterpolateN2</code> that can be used for ray packets.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcInterpolateN2(RTCScene scene, <span class="dt">unsigned</span> geomID, 
-                     <span class="dt">const</span> <span class="dt">void</span>* valid, <span class="dt">const</span> <span class="dt">unsigned</span>* primIDs,
-                     <span class="dt">const</span> <span class="dt">float</span>* u, <span class="dt">const</span> <span class="dt">float</span>* v, size_t numUVs, 
-                     RTCBufferType buffer, 
-                     <span class="dt">float</span>* dP,
-                     <span class="dt">float</span>* dPdu, <span class="dt">float</span>* dPdv,
-                     <span class="dt">float</span>* ddPdudu, <span class="dt">float</span>* ddPdvdv, <span class="dt">float</span>* ddPdudv,
-                     size_t numFloats);</code></pre>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcInterpolateN2(RTCScene scene, <span class="dt">unsigned</span> geomID,
+                      <span class="dt">const</span> <span class="dt">void</span>* valid, <span class="dt">const</span> <span class="dt">unsigned</span>* primIDs,
+                      <span class="dt">const</span> <span class="dt">float</span>* u, <span class="dt">const</span> <span class="dt">float</span>* v, size_t numUVs,
+                      RTCBufferType buffer,
+                      <span class="dt">float</span>* dP,
+                      <span class="dt">float</span>* dPdu, <span class="dt">float</span>* dPdv,
+                      <span class="dt">float</span>* ddPdudu, <span class="dt">float</span>* ddPdvdv, <span class="dt">float</span>* ddPdudv,
+                      size_t numFloats);</code></pre>
 <p>This call is similar to the first version, but gets passed <code>numUVs</code> many u/v coordinates and a valid mask (<code>valid</code> parameter) that specifies which of these coordinates are valid. The valid mask points to <code>numUVs</code> integers and a value of -1 denotes valid and 0 invalid. If the valid pointer is NULL all elements are considers valid. The destination arrays are filled in structure of array (SoA) layout.</p>
 <p>See tutorial <a href="tutorials.html#interpolation">Interpolation</a> for an example of using the <code>rtcInterpolate2</code> function.</p>
 <h2 id="buffer-sharing">Buffer Sharing</h2>
@@ -832,9 +832,9 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <h2 id="geometry-mask">Geometry Mask</h2>
 <p>A 32 bit geometry mask can be assigned to triangle meshes and hair geometries using the <code>rtcSetMask</code> call.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetMask(scene, geomID, mask);</code></pre>
-<p>Only if the bitwise <code>and</code> operation of this mask with the mask stored inside the ray is not 0, primitives of this geometry are hit by a ray. This feature can be used to disable selected triangle mesh or hair geometries for specifically tagged rays, e.g. to disable shadow casting for some geometry. This API feature is disabled in Embree by default at compile time, and can be enabled in CMake through the <code>RTCORE_ENABLE_RAY_MASK</code> parameter.</p>
+<p>Only if the bitwise <code>and</code> operation of this mask with the mask stored inside the ray is not 0, primitives of this geometry are hit by a ray. This feature can be used to disable selected triangle mesh or hair geometries for specifically tagged rays, e.g. to disable shadow casting for some geometry. This API feature is disabled in Embree by default at compile time, and can be enabled in CMake through the <code>EMBREE_RAY_MASK</code> parameter.</p>
 <h2 id="filter-functions">Filter Functions</h2>
-<p>The API supports per geometry filter callback functions that are invoked for each intersection found during the <code>rtcIntersect</code> or <code>rtcOccluded</code> calls. The former ones are called intersection filter functions, the latter ones occlusion filter functions. The filter functions can be used to implement various useful features, such as accumulating opacity for transparent shadows, counting the number of surfaces along a ray, collecting all hits along a ray, etc. Filter functions can also be used to selectively reject hits to enable backface culling for some geometries. If the backfaces should be culled in general for all geometries then it is faster to enable <code>RTCORE_BACKFACE_CULLING</code> during compilation of Embree instead of using filter functions.</p>
+<p>The API supports per geometry filter callback functions that are invoked for each intersection found during the <code>rtcIntersect</code> or <code>rtcOccluded</code> calls. The former ones are called intersection filter functions, the latter ones occlusion filter functions. The filter functions can be used to implement various useful features, such as accumulating opacity for transparent shadows, counting the number of surfaces along a ray, collecting all hits along a ray, etc. Filter functions can also be used to selectively reject hits to enable backface culling for some geometries. If the backfaces should be culled in general for all geometries then it is faster to enable <code>EMBREE_BACKFACE_CULLING</code> during compilation of Embree instead of using filter functions.</p>
 <h3 id="normal-mode-1">Normal Mode</h3>
 <p>In normal mode the filter functions provided by the user need to have the following signature:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> RTCFilterFunc  (                   <span class="dt">void</span>* userDataPtr, RTCRay&amp;   ray);
@@ -877,10 +877,10 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <p>A displacement function of <code>NULL</code> will delete an already set displacement function. The bounds parameter is optional. If <code>NULL</code> is passed as bounds, then the displacement shader will get evaluated during the build process to properly bound displaced geometry. If a pointer to some bounds of the displacement are passed, then the implementation can choose to use these bounds to bound displaced geometry. When bounds are specified, then these bounds have to be conservative and should be tight for best performance.</p>
 <p>The displacement function has to have the following type:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCDisplacementFunc2)(<span class="dt">void</span>* ptr,
-                                     <span class="dt">unsigned</span> geomID, <span class="dt">unsigned</span> primID, <span class="dt">unsigned</span> timeStep,   
-                                     <span class="dt">const</span> <span class="dt">float</span>* u,  <span class="dt">const</span> <span class="dt">float</span>* v,    
-                                     <span class="dt">const</span> <span class="dt">float</span>* nx, <span class="dt">const</span> <span class="dt">float</span>* ny, <span class="dt">const</span> <span class="dt">float</span>* nz,   
-                                     <span class="dt">float</span>* px, <span class="dt">float</span>* py, <span class="dt">float</span>* pz,         
+                                     <span class="dt">unsigned</span> geomID, <span class="dt">unsigned</span> primID, <span class="dt">unsigned</span> timeStep,
+                                     <span class="dt">const</span> <span class="dt">float</span>* u,  <span class="dt">const</span> <span class="dt">float</span>* v,
+                                     <span class="dt">const</span> <span class="dt">float</span>* nx, <span class="dt">const</span> <span class="dt">float</span>* ny, <span class="dt">const</span> <span class="dt">float</span>* nz,
+                                     <span class="dt">float</span>* px, <span class="dt">float</span>* py, <span class="dt">float</span>* pz,
                                      size_t N);</code></pre>
 <p>The displacement function is called with the user data pointer of the geometry (<code>ptr</code>), the geometry ID (<code>geomID</code>), and primitive ID (<code>primID</code>) of a patch to displace. For motion blur the time step <code>timeStep</code> is also specified, such that the function can be time varying. For the patch, a number N of points to displace are specified in a struct of array layout. For each point to displace the local patch UV coordinates (<code>u</code> and <code>v</code> arrays), the normalized geometry normal (<code>nx</code>, <code>ny</code>, and <code>nz</code> arrays), as well as world space position (<code>px</code>, <code>py</code>, and <code>pz</code> arrays) are provided. The task of the displacement function is to use this information and move the world space position inside the allowed specified bounds around the point.</p>
 <p>All passed arrays are guaranteed to be 64 bytes aligned, and properly padded to make wide vector processing inside the displacement function possible.</p>
@@ -957,32 +957,32 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 </tr>
 <tr class="even">
 <td align="left">RTC_CONFIG_VERSION</td>
-<td align="left">returns Embree version as integer e.g. Embree v2.8.2 -&gt; 20802</td>
+<td align="left">returns Embree version as integer e.g. Embree v2.8.2 → 20802</td>
 <td align="left">Read only</td>
 </tr>
 <tr class="odd">
 <td align="left">RTC_CONFIG_INTERSECT1</td>
-<td align="left">checks if rtcIntersect1 is supported</td>
+<td align="left">checks if <code>rtcIntersect1</code> is supported</td>
 <td align="left">Read only</td>
 </tr>
 <tr class="even">
 <td align="left">RTC_CONFIG_INTERSECT4</td>
-<td align="left">checks if rtcIntersect4 is supported</td>
+<td align="left">checks if <code>rtcIntersect4</code> is supported</td>
 <td align="left">Read only</td>
 </tr>
 <tr class="odd">
 <td align="left">RTC_CONFIG_INTERSECT8</td>
-<td align="left">checks if rtcIntersect8 is supported</td>
+<td align="left">checks if <code>rtcIntersect8</code> is supported</td>
 <td align="left">Read only</td>
 </tr>
 <tr class="even">
 <td align="left">RTC_CONFIG_INTERSECT16</td>
-<td align="left">checks if rtcIntersect16 is supported</td>
+<td align="left">checks if <code>rtcIntersect16</code> is supported</td>
 <td align="left">Read only</td>
 </tr>
 <tr class="odd">
 <td align="left">RTC_CONFIG_INTERSECT_STREAM</td>
-<td align="left">checks if rtcIntersect1M, rtcIntersect1Mp, rtcIntersectNM, and rtcIntersectNp are supported</td>
+<td align="left">checks if <code>rtcIntersect1M</code>, <code>rtcIntersect1Mp</code>, <code>rtcIntersectNM</code>, and <code>rtcIntersectNp</code> are supported</td>
 <td align="left">Read only</td>
 </tr>
 <tr class="even">
@@ -1016,31 +1016,36 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <td align="left">Read only</td>
 </tr>
 <tr class="even">
-<td align="left">RTC_CONFIG_RAY_MASK RTC_CONFIG_BACKFACE_CULLING supported</td>
-<td align="left">checks if ray masks are supported checks if backface culling is</td>
-<td align="left">Read only Read only</td>
+<td align="left">RTC_CONFIG_RAY_MASK</td>
+<td align="left">checks if ray masks are supported</td>
+<td align="left">Read only</td>
 </tr>
 <tr class="odd">
+<td align="left">RTC_CONFIG_BACKFACE_CULLING</td>
+<td align="left">checks if backface culling is supported</td>
+<td align="left">Read only</td>
+</tr>
+<tr class="even">
 <td align="left">RTC_CONFIG_INTERSECTION_FILTER</td>
 <td align="left">checks if intersection filters are enabled</td>
 <td align="left">Read only</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">RTC_CONFIG_INTERSECTION_FILTER_RESTORE</td>
 <td align="left">checks if intersection filters restore previous hit</td>
 <td align="left">Read only</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">RTC_CONFIG_IGNORE_INVALID_RAYS</td>
 <td align="left">checks if invalid rays are ignored</td>
 <td align="left">Read only</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">RTC_CONFIG_TASKING_SYSTEM</td>
 <td align="left">return used tasking system (0 = INTERNAL, 1 = TBB)</td>
 <td align="left">Read only</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">RTC_SOFTWARE_CACHE_SIZE</td>
 <td align="left">Configures the software cache size (used to cache subdivision surfaces for instance). The size is specified as an integer number of bytes. The software cache cannot be configured during rendering.</td>
 <td align="left">Write only</td>
@@ -1070,7 +1075,7 @@ tbb::task_scheduler_init init(numThreads);</code></pre>
       </div>
 
       <div id="footer">
-        © 2009–2015 Intel Corporation <a href="legal.html">Disclaimer and Legal Information</a>
+        © 2009–2016 Intel Corporation <a href="legal.html">Disclaimer and Legal Information</a>
       </div>
     </div>
   </body>
