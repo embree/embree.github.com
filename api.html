@@ -65,7 +65,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.13.0!
+      We recently released Embree v2.14.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -94,7 +94,7 @@ _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre>
 <li><code>.embree2</code> file in the application folder</li>
 <li><code>.embree2</code> file in the home folder</li>
 </ol>
-<p>Settings performed later overwrite previous settings. This way the configuration for the application can be changed globally (either through the <code>rtcNewDevice</code> call or through the <code>.embree2</code> file in the application folder) and each user has the option to modify the configuration to fit its needs.</p>
+<p>Settings performed later overwrite previous settings. This way the configuration for the application can be changed globally (either through the <code>rtcNewDevice</code> call or through the <code>.embree2</code> file in the application folder) and each user has the option to modify the configuration to fit its needs. Configuration files can be ignored by the application by passing <code>ignore_config_files=1</code> to <code>rtcNewDevice</code>.</p>
 <p>API calls that access geometries are only thread safe as long as different geometries are accessed. Accesses to one geometry have to get sequenced by the application. All other API calls are thread safe. The API calls are re-entrant, it is thus safe to trace new rays and create new geometry when intersecting a user defined object.</p>
 <p>Each user thread has its own error flag per device. If an error occurs when invoking some API function, this flag is set to an error code if it stores no previous error. The <code>rtcDeviceGetError</code> function reads and returns the currently stored error and clears the error flag again.</p>
 <p>Possible error codes returned by <code>rtcDeviceGetError</code> are:</p>
@@ -338,7 +338,7 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>A quad is internally handled as a pair of two triangles <code>v0,v1,v3</code> and <code>v2,v3,v1</code>, with the u’/v’ coordinates of the second triangle corrected by <code>u = 1-u'</code> and <code>v = 1-v'</code> to produce a quad parametrization where u and v go from 0 to 1.</p>
 <p>To encode a triangle as a quad just replicate the last triangle vertex (<code>v0,v1,v2</code> -&gt; <code>v0,v1,v2,v2</code>). This way the quad mesh can be used to represent a mixed mesh which contains triangles and quads.</p>
 <h3 id="subdivision-surfaces">Subdivision Surfaces</h3>
-<p>Catmull-Clark subdivision surfaces for meshes consisting of faces of up to 15 vertices (e.g. triangles, quadrilateral, pentagons, etc.) are supported, including support for edge creases, vertex creases, holes, and non-manifold geometry.</p>
+<p>Catmull-Clark subdivision surfaces for meshes consisting of faces of up to 15 vertices (e.g. triangles, quadrilateral, pentagons, etc.) are supported, including support for edge creases, vertex creases, holes, non-manifold geometry, and face-varying interpolation.</p>
 <p>A subdivision surface is created using the <code>rtcNewSubdivisionMesh</code> function call, and deleted again using the <code>rtcDeleteGeometry</code> function call.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"> <span class="dt">unsigned</span> rtcNewSubdivisionMesh(RTCScene scene,
                                 RTCGeometryFlags flags,
@@ -352,11 +352,15 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
                                 size_t numTimeSteps);</code></pre>
 <p>The number of faces (<code>numFaces</code>), edges/indices (<code>numEdges</code>), vertices (<code>numVertices</code>), edge creases (<code>numEdgeCreases</code>), vertex creases (<code>numVertexCreases</code>), holes (<code>numHoles</code>), and time steps (<code>numTimeSteps</code>) have to get specified at construction time.</p>
 <p>The following buffers have to get setup by the application: the face buffer (<code>RTC_FACE_BUFFER</code>) contains the number edges/indices (3 to 15) of each of the <code>numFaces</code> faces, the index buffer (<code>RTC_INDEX_BUFFER</code>) contains multiple (3 to 15) 32 bit vertex indices for each face and <code>numEdges</code> indices in total, the vertex buffer (<code>RTC_VERTEX_BUFFER</code>) stores <code>numVertices</code> vertices as single precision <code>x</code>, <code>y</code>, <code>z</code> floating point coordinates aligned to 16 bytes. The value of the 4th float used for alignment can be arbitrary.</p>
-<p>Optionally, the application can setup the hole buffer (<code>RTC_HOLE_BUFFER</code>) with <code>numHoles</code> many 32 bit indices of faces that should be considered non-existing.</p>
+<p>Optionally the application may fill additional index buffers if multiple topologies are required for face-varying interpolation. The standard vertex buffers <code>RTC_VERTEX_BUFFER</code> are always bound to the geometry topology (topology 0) thus use <code>RTC_INDEX_BUFFER0</code>. Data interpolation may use different topologies as described later.</p>
+<p>Optionally, the application can setup the hole buffer (<code>RTC_HOLE_BUFFER</code>) with <code>numHoles</code> many 32 bit indices of faces that should be considered non-existing in all topologies.</p>
 <p>Optionally, the application can fill the level buffer (<code>RTC_LEVEL_BUFFER</code>) with a tessellation rate for each or the edges of each face, making a total of <code>numEdges</code> values. The tessellation level is a positive floating point value, that specifies how many quads along the edge should get generated during tessellation. The tessellation level is a lower bound, thus the implementation is free to choose a larger level. If no level buffer is specified a level of 1 is used. Note that some edge may be shared between (typically 2) faces. To guarantee a watertight tessellation, the level of these shared edges has to be exactly identical. A uniform tessellation rate for an entire subdivision mesh can be set by using the <code>rtcSetTessellationRate(RTCScene scene, unsigned geomID, float rate)</code> function. The existance of a level buffer has preference over the uniform tessellation rate.</p>
-<p>Optionally, the application can fill the sparse edge crease buffers to make some edges appear sharper. The edge crease index buffer (<code>RTC_EDGE_CREASE_INDEX_BUFFER</code>) contains <code>numEdgeCreases</code> many pairs of 32 bit vertex indices that specify unoriented edges. The edge crease weight buffer (<code>RTC_EDGE_CREASE_WEIGHT_BUFFER</code>) stores for each of theses crease edges a positive floating point weight. The larger this weight, the sharper the edge. Specifying a weight of infinity is supported and marks an edge as infinitely sharp. Storing an edge multiple times with the same crease weight is allowed, but has lower performance. Storing an edge multiple times with different crease weights results in undefined behavior. For a stored edge (i,j), the reverse direction edges (j,i) does not have to get stored, as both are considered the same edge.</p>
-<p>Optionally, the application can fill the sparse vertex crease buffers to make some vertices appear sharper. The vertex crease index buffer (<code>RTC_VERTEX_CREASE_INDEX_BUFFER</code>), contains <code>numVertexCreases</code> many 32 bit vertex indices to specify a set of vertices. The vertex crease weight buffer (<code>RTC_VERTEX_CREASE_WEIGHT_BUFFER</code>) specifies for each of these vertices a positive floating point weight. The larger this weight, the sharper the vertex. Specifying a weight of infinity is supported and makes the vertex infinitely sharp. Storing a vertex multiple times with the same crease weight is allowed, but has lower performance. Storing a vertex multiple times with different crease weights results in undefined behavior.</p>
+<p>Optionally, the application can fill the sparse edge crease buffers to make some edges appear sharper. The edge crease index buffer (<code>RTC_EDGE_CREASE_INDEX_BUFFER</code>) contains <code>numEdgeCreases</code> many pairs of 32 bit vertex indices that specify unoriented edges in the geometry topology. The edge crease weight buffer (<code>RTC_EDGE_CREASE_WEIGHT_BUFFER</code>) stores for each of theses crease edges a positive floating point weight. The larger this weight, the sharper the edge. Specifying a weight of infinity is supported and marks an edge as infinitely sharp. Storing an edge multiple times with the same crease weight is allowed, but has lower performance. Storing an edge multiple times with different crease weights results in undefined behavior. For a stored edge (i,j), the reverse direction edges (j,i) does not have to get stored, as both are considered the same edge. Edge crease features are specified for the geomtetry topology, but copied to all other topologies automatically.</p>
+<p>Optionally, the application can fill the sparse vertex crease buffers to make some vertices appear sharper. The vertex crease index buffer (<code>RTC_VERTEX_CREASE_INDEX_BUFFER</code>), contains <code>numVertexCreases</code> many 32 bit vertex indices to specify a set of vertices from the geometry topology. The vertex crease weight buffer (<code>RTC_VERTEX_CREASE_WEIGHT_BUFFER</code>) specifies for each of these vertices a positive floating point weight. The larger this weight, the sharper the vertex. Specifying a weight of infinity is supported and makes the vertex infinitely sharp. Storing a vertex multiple times with the same crease weight is allowed, but has lower performance. Storing a vertex multiple times with different crease weights results in undefined behavior. Vertex crease features are specified for the geomtetry topology, but copied to all other topologies automatically.</p>
 <p>Faces with 3 to 15 vertices are supported (triangles, quadrilateral, pentagons, etc).</p>
+<p>The user can also specify a geometry mask and additional flags that choose the strategy to handle that subdivision mesh in dynamic scenes.</p>
+<p>The implementation of subdivision surfaces uses an internal software cache, which can get configured to some desired size (see <a href="#configuring-embree">Configuring Embree</a>).</p>
+<h4 id="parametrization">Parametrization</h4>
 <p>The parametrization of a regular quadrilateral uses the first vertex <code>p0</code> as base point, and the vector <code>p1 - p0</code> as u-direction and <code>p3 - p0</code> as v-direction. The following picture additionally illustrates the direction the geometry normal is pointing into.</p>
 <div class="figure">
 <img src="images/quad_uv.png" />
@@ -371,9 +375,54 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <span class="dt">const</span> <span class="dt">float</span> u = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">4.</span><span class="er">0f</span>*U);
 <span class="dt">const</span> <span class="dt">float</span> v = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">4.</span><span class="er">0f</span>*V);</code></pre>
 <p>To smoothly interpolate texture coordinates over the subdivision surface we recommend using the <code>rtcInterpolate2</code> function, which will apply the standard subdivision rules for interpolation and automatically take care of the special UV encoding for non-quadrilaterals.</p>
-<p>Using the <code>rtcSetBoundaryMode</code> API call one can specify how corner vertices are handled. Specifying <code>RTC_BOUNDARY_NONE</code> ignores all boundary patches, <code>RTC_BOUNDARY_EDGE_ONLY</code> makes all boundaries soft, while <code>RTC_BOUNDARY_EDGE_AND_CORNER</code> makes corner vertices sharp.</p>
-<p>The user can also specify a geometry mask and additional flags that choose the strategy to handle that subdivision mesh in dynamic scenes.</p>
-<p>The implementation of subdivision surfaces uses an internal software cache, which can get configured to some desired size (see <a href="#configuring-embree">Configuring Embree</a>).</p>
+<h4 id="face-varing-data">Face-Varing Data</h4>
+<p>Face-varying interpolation is supported through multiple topologies per subdivision mesh and binding such topologies to user vertex buffers to interpolate. This way texture coordinates may use a different topology with additional boundaries to construct separate UV regions inside one subdivision mesh.</p>
+<p>Each such topology consists of an index buffer and subdivision mode. Up to 16 topologies are supported, with corresponding index buffers <code>RTC_INDEX_BUFFER0+i</code>, with i in the range 0 to 15.</p>
+<p>Each of the 16 supported user vertex buffers <code>RTC_USER_VERTEX_BUFFER0+j</code> (j in the range 0 to 15) can be assigned to some topology using the <code>rtcSetIndexBuffer</code> call:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetIndexBuffer(RTCScene scene, <span class="dt">unsigned</span> geomID,
+                       RTCBufferType vertexBuffer, RTCBufferType indexBuffer);</code></pre>
+<p>The face buffer (<code>RTC_FACE_BUFFER</code>) is shared between all topologies, which means that the n’th primitive always has the same number of vertices (e.g. being a triangle or a quad) for each topology. However, the indices of the topologies themselves may be different.</p>
+<h4 id="subdivision-mode">Subdivision Mode</h4>
+<p>The subdivision modes can be used to force linear interpolation for some parts of the subdivision mesh.</p>
+<table>
+<caption>Subdivision modes supported by Embree.</caption>
+<colgroup>
+<col width="36%" />
+<col width="60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Boundary Mode</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">RTC_SUBDIV_NO_BOUNDARY</td>
+<td align="left">Boundary patches are ignored. This way each rendered patch has a full set of control vertices.</td>
+</tr>
+<tr class="even">
+<td align="left">RTC_SUBDIV_SMOOTH_BOUNDARY</td>
+<td align="left">The sequence of boundary control points are used to generate a smooth B-spline boundary curve (default mode).</td>
+</tr>
+<tr class="odd">
+<td align="left">RTC_SUBDIV_PIN_CORNERS</td>
+<td align="left">Corner vertices are pinned to their location during subdivision.</td>
+</tr>
+<tr class="even">
+<td align="left">RTC_SUBDIV_PIN_BOUNDARY</td>
+<td align="left">All vertices at the border are pinned to their location during subdivision. This way the boundary is interpolated linearly.</td>
+</tr>
+<tr class="odd">
+<td align="left">RTC_SUBDIV_PIN_ALL</td>
+<td align="left">All vertices at the border are binned to their location during subdivision. This way all patches are linearly interpolated.</td>
+</tr>
+</tbody>
+</table>
+<p>These modes can be set to each topology separately using the <code>rtcSetSubdivisionMode</code> API call with the following signature:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetSubdivisionMode(RTCScene scene, <span class="dt">unsigned</span> geomID,
+                           <span class="dt">unsigned</span> topologyID, RTCSubdivisionMode mode);</code></pre>
+<p>These modes are typically used to interpolate face-varying data properly. E.g. the topology used to interpolate texture coordinaces are typically assigned the <code>RTC_SUBDIV_PIN_BOUNDARY</code> mode, to also map texels at the border of the texture to the mesh.</p>
 <p>Also see tutorial <a href="tutorials.html#subdivision-geometry">Subdivision Geometry</a> for an example of how to create subdivision surfaces.</p>
 <h3 id="line-segment-hair-geometry">Line Segment Hair Geometry</h3>
 <p>Line segments are supported to render hair geometry. A line segment consists of a start and end point, and start and end radius. Individual line segments are considered to be subpixel sized which allows the implementation to approximate the intersection calculation. This in particular means that zooming onto one line segment might show geometric artifacts.</p>
@@ -401,6 +450,7 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>The number of hair curves, the number of vertices, and optionally the number of time steps for multi-segment motion blur have to get specified at construction time of the hair geometry.</p>
 <p>The curve indices can be set by mapping and writing to the index buffer (<code>RTC_INDEX_BUFFER</code>) and the control vertices can be set by mapping and writing into the vertex buffer (<code>RTC_VERTEX_BUFFER</code>). In case of motion blur, the vertex buffers <code>RTC_VERTEX_BUFFER0+t</code> have to get filled for each time step.</p>
 <p>The index buffer contains an array of 32 bit indices pointing to the ID of the first of four control vertices, while the vertex buffer stores all control points in the form of a single precision position and radius stored in <code>x</code>, <code>y</code>, <code>z</code>, <code>r</code> order in memory. The hair radii have to be greater or equal zero. All buffers have to get unmapped before an <code>rtcCommit</code> call to the scene.</p>
+<p>The intersection with the hair primitive stores the parametric hit location along the hair as <code>u</code>-coordinate (range 0 to +1), and the normalized distance as the <code>v</code>-coordinate (range -1 to +1). The geometry normal <code>Ng</code> is filled with the the tangent of the bezier curve at the hit location on the curve (dPdu).</p>
 <p>The implementation may choose to subdivide the Bézier curve into multiple cylinders-like primitives. The number of cylinders the curve gets subdivided into can be specified per hair geometry through the <code>rtcSetTessellationRate(RTCScene scene, unsigned geomID, float rate)</code> function. By default the tessellation rate for hair curves is 4.</p>
 <p>Like for triangle meshes, the user can also specify a geometry mask and additional flags that choose the strategy to handle that mesh in dynamic scenes.</p>
 <p>The following example demonstrates how to create some hair geometry:</p>
@@ -785,7 +835,7 @@ rtcIntersectNM(scene, &amp;context, &amp;rays, <span class="dv">1</span>, <span 
                      <span class="dt">float</span>* dPdu, <span class="dt">float</span>* dPdv,
                      <span class="dt">float</span>* ddPdudu, <span class="dt">float</span>* ddPdvdv, <span class="dt">float</span>* ddPdudv,
                      size_t numFloats);</code></pre>
-<p>This call smoothly interpolates the per-vertex data stored in the specified geometry buffer (<code>buffer</code> parameter) to the u/v location (<code>u</code> and <code>v</code> parameters) of the primitive (<code>primID</code> parameter) of the geometry (<code>geomID</code> parameter) of the specified scene (<code>scene</code> parameter). The interpolation buffer (<code>buffer</code> parameter) has to contain (at least) <code>numFloats</code> floating point values per vertex to interpolate. As interpolation buffer one can specify the <code>RTC_VERTEX_BUFFER0</code> and <code>RTC_VERTEX_BUFFER1</code> as well as one of two special user vertex buffers <code>RTC_USER_VERTEX_BUFFER0</code> and <code>RTC_USER_VERTEX_BUFFER1</code>. These user vertex buffers can only get set using the <code>rtcSetBuffer</code> call, they cannot get managed internally by Embree as they have no default layout. The last element of the buffer has to be padded to 16 bytes, such that it can be read safely using SSE instructions.</p>
+<p>This call smoothly interpolates the per-vertex data stored in the specified geometry buffer (<code>buffer</code> parameter) to the u/v location (<code>u</code> and <code>v</code> parameters) of the primitive (<code>primID</code> parameter) of the geometry (<code>geomID</code> parameter) of the specified scene (<code>scene</code> parameter). The interpolation buffer (<code>buffer</code> parameter) has to contain (at least) <code>numFloats</code> floating point values per vertex to interpolate. As interpolation buffer one can specify the <code>RTC_VERTEX_BUFFER0</code> and <code>RTC_VERTEX_BUFFER1</code> as well as one of two special user vertex buffers <code>RTC_USER_VERTEX_BUFFER0</code> and <code>RTC_USER_VERTEX_BUFFER1</code>. These user vertex buffers can only get set using the <code>rtcSetBuffer2</code> call, they cannot get managed internally by Embree as they have no default layout. The last element of the buffer has to be padded to 16 bytes, such that it can be read safely using SSE instructions.</p>
 <p>The <code>rtcInterpolate</code> call stores <code>numFloats</code> interpolated floating point values to the memory location pointed to by <code>P</code>. One can avoid storing the interpolated value by setting <code>P</code> to NULL.</p>
 <p>The first order derivative of the interpolation by u and v are stored at the <code>dPdu</code> and <code>dPdv</code> memory locations. One can avoid storing first order derivatives by setting both <code>dPdu</code> and <code>dPdv</code> to NULL.</p>
 <p>The second order derivatives are stored at the <code>ddPdudu</code>, <code>ddPdvdv</code>, and <code>ddPdudv</code> memory locations. One can avoid storing second order derivatives by setting these three pointers to NULL.</p>
@@ -804,24 +854,24 @@ rtcIntersectNM(scene, &amp;context, &amp;rays, <span class="dv">1</span>, <span 
 <p>This call is similar to the first version, but gets passed <code>numUVs</code> many u/v coordinates and a valid mask (<code>valid</code> parameter) that specifies which of these coordinates are valid. The valid mask points to <code>numUVs</code> integers and a value of -1 denotes valid and 0 invalid. If the valid pointer is NULL all elements are considers valid. The destination arrays are filled in structure of array (SoA) layout.</p>
 <p>See tutorial <a href="tutorials.html#interpolation">Interpolation</a> for an example of using the <code>rtcInterpolate2</code> function.</p>
 <h2 id="buffer-sharing">Buffer Sharing</h2>
-<p>Embree supports sharing of buffers with the application. Each buffer that can be mapped for a specific geometry can also be shared with the application, by pass a pointer, offset, and stride of the application side buffer using the <code>rtcSetBuffer</code> API function.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetBuffer(RTCScene scene, <span class="dt">unsigned</span> geomID, RTCBufferType type,
-                  <span class="dt">void</span>* ptr, size_t offset, size_t stride);</code></pre>
-<p>The <code>rtcSetBuffer</code> function has to get called before any call to <code>rtcMapBuffer</code> for that buffer, otherwise the buffer will get allocated internally and the call to <code>rtcSetBuffer</code> will fail. The buffer has to remain valid as long as the geometry exists, and the user is responsible to free the buffer when the geometry gets deleted. When a buffer is shared, it is safe to modify that buffer without mapping and unmapping it. However, for dynamic scenes one still has to call <code>rtcUpdate</code> for modified geometries and the buffer data has to stay constant from the <code>rtcCommit</code> call to after the last ray query invocation.</p>
-<p>The <code>offset</code> parameter specifies a byte offset to the start of the first element and the <code>stride</code> parameter specifies a byte stride between the different elements of the shared buffer. This support for offset and stride allows the application quite some freedom in the data layout of these buffers, however, some restrictions apply. Index buffers always store 32 bit indices and vertex buffers always store single precision floating point data. The start address <code>ptr+offset</code> and <code>stride</code> always have to be aligned to 4 bytes, otherwise the <code>rtcSetBuffer</code> function will fail.</p>
+<p>Embree supports sharing of buffers with the application. Each buffer that can be mapped for a specific geometry can also be shared with the application, by passing a pointer, offset, stride, and number of elements of the application side buffer using the <code>rtcSetBuffer2</code> API function.</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcSetBuffer2(RTCScene scene, <span class="dt">unsigned</span> geomID, RTCBufferType type,
+                  <span class="dt">void</span>* ptr, size_t offset, size_t stride, size_t size);</code></pre>
+<p>The <code>rtcSetBuffer2</code> function has to get called before any call to <code>rtcMapBuffer</code> for that buffer, otherwise the buffer will get allocated internally and the call to <code>rtcSetBuffer2</code> will fail. The buffer has to remain valid as long as the geometry exists, and the user is responsible to free the buffer when the geometry gets deleted. When a buffer is shared, it is safe to modify that buffer without mapping and unmapping it. However, for dynamic scenes one still has to call <code>rtcUpdate</code> for modified geometries and the buffer data has to stay constant from the <code>rtcCommit</code> call to after the last ray query invocation.</p>
+<p>The <code>offset</code> parameter specifies a byte offset to the start of the first element, the <code>stride</code> parameter specifies a byte stride between the different elements of the shared buffer and the <code>size</code> parameter specified the number of elements stored inside the buffer. This support for offset and stride allows the application quite some freedom in the data layout of these buffers, however, some restrictions apply. Index buffers always store 32 bit indices and vertex buffers always store single precision floating point data. The start address <code>ptr+offset</code> and <code>stride</code> always have to be aligned to 4 bytes, otherwise the <code>rtcSetBuffer2</code> function will fail. The <code>size</code> parameter can be used to change the size of a buffer, which makes it possible to change the number of elements inside a mesh (by changing the size of the <code>RTC_INDEX_BUFFER</code>).</p>
 <p>For vertex buffers (<code>RTC_VERTEX_BUFFER</code> and <code>RTC_USER_VERTEX_BUFFER</code>), the last element must be readable using SSE instructions, thus padding the last element to 16 bytes size is required for some layouts.</p>
 <p>The following is an example of how to create a mesh with shared index and vertex buffers:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewTriangleMesh(scene, geomFlags, numTriangles, numVertices);
-rtcSetBuffer(scene, geomID, RTC_VERTEX_BUFFER, vertexPtr, <span class="dv">0</span>, <span class="dv">3</span>*<span class="kw">sizeof</span>(<span class="dt">float</span>));
-rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span>, <span class="dv">3</span>*<span class="kw">sizeof</span>(<span class="dt">int</span>));</code></pre>
+rtcSetBuffer2(scene, geomID, RTC_VERTEX_BUFFER, vertexPtr, <span class="dv">0</span>, <span class="dv">3</span>*<span class="kw">sizeof</span>(<span class="dt">float</span>), numVertices);
+rtcSetBuffer2(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span>, <span class="dv">3</span>*<span class="kw">sizeof</span>(<span class="dt">int</span>), numTriangles);</code></pre>
 <p>Sharing buffers can significantly reduce the memory required by the application, thus we recommend using this feature. When enabling the <code>RTC_COMPACT</code> scene flag, the spatial index structures of Embree might also share the vertex buffer, resulting in even higher memory savings.</p>
 <h2 id="multi-segment-motion-blur">Multi-Segment Motion Blur</h2>
 <p>All geometry types support multi-segment motion blur with equidistant time steps and arbitrary number of time steps in the range of 2 to 129. Each geometry can have a different number of time steps. Some motion blur geometry is constructed by passing the number of time steps to the geometry construction function and setting the vertex arrays <code>RTC_VERTEX_BUFFER0+t</code> for each time step <code>t</code>:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> geomID = rtcNewTriangleMesh(scene, geomFlags, numTris, numVertices, <span class="dv">3</span>);
-rtcSetBuffer(scene, geomID, RTC_VERTEX_BUFFER0<span class="dv">+0</span>, vertex0Ptr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Vertex));
-rtcSetBuffer(scene, geomID, RTC_VERTEX_BUFFER0<span class="dv">+1</span>, vertex1Ptr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Vertex));
-rtcSetBuffer(scene, geomID, RTC_VERTEX_BUFFER0<span class="dv">+2</span>, vertex2Ptr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Vertex));
-rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Triangle));</code></pre>
+rtcSetBuffer2(scene, geomID, RTC_VERTEX_BUFFER0<span class="dv">+0</span>, vertex0Ptr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Vertex), numVertices);
+rtcSetBuffer2(scene, geomID, RTC_VERTEX_BUFFER0<span class="dv">+1</span>, vertex1Ptr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Vertex), numVertices);
+rtcSetBuffer2(scene, geomID, RTC_VERTEX_BUFFER0<span class="dv">+2</span>, vertex2Ptr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Vertex), numVertices);
+rtcSetBuffer2(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span>, <span class="kw">sizeof</span>(Triangle), numTris);</code></pre>
 <p>If a scene contains geometries with motion blur, the user has to set the <code>time</code> member of the ray to a value in the range <span class="math">[0, 1]</span>. The motion blur geometry is defined by linearly interpolating the geometries of neighboring time steps. Each ray can specify a different time, even inside a ray packet.</p>
 <h2 id="user-data-pointer">User Data Pointer</h2>
 <p>A user data pointer can be specified and queried per geometry, to efficiently map from the geometry ID returned by ray queries to the application representation for that geometry.</p>
@@ -1049,6 +1099,16 @@ rtcSetBuffer(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</span
 <td align="left">RTC_SOFTWARE_CACHE_SIZE</td>
 <td align="left">Configures the software cache size (used to cache subdivision surfaces for instance). The size is specified as an integer number of bytes. The software cache cannot be configured during rendering.</td>
 <td align="left">Write only</td>
+</tr>
+<tr class="odd">
+<td align="left">RTC_CONFIG_COMMIT_JOIN</td>
+<td align="left">Checks if rtcCommit can be used to join build operation (not supported when Embree is compiled with some older TBB versions)</td>
+<td align="left">Read only</td>
+</tr>
+<tr class="even">
+<td align="left">RTC_CONFIG_COMMIT_THREAD</td>
+<td align="left">Checks if rtcCommitThread is available (not supported when Embree is compiled with some older TBB versions)</td>
+<td align="left">Read only</td>
 </tr>
 </tbody>
 </table>

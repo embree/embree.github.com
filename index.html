@@ -45,7 +45,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.13.0!
+      We recently released Embree v2.14.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -97,6 +97,22 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.14.0">New Features in Embree 2.14.0</h3>
+<ul>
+<li>Added <code>ignore_config_files</code> option to init flags that allows the application to ignore Embree configuration files.</li>
+<li>Face-varying interpolation is now supported for subdivision surfaces.</li>
+<li>Up to 16 user vertex buffers are supported for vertex attribute interpolation.</li>
+<li>Deprecated <code>rtcSetBoundaryMode</code> function, please use the new <code>rtcSetSubdivisionMode</code> function.</li>
+<li>Added <code>RTC_SUBDIV_PIN_BOUNDARY</code> mode for handling boundaries of subdivision meshes.</li>
+<li>Added <code>RTC_SUBDIV_PIN_ALL</code> mode to enforce linear interpolation for subdivision meshes.</li>
+<li>Optimized object generation performance for dynamic scenes.</li>
+<li>Reduced memory consumption when using lots of small dynamic objects.</li>
+<li>Fixed bug for subdivision surfaces using low tessellation rates.</li>
+<li>Hair geometry now uses a new ribbon intersector that intersects with ray-facing quads. The new intersector also returns the v-coordinate of the hair intersection, and fixes artefacts at junction points between segments, at the cost of a small performance hit.</li>
+<li>Added <code>rtcSetBuffer2</code> function, that additionally gets the number of elements of a buffer. In dynamic scenes, this function allows to quickly change buffer sizes, making it possible to change the number of primitives of a mesh or the number of crease features for subdivision surfaces.</li>
+<li>Added simple ‘viewer_anim’ tutorial for rendering key frame animations and ‘buildbench’ for measuring BVH (re-)build performance for static and dynamic scenes.</li>
+<li>Added more AVX512 optimizations for future architectures.</li>
+</ul>
 <h3 id="new-features-in-embree-2.13.0">New Features in Embree 2.13.0</h3>
 <ul>
 <li>Improved performance for compact (but not robust) scenes.</li>
