@@ -100,10 +100,11 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <h3 id="new-features-in-embree-2.16.0">New Features in Embree 2.16.0</h3>
 <ul>
 <li>Improved multi-segment motion blur support for scenes with different number of time steps per mesh.</li>
-<li>New top level BVH builder that improves build times and bvh quality of two-level BVHs.</li>
+<li>New top level BVH builder that improves build times and BVH quality of two-level BVHs.</li>
 <li>Added support to enable only a single ISA. Previously code was always compiled for SSE2.</li>
 <li>Improved single ray tracing performance for incoherent rays on AVX512 architectures by 5-10%.</li>
 <li>Improved packet/hybrid ray tracing performance for incoherent rays on AVX512 architectures by 10-30%.</li>
+<li>Improved stream ray tracing performance for coherent rays in structure-of-pointers layout by 40-70%.</li>
 <li>BVH builder for compact scenes of triangles and quads needs essentially no temporary memory anymore. This doubles the maximal scene size that can be rendered in compact mode.</li>
 <li>Triangles no longer store the geometry normal in fast/default mode which reduces memory consumption by up to 20%.</li>
 <li>Compact mode uses BVH4 now consistently which reduces memory consumption by up to 10%.</li>
@@ -111,7 +112,7 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <li>Improved performance of user geometries and instances through BVH8 support.</li>
 <li>The API supports now specifying the geometry ID of a geometry at construction time. This way matching the geometry ID used by Embree and the application is simplified.</li>
 <li>Fixed a bug that would have caused a failure of the BVH builder for dynamic scenes when run on a machine with more then 1000 threads.</li>
-<li>Fixed a bug that could have been triggered when reaching the maximal number of mappings under Linux (<code>vm.max_map_count</code>). This could have happend when creating a large number of small static scenes.</li>
+<li>Fixed a bug that could have been triggered when reaching the maximal number of mappings under Linux (<code>vm.max_map_count</code>). This could have happened when creating a large number of small static scenes.</li>
 <li>Added huge page support for Windows and MacOSX (experimental).</li>
 <li>Added support for Visual Studio 2017.</li>
 <li>Removed support for Visual Studio 2012.</li>
