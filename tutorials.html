@@ -45,7 +45,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.15.0!
+      We recently released Embree v2.16.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -129,7 +129,7 @@
 <img src="images/viewer.jpg" />
 
 </div>
-<p>This tutorial demonstrates a simple OBJ viewer that traces primary visibility rays only. A scene consisting of multiple meshes is created, each mesh sharing the index and vertex buffer with the application. Demonstrated is also how to support additional per vertex data, such as shading normals.</p>
+<p>This tutorial demonstrates a simple OBJ viewer that traces primary visibility rays only. A scene consisting of multiple meshes is created, each mesh sharing the index and vertex buffer with the application. Demonstrated is also how to support additional per-vertex data, such as shading normals.</p>
 <p>You need to specify an OBJ file at the command line for this tutorial to work:</p>
 <pre><code>./viewer -i model.obj</code></pre>
 <h2 id="stream-viewer">Stream Viewer</h2>
@@ -195,13 +195,13 @@
 
 </div>
 <p>This tutorial demonstrates rendering of motion blur using the multi segment motion blur feature. Shown is motion blur of a triangle mesh, quad mesh, subdivision surface, line segments, hair geometry, bezier curves, instantiated triangle mesh where the instance moves, instantiated quad mesh where the instance and the quads move, and user geometry.</p>
-<p>The number of time steps used can be configured using the –time-steps <int> and –time-steps2 <int> command line parameters, and the geometry can be rendered at a specific time using the the –time <float> command line parameter.</p>
+<p>The number of time steps used can be configured using the <code>--time-steps &lt;int&gt;</code> and <code>--time-steps2 &lt;int&gt;</code> command line parameters, and the geometry can be rendered at a specific time using the the <code>--time &lt;float&gt;</code> command line parameter.</p>
 <h2 id="interpolation">Interpolation</h2>
 <div class="figure">
 <img src="images/interpolation.jpg" />
 
 </div>
-<p>This tutorial demonstrates interpolation of user defined per vertex data.</p>
+<p>This tutorial demonstrates interpolation of user defined per-vertex data.</p>
 <h2 id="bvh-builder">BVH Builder</h2>
 <p>This tutorial demonstrates how to use the templated hierarchy builders of Embree to build a bounding volume hierarchy with a user defined memory layout using a high quality SAH builder and very fast morton builder.</p>
 <h2 id="bvh-access">BVH Access</h2>

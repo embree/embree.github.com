@@ -45,7 +45,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.15.0!
+      We recently released Embree v2.16.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -97,18 +97,45 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.16.0">New Features in Embree 2.16.0</h3>
+<ul>
+<li>Improved multi-segment motion blur support for scenes with different number of time steps per mesh.</li>
+<li>New top level BVH builder that improves build times and bvh quality of two-level BVHs.</li>
+<li>Added support to enable only a single ISA. Previously code was always compiled for SSE2.</li>
+<li>Improved single ray tracing performance for incoherent rays on AVX512 architectures by 5-10%.</li>
+<li>Improved packet/hybrid ray tracing performance for incoherent rays on AVX512 architectures by 10-30%.</li>
+<li>BVH builder for compact scenes of triangles and quads needs essentially no temporary memory anymore. This doubles the maximal scene size that can be rendered in compact mode.</li>
+<li>Triangles no longer store the geometry normal in fast/default mode which reduces memory consumption by up to 20%.</li>
+<li>Compact mode uses BVH4 now consistently which reduces memory consumption by up to 10%.</li>
+<li>Reduced memory consumption for small scenes (of 10k-100k primitives) and dynamic scenes.</li>
+<li>Improved performance of user geometries and instances through BVH8 support.</li>
+<li>The API supports now specifying the geometry ID of a geometry at construction time. This way matching the geometry ID used by Embree and the application is simplified.</li>
+<li>Fixed a bug that would have caused a failure of the BVH builder for dynamic scenes when run on a machine with more then 1000 threads.</li>
+<li>Fixed a bug that could have been triggered when reaching the maximal number of mappings under Linux (<code>vm.max_map_count</code>). This could have happend when creating a large number of small static scenes.</li>
+<li>Added huge page support for Windows and MacOSX (experimental).</li>
+<li>Added support for Visual Studio 2017.</li>
+<li>Removed support for Visual Studio 2012.</li>
+<li>Precompiled binaries now require a CPU supporting at least the SSE4.2 ISA.</li>
+<li>We no longer provide precompiled binaries for 32 bit on Windows.</li>
+<li>Under Windows one now has to use the platform toolset option in CMake to switch to Clang or the Intel® Compiler.</li>
+<li>Fixed a bug for subdivision meshes when using the incoherent scene flag.</li>
+<li>Fixed a bug in the line geometry intersection, that caused reporting an invalid line segment intersection with primID -1.</li>
+<li>Buffer stride for vertex buffers of different time steps of triangle and quad meshes have to be identical now.</li>
+<li>Fixed a bug in the curve geometry intersection code when passed a perfect cylinder.</li>
+</ul>
 <h3 id="new-features-in-embree-2.15.0">New Features in Embree 2.15.0</h3>
 <ul>
 <li>Added <code>rtcCommitJoin</code> mode that allows thread to join a build operation. When using the internal tasking system this allows Embree to solely use the threads that called <code>rtcCommitJoin</code> to build the scene, while previously also normal worker threads participated in the build. You should no longer use <code>rtcCommit</code> to join a build.</li>
 <li>Added <code>rtcDeviceSetErrorFunction2</code> API call, which sets an error callback function which additionally gets passed a user provided pointer (<code>rtcDeviceSetErrorFunction</code> is now deprecated).</li>
 <li>Added <code>rtcDeviceSetMemoryMonitorFunction2</code> API call, which sets a memory monitor callback function which additionally get passed a user provided pointer. (<code>rtcDeviceSetMemoryMonitorFunction</code> is now deprecated).</li>
-<li>Build performance for hair geometry improved up to 2x.</li>
-<li>Added API extension to use internal Morton builder, standard SAH builder, and spatial split SAH builder.</li>
-<li>Added support for BSpline hair and curves. Embree uses either the Bezier or BSpline basis internally, and converts other curves, which requiring more memory during rendering. For reduced memory consumption set the EMBREE_NATIVE_SPLINE_BASIS to the basis your application uses (which is set to BEZIER by default).</li>
-<li>Setting the number of threads through an application side tbb::taskscheduler_init object is now working properly.</li>
-<li>Windows and Linux releases are build using AVX512 support.</li>
+<li>Build performance for hair geometry improved by up to 2×.</li>
+<li>Standard BVH build performance increased by 5%.</li>
+<li>Added API extension to use internal Morton-code based builder, the standard binned-SAH builder, and the spatial split-based SAH builder.</li>
+<li>Added support for BSpline hair and curves. Embree uses either the Bézier or BSpline basis internally, and converts other curves, which requires more memory during rendering. For reduced memory consumption set the <code>EMBREE_NATIVE_SPLINE_BASIS</code> to the basis your application uses (which is set to <code>BEZIER</code> by default).</li>
+<li>Setting the number of threads through <code>tbb::taskscheduler_init</code> object on the application side is now working properly.</li>
+<li>Windows and Linux releases are build using AVX-512 support.</li>
 <li>Implemented hybrid traversal for hair and line segments for improved ray packet performance.</li>
-<li>AVX512 code compiles with Clang 4.0.0</li>
+<li>AVX-512 code compiles with Clang 4.0.0</li>
 <li>Fixed crash when ray packets were disabled in CMake.</li>
 </ul>
 <h3 id="new-features-in-embree-2.14.0">New Features in Embree 2.14.0</h3>
