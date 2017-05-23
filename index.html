@@ -45,7 +45,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.16.0!
+      We recently released Embree v2.16.1!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -97,6 +97,13 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.16.1">New Features in Embree 2.16.1</h3>
+<ul>
+<li>Workaround for compile issues with Visual Studio 2017</li>
+<li>Fixed bug in subdiv code for static scenes when using tessellation levels larger than 50.</li>
+<li>Fixed low performance when adding many geometries to a scene.</li>
+<li>Fixed high memory consumption issue when using instances in dynamic scene (by disabling two level builder for user geometries and instances).</li>
+</ul>
 <h3 id="new-features-in-embree-2.16.0">New Features in Embree 2.16.0</h3>
 <ul>
 <li>Improved multi-segment motion blur support for scenes with different number of time steps per mesh.</li>
