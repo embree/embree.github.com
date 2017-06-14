@@ -65,7 +65,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.16.1!
+      We recently released Embree v2.16.2!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -373,13 +373,15 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 </div>
 <p>Some texture coordinates <code>t0,t1,t2,t3</code> can be bi-linearly interpolated over the quadrilateral the following way:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-v)((<span class="dv">1</span>-u)*t0 + u*t1) + v*((<span class="dv">1</span>-u)*t3 + u*t2)</code></pre>
-<p>The parametrization for all other face types where the number of vertices is not equal to 4, have a special parametrization where the n’th quadrilateral (that would be obtained by a single subdivision step) is encoded in the higher order bits of the UV coordinates and the local hit location inside this quadrilateral in the lower order bits. The following piece of code extracts the sub-patch ID i and UVs of this subpatch:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">const</span> <span class="dt">unsigned</span> l = floorf(<span class="fl">4.</span><span class="er">0f</span>*U);
-<span class="dt">const</span> <span class="dt">unsigned</span> h = floorf(<span class="fl">4.</span><span class="er">0f</span>*V);
+<p>The parametrization for all other face types where the number of vertices is not equal to 4, have a special parametrization where the n’th quadrilateral (that would be obtained by a single subdivision step) and the local hit location inside this quadrilateral are encoded in the UV coordinates. The following piece of code extracts the sub-patch ID i and UVs of this subpatch:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">const</span> <span class="dt">unsigned</span> l = floorf(<span class="fl">0.</span><span class="er">5f</span>*U);
+<span class="dt">const</span> <span class="dt">unsigned</span> h = floorf(<span class="fl">0.</span><span class="er">5f</span>*V);
 <span class="dt">const</span> <span class="dt">unsigned</span> i = <span class="dv">4</span>*h+l;
-<span class="dt">const</span> <span class="dt">float</span> u = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">4.</span><span class="er">0f</span>*U);
-<span class="dt">const</span> <span class="dt">float</span> v = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">4.</span><span class="er">0f</span>*V);</code></pre>
-<p>To smoothly interpolate texture coordinates over the subdivision surface we recommend using the <code>rtcInterpolate2</code> function, which will apply the standard subdivision rules for interpolation and automatically take care of the special UV encoding for non-quadrilaterals.</p>
+<span class="dt">const</span> <span class="dt">float</span> u = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">0.</span><span class="er">5f</span>*U)<span class="fl">-0.</span><span class="er">5f</span>;
+<span class="dt">const</span> <span class="dt">float</span> v = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">0.</span><span class="er">5f</span>*V)<span class="fl">-0.</span><span class="er">5f</span>;</code></pre>
+<p>This encoding allows local subpatch UVs to be in the range <code>[-0.5,1.5[</code> thus negative subpatch UVs can get passed to <code>rtcInterpolate</code> to sample subpatches slightly out of bounds. This can be useful to calculate derivatives using finite differences if required. The encoding further has the property that you can just move some value du (or dv) on a subpatch by adding du (or dv) to the special UV encoding as long as you are not falling out of the <code>[-0.5,1.5[</code> range. Further, derivatives calculated using finite differences are compatible with derivatives calculated using <code>rtcInterpolate</code> when using the standard formula:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">dF(u)/du = (F(u+du)-F(u))/du</code></pre>
+<p>To smoothly interpolate texture coordinates over the subdivision surface we recommend using the <code>rtcInterpolate</code> function, which will apply the standard subdivision rules for interpolation and automatically take care of the special UV encoding for non-quadrilaterals.</p>
 <h4 id="face-varing-data">Face-Varing Data</h4>
 <p>Face-varying interpolation is supported through multiple topologies per subdivision mesh and binding such topologies to user vertex buffers to interpolate. This way texture coordinates may use a different topology with additional boundaries to construct separate UV regions inside one subdivision mesh.</p>
 <p>Each such topology consists of an index buffer and subdivision mode. Up to 16 topologies are supported, with corresponding index buffers <code>RTC_INDEX_BUFFER0+i</code>, with i in the range 0 to 15.</p>
@@ -1130,7 +1132,7 @@ rtcSetBuffer2(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</spa
 tbb::task_scheduler_init init(numThreads);</code></pre>
 <h2 id="thread-creation-and-affinity-settings">Thread Creation and Affinity Settings</h2>
 <p>Tasking systems like TBB create worker threads on demand which will add a runtime overhead for the very first <code>rtcCommit</code> call. In case you want to benchmark the scene build time, you should start threads at application startup. You can let Embree start TBB threads by passing <code>start_threads=1</code> to the init parameter of <code>rtcNewDevice</code>.</p>
-<p>On machines with a high thread count (e.g. dual-socket Xeon or Xeon Phi machines), affinitizing TBB worker threads increases build and rendering performance. You can let Embree affinitize TBB worker threads by passing <code>set_affinity=1</code> to the init parameter of <code>rtcNewDevice</code>.</p>
+<p>On machines with a high thread count (e.g. dual-socket Xeon or Xeon Phi machines), affinitizing TBB worker threads increases build and rendering performance. You can let Embree affinitize TBB worker threads by passing <code>set_affinity=1</code> to the init parameter of <code>rtcNewDevice</code>. By default threads are not affinitized by Embree with the exception of Xeon Phi Processors where they are affinitized by default.</p>
 <p>All Embree tutorials automatically start and affinitize TBB worker threads by passing <code>start_threads=1,set_affinity=1</code> to <code>rtcNewDevice</code>.</p>
 <h2 id="huge-page-support">Huge Page Support</h2>
 <p>Embree supports 2MB huge pages under Windows, Linux, and MacOSX. Under Linux huge page support is enabled by default and under Windows and MacOSX disabled by default. Huge page support can get enabled in Embree by passing <code>hugepages=1</code> to <code>rtcNewDevice</code> or disabled by passing <code>hugepages=0</code> to <code>rtcNewDevice</code>.</p>

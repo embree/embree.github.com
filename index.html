@@ -45,7 +45,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.16.1!
+      We recently released Embree v2.16.2!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -97,6 +97,12 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.16.2">New Features in Embree 2.16.2</h3>
+<ul>
+<li>Fixed bug that caused NULL intersection context in intersection filter when instancing was used.</li>
+<li>Fixed an issue where uv’s where outside the triangle (or quad) for very small triangles (or quads). In robust mode we improved the uv calculation to avoid that issue, in fast mode we accept that inconsistency for better performance.</li>
+<li>Changed UV encoding for non-quad subdivision patches to allow a subpatch UV range of <code>[-0.5,1.5[</code>. Using this new encoding one can use finite differences to calculate derivatives if required. Please adjust your code in case you rely on the old encoding.</li>
+</ul>
 <h3 id="new-features-in-embree-2.16.1">New Features in Embree 2.16.1</h3>
 <ul>
 <li>Workaround for compile issues with Visual Studio 2017</li>
