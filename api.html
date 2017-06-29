@@ -65,7 +65,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.16.3!
+      We recently released Embree v2.16.4!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -859,7 +859,7 @@ rtcIntersectNM(scene, &amp;context, &amp;rays, <span class="dv">1</span>, <span 
                       <span class="dt">float</span>* dPdu, <span class="dt">float</span>* dPdv,
                       <span class="dt">float</span>* ddPdudu, <span class="dt">float</span>* ddPdvdv, <span class="dt">float</span>* ddPdudv,
                       size_t numFloats);</code></pre>
-<p>This call is similar to the first version, but gets passed <code>numUVs</code> many u/v coordinates and a valid mask (<code>valid</code> parameter) that specifies which of these coordinates are valid. The valid mask points to <code>numUVs</code> integers and a value of -1 denotes valid and 0 invalid. If the valid pointer is NULL all elements are considers valid. The destination arrays are filled in structure of array (SoA) layout.</p>
+<p>This call is similar to the first version, but gets passed <code>numUVs</code> many u/v coordinates and a valid mask (<code>valid</code> parameter) that specifies which of these coordinates are valid. The valid mask points to <code>numUVs</code> integers and a value of -1 denotes valid and 0 invalid. If the valid pointer is NULL all elements are considers valid. The destination arrays are filled in structure of array (SoA) layout. The value <code>numUVs</code> has to be divisible by 4 and the destination buffer has to be at least <code>numFloats*numUVs</code> elements large.</p>
 <p>See tutorial <a href="tutorials.html#interpolation">Interpolation</a> for an example of using the <code>rtcInterpolate2</code> function.</p>
 <h2 id="buffer-sharing">Buffer Sharing</h2>
 <p>Embree supports sharing of buffers with the application. Each buffer that can be mapped for a specific geometry can also be shared with the application, by passing a pointer, offset, stride, and number of elements of the application side buffer using the <code>rtcSetBuffer2</code> API function.</p>
