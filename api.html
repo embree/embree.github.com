@@ -65,7 +65,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.16.4!
+      We recently released Embree v2.16.5!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -143,8 +143,8 @@ _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre>
 </table>
 <p>When the device construction fails <code>rtcNewDevice</code> returns <code>NULL</code> as device. To detect the error code of a such a failed device construction pass <code>NULL</code> as device to the <code>rtcDeviceGetError</code> function. For all other invokations of <code>rtcDeviceGetError</code> a proper device pointer has to get specified.</p>
 <p>Using the <code>rtcDeviceSetErrorFunction2</code> call, it is also possible to set a callback function that is called whenever an error occurs for a device.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCErrorFunc2)(<span class="dt">void</span>* userPtr, <span class="dt">const</span> RTCError code, <span class="dt">const</span> <span class="dt">char</span>* str);
-<span class="dt">void</span> rtcDeviceSetErrorFunction2(RTCDevice device, RTCErrorFunc2 func, <span class="dt">void</span>* userPtr);</code></pre>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCErrorFunc2)(<span class="dt">void</span>* userPtr, <span class="dt">const</span> RTCError, <span class="dt">const</span> <span class="dt">char</span>* str);
+<span class="dt">void</span> rtcDeviceSetErrorFunction2(RTCDevice, RTCErrorFunc2, <span class="dt">void</span>* userPtr);</code></pre>
 <p>When invoked, the registred callback function gets passed a user defined pointer <code>userPtr</code>, the error code <code>code</code>, as well as some string <code>str</code> that describes the error further. Passing <code>NULL</code> as function pointer to <code>rtcDeviceSetErrorFunction2</code> disables the set callback function again. The previously described error flags are also set if an error callback function is present.</p>
 <h2 id="scene">Scene</h2>
 <p>A scene is a container for a set of geometries of potentially different types. A scene is created using the <code>rtcDeviceNewScene</code> function call, and destroyed using the <code>rtcDeleteScene</code> function call. Two types of scenes are supported, dynamic and static scenes. Different flags specify the type of scene to create and the type of ray query operations that can later be performed on the scene. The following example creates a scene that supports dynamic updates and the single ray <code>rtcIntersect</code> and <code>rtcOccluded</code> calls.</p>
@@ -488,7 +488,7 @@ rtcUnmapBuffer(scene, geomID, RTC_INDEX_BUFFER);</code></pre>
 <p>When creating a user defined geometry, the user has to set a data pointer, a bounding function closure (function and user pointer) as well as user defined intersect and occluded callback function pointers. The bounding function is used to query the bounds of all timesteps of a user primitive, while the intersect and occluded callback functions are called to intersect the primitive with a ray.</p>
 <p>The bounding function to register has the following signature</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span> (*RTCBoundsFunc3)(<span class="dt">void</span>* userPtr, <span class="dt">void</span>* geomUserPtr, size_t id, size_t timeStep, RTCBounds&amp; bounds_o);</code></pre>
-<p>and can be registered using the <code>rtcSetBoundsFunction2</code> API function:</p>
+<p>and can be registered using the <code>rtcSetBoundsFunction3</code> API function:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetBoundsFunction3(scene, geomID, userBoundsFunction, userPtr);</code></pre>
 <p>When the bounding callback is called, it is passed a user defined pointer specified at registration time of the bounds function (<code>userPtr</code> parameter), the per geometry user data pointer (<code>geomUserPtr</code> parameter), the ID of the primitive to calculate the bounds for (<code>id</code> parameter), the time step at which to calculate the bounds (<code>timeStep</code> parameter) and a memory location to write the calculated bound to (<code>bounds_o</code> parameter).</p>
 <p>The signature of supported user defined intersect and occluded function in normal mode is as follows:</p>
@@ -801,14 +801,14 @@ rtcIntersect(scene, ray);</code></pre>
 <p>The intersection context passed to the stream version of the ray query functions, can specify some intersection flags to optimize traversal and a <code>userRayExt</code> pointer that can be used to extent the ray with additional data as described in Section <a href="api.html#extending-the-ray-structure">Extending the Ray Structure</a>. The intersection context is propagated to each stream user callback function invoked.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> RTCIntersectContext
 {
-  RTCIntersectFlags flags;   <span class="co">//!&lt;</span> intersection flags
-  <span class="dt">void</span>* userRayExt;          <span class="co">//!&lt;</span> can be used to pass extended ray data to callbacks
+  RTCIntersectFlags flags; <span class="co">// intersection flags</span>
+  <span class="dt">void</span>* userRayExt;        <span class="co">// can be used to pass extended ray data to callbacks</span>
 };</code></pre>
 <p>As intersection flag the user can currently specify if Embree should optimize traversal for coherent or incoherent ray distributions.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">enum</span> RTCIntersectFlags
 {
-  RTC_INTERSECT_COHERENT   = <span class="dv">0</span>,  <span class="co">//!&lt;</span> optimize <span class="kw">for</span> coherent rays
-  RTC_INTERSECT_INCOHERENT = <span class="dv">1</span>   <span class="co">//!&lt;</span> optimize <span class="kw">for</span> incoherent rays
+  RTC_INTERSECT_COHERENT   = <span class="dv">0</span>, <span class="co">// optimize for coherent rays</span>
+  RTC_INTERSECT_INCOHERENT = <span class="dv">1</span>  <span class="co">// optimize for incoherent rays</span>
 };</code></pre>
 <p>The following code shows an example of setting up a stream of single rays and tracing it through the scene:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">RTCRay rays[<span class="dv">128</span>];
@@ -971,7 +971,7 @@ rtcSetBuffer2(scene, geomID, RTC_INDEX_BUFFER, indexPtr, <span class="dv">0</spa
 <p>The user provided memory monitor callback function must have the following signature:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">bool</span> (*RTCMemoryMonitorFunc2)(<span class="dt">void</span>* userPtr, <span class="dt">const</span> ssize_t bytes, <span class="dt">const</span> <span class="dt">bool</span> post);</code></pre>
 <p>A single such callback function per device can be registered by calling</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcDeviceSetMemoryMonitorFunction2(RTCDevice device, RTCMemoryMonitorFunc2 func, <span class="dt">void</span>* userPtr);</code></pre>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcDeviceSetMemoryMonitorFunction2(RTCDevice, RTCMemoryMonitorFunc2, <span class="dt">void</span>* userPtr);</code></pre>
 <p>and deregistered again by calling it with <code>NULL</code> as function pointer. Once registered the Embree device will invoke the callback function before or after it allocates or frees important memory blocks. The <code>userPtr</code> value that is set at registration time is passed to each invokation of the callback function. The callback function might get called from multiple threads concurrently.</p>
 <p>The application can track the current memory usage of the Embree device by atomically accumulating the provided <code>bytes</code> input parameter. This parameter will be &gt;0 for allocations and &lt;0 for deallocations. The <code>post</code> input parameter is true if the callback function was invoked after the allocation or deallocation, otherwise it is false.</p>
 <p>Embree will continue its operation normally when returning true from the callback function. If false is returned, Embree will cancel the current operation with the RTC_OUT_OF_MEMORY error code. Cancelling will only happen when the callback was called for allocations (bytes &gt; 0), otherwise the cancel request will be ignored. If a callback that was invoked before the allocation happens (<code>post == false</code>) cancels the operation, then the <code>bytes</code> parameter should not get accumulated, as the allocation will never happen. If a callback that was called after the allocation happened (<code>post == true</code>) cancels the operation, then the <code>bytes</code> parameter should get accumulated, as the allocation properly happened. Issuing multiple cancel requests for the same operation is allowed.</p>
@@ -1144,58 +1144,56 @@ tbb::task_scheduler_init init(numThreads);</code></pre>
 <h3 id="huge-pages-under-linux">Huge Pages under Linux</h3>
 <p>Linux supports transparent huge pages and explicit huge pages. To enable transparent huge page support under Linux execute the following as root:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">echo always &gt; /sys/kernel/mm/transparent_hugepage/enabled</code></pre>
-<p>When transparent huge pages are enabled, the kernel tries to merge 4k pages to 2MB pages when possible as a background job. See the following webpage for more information on transparent huge pages under Linux <a href="https://www.kernel.org/doc/Documentation/vm/transhuge.txt" class="uri">https://www.kernel.org/doc/Documentation/vm/transhuge.txt</a>. In this mode each application, including your rendering application building on Embree, will automatically tend to use huge pages.</p>
+<p>When transparent huge pages are enabled, the kernel tries to merge 4k pages to 2MB pages when possible as a background job. See the following webpage for more information on <a href="https://www.kernel.org/doc/Documentation/vm/transhuge.txt">transparent huge pages under Linux</a>. In this mode each application, including your rendering application building on Embree, will automatically tend to use huge pages.</p>
 <p>Using transparent huge pages the transitioning from 4k to 2MB pages might take some time. For that reason Embree also supports allocating 2MB pages directly when a huge page pool is configured. Such a pool can get configured by writing some number of huge pages to alloacte to <code>/proc/sys/vm/nr_overcommit_hugepages</code> as root user. E.g. to configure 2GB of adress space for huge page allocation, execute the following as root:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">echo <span class="dv">1000</span> &gt; /proc/sys/vm/nr_overcommit_hugepages</code></pre>
-<p>See the following webpage for more information on huge pages under Linux <a href="https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt" class="uri">https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt</a>.</p>
+<p>See the following webpage for more information on <a href="https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt">huge pages under Linux</a>.</p>
 <h3 id="huge-pages-under-macosx">Huge Pages under MacOSX</h3>
 <p>To use huge pages under MacOSX you have to pass <code>hugepages=1</code> to <code>rtcNewDevice</code> to enable that feature in Embree.</p>
 <p>When the system was running for a while, physical memory gets quickly fragmented, and causes huge page allocations to fail. For this reason huge pages not very usefull under MacOSX in practise.</p>
 <h2 id="bvh-builder-api">BVH Builder API</h2>
 <p>The Embree API exposes internal BVH builders to build BVHs with any desired node and leaf layout. To invoke the BVH builder you have to create a BVH object using the <code>rtcNewBVH</code> function and deleted again using the <code>rtcDeleteBVH</code> function.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">RTCBVH rtcNewBVH(RTCDevice device);
-<span class="dt">void</span> rtcDeleteBVH(RTCBVH bvh);</code></pre>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">RTCBVH rtcNewBVH(RTCDevice);
+<span class="dt">void</span> rtcDeleteBVH(RTCBVH);</code></pre>
 <p>This BVH contains some builder state and fast node allocator. Some settings have to be passed to be BVH build function:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">enum</span> RTCBuildQuality
 {
-  RTC_BUILD_QUALITY_LOW = <span class="dv">0</span>,     <span class="co">//!&lt;</span> build low quality BVH (good <span class="kw">for</span> dynamic scenes)
-  RTC_BUILD_QUALITY_NORMAL = <span class="dv">1</span>,  <span class="co">//!&lt;</span> build standard quality BVH
-  RTC_BUILD_QUALITY_HIGH = <span class="dv">2</span>,    <span class="co">//!&lt;</span> build high quality BVH
+  RTC_BUILD_QUALITY_LOW = <span class="dv">0</span>,    <span class="co">// build low quality BVH (good for dynamic scenes)</span>
+  RTC_BUILD_QUALITY_NORMAL = <span class="dv">1</span>, <span class="co">// build standard quality BVH</span>
+  RTC_BUILD_QUALITY_HIGH = <span class="dv">2</span>,   <span class="co">// build high quality BVH</span>
 };
   
 <span class="kw">struct</span> RTCBuildSettings
 {
-  <span class="dt">unsigned</span> size;               <span class="co">//!&lt;</span> size of <span class="kw">this</span> structure in bytes
-  RTCBuildQuality quality;     <span class="co">//!&lt;</span> quality of BVH build
-  <span class="dt">unsigned</span> maxBranchingFactor; <span class="co">//!&lt;</span> branching factor of BVH to build
-  <span class="dt">unsigned</span> maxDepth;           <span class="co">//!&lt;</span> maximal depth of BVH to build
-  <span class="dt">unsigned</span> sahBlockSize;       <span class="co">//!&lt;</span> blocksize <span class="kw">for</span> SAH heuristic
-  <span class="dt">unsigned</span> minLeafSize;        <span class="co">//!&lt;</span> minimal size of a leaf
-  <span class="dt">unsigned</span> maxLeafSize;        <span class="co">//!&lt;</span> maximal size of a leaf
-  <span class="dt">float</span> travCost;              <span class="co">//!&lt;</span> estimated cost of one traversal step
-  <span class="dt">float</span> intCost;               <span class="co">//!&lt;</span> estimated cost of one primitive intersection
-  <span class="dt">unsigned</span> extraSpace;         <span class="co">//!&lt;</span> <span class="kw">for</span> spatial splitting we need extra space at end of primitive array
+  <span class="dt">unsigned</span> size;               <span class="co">// size of this structure in bytes</span>
+  RTCBuildQuality quality;     <span class="co">// quality of BVH build</span>
+  <span class="dt">unsigned</span> maxBranchingFactor; <span class="co">// branching factor of BVH to build</span>
+  <span class="dt">unsigned</span> maxDepth;           <span class="co">// maximal depth of BVH to build</span>
+  <span class="dt">unsigned</span> sahBlockSize;       <span class="co">// blocksize for SAH heuristic</span>
+  <span class="dt">unsigned</span> minLeafSize;        <span class="co">// minimal size of a leaf</span>
+  <span class="dt">unsigned</span> maxLeafSize;        <span class="co">// maximal size of a leaf</span>
+  <span class="dt">float</span> travCost;              <span class="co">// estimated cost of one traversal step</span>
+  <span class="dt">float</span> intCost;               <span class="co">// estimated cost of one primitive intersection</span>
+  <span class="dt">unsigned</span> extraSpace;         <span class="co">// for spatial splitting we need extra space at end of primitive array</span>
 };</code></pre>
 <p>Some default values for the settings can be obtained using the <code>rtcDefaultBuildSettings</code> function. Using the <code>quality</code> setting, one can select between a faster low quality build which is good for dynamic scenes, and a standard quality build for static scenes. One can also specify the desired maximal branching factor of the BVH (<code>maxBranchingFactor</code> setting), the maximal depth the BVH should have (<code>maxDepth</code> setting), some power of 2 block size for the SAH heuristic (<code>sahBlockSize</code>), the minimal and maximal leaf size (<code>minLeafSize</code> and <code>maxLeafSize</code> setting), and the estimated cost of one traversal step and primitve intersection (<code>travCost</code> and <code>intCost</code> setting). To spatially split primitives in high quality mode, the builder needs some extra space at the end of the build primitive array. The amount of extra space can be passed using the <code>extraSpace</code> setting, and should be about the same size as there are primitives. The <code>size</code> member has always to be set to the size of the <code>RTCBuildSettings</code> structure in bytes.</p>
 <p>Four callback functions have to get registered which are invoked during build to create BVH nodes (<code>RTCCreateNodeFunc</code>), set the pointers to all children (<code>RTCSetNodeChildrenFunc</code>), set the bounding boxes of all children (<code>RTCSetNodeBoundsFunc</code>), and to create a leaf node (<code>RTCCreateLeafFunc</code>).</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span>* (*RTCCreateNodeFunc) (RTCThreadLocalAllocator allocator,
-                                    size_t numChildren, <span class="dt">void</span>* userPtr);
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">typedef</span> <span class="dt">void</span>* (*RTCCreateNodeFunc) (RTCThreadLocalAllocator, size_t numChildren, <span class="dt">void</span>* userPtr);
 
 <span class="kw">typedef</span> <span class="dt">void</span>  (*RTCSetNodeChildFunc) (<span class="dt">void</span>* nodePtr, <span class="dt">void</span>** childPtrs, size_t numChildren,
                                       <span class="dt">void</span>* userPtr);
 
-<span class="kw">typedef</span> <span class="dt">void</span>  (*RTCSetNodeBoundsFunc) (<span class="dt">void</span>* nodePtr, <span class="dt">const</span> RTCBounds** bounds, size_t numChildren,
+<span class="kw">typedef</span> <span class="dt">void</span>  (*RTCSetNodeBoundsFunc) (<span class="dt">void</span>* nodePtr, <span class="dt">const</span> RTCBounds**, size_t numChildren,
                                        <span class="dt">void</span>* userPtr);
 
-<span class="kw">typedef</span> <span class="dt">void</span>* (*RTCCreateLeafFunc) (RTCThreadLocalAllocator allocator,
-                                    <span class="dt">const</span> RTCBuildPrimitive* primitives, size_t numPrimitives,
-                                    <span class="dt">void</span>* userPtr);
+<span class="kw">typedef</span> <span class="dt">void</span>* (*RTCCreateLeafFunc) (RTCThreadLocalAllocator, <span class="dt">const</span> RTCBuildPrimitive* prims,
+                                    size_t numPrimitives, <span class="dt">void</span>* userPtr);
 
-<span class="kw">typedef</span> <span class="dt">void</span>  (*RTCSplitPrimitiveFunc) (<span class="dt">const</span> RTCBuildPrimitive&amp; prim,
-    <span class="dt">unsigned</span> dim, <span class="dt">float</span> pos, RTCBounds&amp; lbounds, RTCBounds&amp; rbounds, <span class="dt">void</span>* userPtr);</code></pre>
+<span class="kw">typedef</span> <span class="dt">void</span>  (*RTCSplitPrimitiveFunc) (<span class="dt">const</span> RTCBuildPrimitive&amp;, <span class="dt">unsigned</span> dim, <span class="dt">float</span> pos,
+                                        RTCBounds&amp; lbounds, RTCBounds&amp; rbounds, <span class="dt">void</span>* userPtr);</code></pre>
 <p>The <code>RTCCreateNodeFunc</code> and <code>RTCCreateLeafFunc</code> type callbacks are passed a thread local allocator object that should be used for fast allocation of nodes using the <code>rtcThreadLocalAlloc</code> function.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span>* rtcThreadLocalAlloc(RTCThreadLocalAllocator allocator, size_t bytes, size_t align);</code></pre>
-<p>We strongly recommend using this allocation mechanism, as alternative approaches like standard <code>malloc</code> can be over 10x slower. The allocator object passed to the create callbacks has to be used only inside the current thread.</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span>* rtcThreadLocalAlloc(RTCThreadLocalAllocator, size_t bytes, size_t align);</code></pre>
+<p>We strongly recommend using this allocation mechanism, as alternative approaches like standard <code>malloc</code> can be over 10× slower. The allocator object passed to the create callbacks has to be used only inside the current thread.</p>
 <p>The <code>RTCCreateNodeFunc</code> callback additionally gets passed the number of children for this node in the range from 2 to maxBranchingFactor (<code>numChildren</code> argument).</p>
 <p>The <code>RTCSetNodeChildFunc</code> callback function, gets passed a pointer to the node as input (<code>nodePtr</code> argument), an array of pointers to the children (<code>childPtrs</code> argument), and the size of this array (<code>numChildren</code> argument).</p>
 <p>The <code>RTCSetNodeBoundsFunc</code> callback function, get a pointer to the node as input (<code>nodePtr</code> argument), an array of pointers to the bounding boxes of the children (<code>bounds</code> argument), and the size of this array (<code>numChildren</code> argument).</p>
@@ -1207,20 +1205,20 @@ tbb::task_scheduler_init init(numThreads);</code></pre>
 <p>All callback functions are typically called from multiple threads, thus their implementation has to be thread safe.</p>
 <p>All callback function get a user defined pointer (<code>userPtr</code> argument) as input which is provided to the <code>rtcBuildBVH</code> call. This pointer can be used to access the application scene object inside the callback functions.</p>
 <p>The BVH build is invoked using the <code>rtcBuildBVH</code> function:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span>* rtcBuildBVH(RTCBVH bvh,                             <span class="co">//!&lt;</span> BVH to build
-                  <span class="dt">const</span> RTCBuildSettings&amp; settings,       <span class="co">//!&lt;</span> settings <span class="kw">for</span> BVH builder
-                  RTCBuildPrimitive* primitives,          <span class="co">//!&lt;</span> list of input primitives
-                  size_t numPrimitives,                   <span class="co">//!&lt;</span> number of input primitives
-                  RTCCreateNodeFunc createNode,           <span class="co">//!&lt;</span> creates a node
-                  RTCSetNodeChildrenFunc setNodeChildren, <span class="co">//!&lt;</span> sets pointer to a child
-                  RTCSetNodeBoundsFunc setNodeBounds,     <span class="co">//!&lt;</span> sets bound of a child
-                  RTCCreateLeafFunc createLeaf,           <span class="co">//!&lt;</span> creates a leaf
-                  RTCSplitPrimitiveFunc splitPrimitive,   <span class="co">//!&lt;</span> splits a primitive into two halves
-                  RTCBuildProgressFunc buildProgress      <span class="co">//!&lt;</span> used to report build progress
-                  <span class="dt">void</span>* userPtr);                         <span class="co">//!&lt;</span> user pointer passed to callback functions</code></pre>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span>* rtcBuildBVH(RTCBVH bvh,                             <span class="co">// BVH to build</span>
+                  <span class="dt">const</span> RTCBuildSettings&amp; settings,       <span class="co">// settings for BVH builder</span>
+                  RTCBuildPrimitive* primitives,          <span class="co">// list of input primitives</span>
+                  size_t numPrimitives,                   <span class="co">// number of input primitives</span>
+                  RTCCreateNodeFunc createNode,           <span class="co">// creates a node</span>
+                  RTCSetNodeChildrenFunc setNodeChildren, <span class="co">// sets pointer to a child</span>
+                  RTCSetNodeBoundsFunc setNodeBounds,     <span class="co">// sets bound of a child</span>
+                  RTCCreateLeafFunc createLeaf,           <span class="co">// creates a leaf</span>
+                  RTCSplitPrimitiveFunc splitPrimitive,   <span class="co">// splits a primitive into two halves</span>
+                  RTCBuildProgressFunc buildProgress      <span class="co">// used to report build progress</span>
+                  <span class="dt">void</span>* userPtr);                         <span class="co">// user pointer passed to callback functions</span></code></pre>
 <p>The function gets passed the BVH objects (<code>bvh</code> argument), the build settings to use (<code>settings</code> argument), the array of primitives (<code>primitives</code> argument) and its size (<code>numPrimitives</code> argument), the previously described callback function pointers, and a user defined pointer (<code>userPtr</code> argument) that is passed to all callback functions. The function pointer to the primitive split function (<code>splitPrimitive</code> argument) may be <code>NULL</code>, however, then no spatial splitting in high quality mode is possible. The function pointer used to report the build progress (<code>buildProgress</code> argument) is optional and may also be <code>NULL</code>.</p>
 <p>For static scenes that do not require a further <code>rtcBuildBVH</code> call one should use the <code>rtcMakeStatic</code> function after the build which clears some internal data.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcMakeStaticBVH(RTCBVH bvh);</code></pre>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcMakeStaticBVH(RTCBVH);</code></pre>
 <div class="footnotes">
 <hr />
 <ol>
