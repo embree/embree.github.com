@@ -45,7 +45,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.16.5!
+      We recently released Embree v2.17.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -106,6 +106,18 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.17.0">New Features in Embree 2.17.0</h3>
+<ul>
+<li>Improved packet ray tracing performance for coherent rays by 10-60% (requires RTC_INTERSECT_COHERENT flag).</li>
+<li>Improved ray tracing performance for incoherent rays on AVX-512 architectures by 5%.</li>
+<li>Improved ray tracing performance for streams of incoherent rays by 5-15%.</li>
+<li>Fixed tbb_debug.lib linking error under Windows.</li>
+<li>Fast coherent ray stream and packet code paths now also work in robust mode.</li>
+<li>Using less agressive prefetching for large BVH nodes which results in 1-2% higher ray tracing performance.</li>
+<li>Precompiled binaries have stack-protector enabled, except for traversal kernels. BVH builders can be slightly slower due to this change. If you want stack-protectors disabled please turn off EMBREE_STACK_PROTECTOR in cmake and build the binaries yourself.</li>
+<li>When enabling ISAs individually, the 8-wide BVH was previously only available when the AVX ISA was also selected. This issue is now fixed, and one can enable only AVX2 and still get best performance by using an 8-wide BVH.</li>
+<li>Fixed rtcOccluded1 and rtcOccluded1Ex API functions which were broken in ISPC.</li>
+</ul>
 <h3 id="new-features-in-embree-2.16.5">New Features in Embree 2.16.5</h3>
 <ul>
 <li>Bugfix in the robust triangle intersector that rarely caused NaNs.</li>
@@ -158,7 +170,7 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <li>Added support for Visual Studio 2017.</li>
 <li>Removed support for Visual Studio 2012.</li>
 <li>Precompiled binaries now require a CPU supporting at least the SSE4.2 ISA.</li>
-<li>We no longer provide precompiled binaries for 32 bit on Windows.</li>
+<li>We no longer provide precompiled binaries for 32-bit on Windows.</li>
 <li>Under Windows one now has to use the platform toolset option in CMake to switch to Clang or the Intel® Compiler.</li>
 <li>Fixed a bug for subdivision meshes when using the incoherent scene flag.</li>
 <li>Fixed a bug in the line geometry intersection, that caused reporting an invalid line segment intersection with primID -1.</li>
@@ -353,7 +365,7 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <ul>
 <li>Improved mixed AABB/OBB-BVH for hair geometry (Xeon Phi)</li>
 <li>Reduced amount of pre-allocated memory for BVH builders (Xeon Phi)</li>
-<li>New 64 bit Morton code-based BVH builder (Xeon Phi)</li>
+<li>New 64-bit Morton code-based BVH builder (Xeon Phi)</li>
 <li>(Enhanced) Morton code-based BVH builders use now tree rotations to improve BVH quality (Xeon Phi)</li>
 <li>Bug fixes (Xeon and Xeon Phi)</li>
 </ul>
