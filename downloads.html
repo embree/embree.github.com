@@ -48,8 +48,8 @@
 <p>Using the Intel Compiler improves performance by approximately 10%. Performance also varies across different operating systems, with Linux typically performing best as it supports transparently transitioning to 2MB pages.</p>
 <p>Embree is optimized for Intel CPUs supporting SSE, AVX, AVX2, and AVX-512 instructions, and requires at least a CPU with support for SSE2.</p>
 <h2 id="downloading-embree">Downloading Embree</h2>
-<p>For Windows we provide an installer and ZIP files for precompiled Embree binaries:</p>
-<p><a href="https://github.com/embree/embree/releases/download/v2.17.0/embree-2.17.0.x64.exe">embree-2.17.0-x64.exe</a><br /><a href="https://github.com/embree/embree/releases/download/v2.17.0/embree-2.17.0.x64.windows.zip">embree-2.17.0.x64.windows.zip</a></p>
+<p>For Windows we provide an MSI installer and ZIP files for precompiled Embree binaries:</p>
+<p><a href="https://github.com/embree/embree/releases/download/v2.17.0/embree-2.17.0.x64.msi">embree-2.17.0-x64.msi</a><br /><a href="https://github.com/embree/embree/releases/download/v2.17.0/embree-2.17.0.x64.windows.zip">embree-2.17.0.x64.windows.zip</a></p>
 <p>For Linux we provide Embree precompiled as RPMs or as TGZ file:</p>
 <p><a href="https://github.com/embree/embree/releases/download/v2.17.0/embree-2.17.0.x86_64.rpm.tar.gz">embree-2.17.0.x86_64.rpm.tar.gz</a><br /><a href="https://github.com/embree/embree/releases/download/v2.17.0/embree-2.17.0.x86_64.linux.tar.gz">embree-2.17.0.x86_64.linux.tar.gz</a></p>
 <p>For Mac OS X we provide Embree as an installer and as a TGZ file:</p>
@@ -69,9 +69,11 @@ $ cd embree</code></pre>
 <p>If you encounter bugs please report them to the <a href="https://github.com/embree/embree/issues">GitHub Issue Tracker</a> for Embree.</p>
 <h1 id="installation-of-embree">Installation of Embree</h1>
 <h2 id="windows-installer">Windows Installer</h2>
-<p>You can install the Embree library using the Windows installer application <a href="https://github.com/embree/embree/releases/download/v2.17.0/embree-2.17.0.x64.exe">embree-2.17.0-x64.exe</a>. This will install the 64-bit Embree version by default in <code>Program Files\Intel\Embree v2.17.0 x64</code>.</p>
-<p>You have to set the path to the <code>lib</code> folder manually to your <code>PATH</code> environment variable for applications to find Embree. To compile applications with Embree you also have to set the <code>Include Directories</code> path in Visual Studio to the <code>include</code> folder of the Embree installation.</p>
-<p>To uninstall Embree again open <code>Programs and Features</code> by clicking the <code>Start button</code>, clicking <code>Control Panel</code>, clicking <code>Programs</code>, and then clicking <code>Programs and Features</code>. Select <code>Embree 2.17.0</code> and uninstall it.</p>
+<p>You can install the Embree library using the Windows MSI installer</p>
+<p><a href="https://github.com/embree/embree/releases/download/v2.17.0/embree-2.17.0.x64.msi">embree-2.17.0-x64.msi</a>. This will install the 64-bit Embree version by default in <code>Program Files\Intel\Embree v2.17.0 x64</code>.</p>
+<p>You have to set the path to the <code>bin</code> folders manually to your <code>PATH</code> environment variable for applications to find Embree.</p>
+<p>To compile applications with Embree using CMake please have a look at the find_embree tutorial. To compile this tutorial, you need to set the <code>embree_DIR</code> CMake variable of this tutorial to <code>Program Files\Intel\Embree v2.17.0 x64</code>.</p>
+<p>To uninstall Embree again open <code>Programs and Features</code> by clicking the <code>Start button</code>, clicking <code>Control Panel</code>, clicking <code>Programs</code>, and then clicking <code>Programs and Features</code>. Select <code>Embree 2.17.0 x64</code> and uninstall it.</p>
 <h2 id="windows-zip-file">Windows ZIP File</h2>
 <p>Embree is also delivered as a ZIP file <a href="https://github.com/embree/embree/releases/download/v2.17.0/embree-2.17.0.x64.windows.zip">embree-2.17.0.x64.windows.zip</a>. After unpacking this ZIP file you should set the path to the <code>lib</code> folder manually to your <code>PATH</code> environment variable for applications to find Embree. To compile applications with Embree you also have to set the <code>Include Directories</code> path in Visual Studio to the <code>include</code> folder of the Embree installation.</p>
 <p>If you plan to ship Embree with your application, best use the Embree version from this ZIP file.</p>
