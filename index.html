@@ -109,6 +109,7 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <li>Precompiled binaries have stack-protector enabled, except for traversal kernels. BVH builders can be slightly slower due to this change. If you want stack-protectors disabled please turn off EMBREE_STACK_PROTECTOR in cmake and build the binaries yourself.</li>
 <li>When enabling ISAs individually, the 8-wide BVH was previously only available when the AVX ISA was also selected. This issue is now fixed, and one can enable only AVX2 and still get best performance by using an 8-wide BVH.</li>
 <li>Fixed rtcOccluded1 and rtcOccluded1Ex API functions which were broken in ISPC.</li>
+<li>Providing MSI installer for Windows.</li>
 </ul>
 <h3 id="new-features-in-embree-2.16.5">New Features in Embree 2.16.5</h3>
 <ul>
