@@ -57,7 +57,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.17.0!
+      We recently released Embree v2.17.1!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -1186,7 +1186,7 @@ tbb::task_scheduler_init init(numThreads);</code></pre>
                                         RTCBounds&amp; lbounds, RTCBounds&amp; rbounds, <span class="dt">void</span>* userPtr);</code></pre>
 <p>The <code>RTCCreateNodeFunc</code> and <code>RTCCreateLeafFunc</code> type callbacks are passed a thread local allocator object that should be used for fast allocation of nodes using the <code>rtcThreadLocalAlloc</code> function.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span>* rtcThreadLocalAlloc(RTCThreadLocalAllocator, size_t bytes, size_t align);</code></pre>
-<p>We strongly recommend using this allocation mechanism, as alternative approaches like standard <code>malloc</code> can be over 10× slower. The allocator object passed to the create callbacks has to be used only inside the current thread.</p>
+<p>We strongly recommend using this allocation mechanism, as alternative approaches like standard <code>malloc</code> can be over 10× slower. The allocator object passed to the create callbacks has to be used only inside the current thread. Memory allocated using <code>rtcThreadLocalAlloc</code> is automatically freed when the <code>RTCBVH</code> object is deleted. If you use your own memory allocation scheme you have to free the memory yourself after the <code>RTCBVH</code> object got deleted.</p>
 <p>The <code>RTCCreateNodeFunc</code> callback additionally gets passed the number of children for this node in the range from 2 to maxBranchingFactor (<code>numChildren</code> argument).</p>
 <p>The <code>RTCSetNodeChildFunc</code> callback function, gets passed a pointer to the node as input (<code>nodePtr</code> argument), an array of pointers to the children (<code>childPtrs</code> argument), and the size of this array (<code>numChildren</code> argument).</p>
 <p>The <code>RTCSetNodeBoundsFunc</code> callback function, get a pointer to the node as input (<code>nodePtr</code> argument), an array of pointers to the bounding boxes of the children (<code>bounds</code> argument), and the size of this array (<code>numChildren</code> argument).</p>
@@ -1209,7 +1209,7 @@ tbb::task_scheduler_init init(numThreads);</code></pre>
                   RTCSplitPrimitiveFunc splitPrimitive,   <span class="co">// splits a primitive into two halves</span>
                   RTCBuildProgressFunc buildProgress      <span class="co">// used to report build progress</span>
                   <span class="dt">void</span>* userPtr);                         <span class="co">// user pointer passed to callback functions</span></code></pre>
-<p>The function gets passed the BVH objects (<code>bvh</code> argument), the build settings to use (<code>settings</code> argument), the array of primitives (<code>primitives</code> argument) and its size (<code>numPrimitives</code> argument), the previously described callback function pointers, and a user defined pointer (<code>userPtr</code> argument) that is passed to all callback functions. The function pointer to the primitive split function (<code>splitPrimitive</code> argument) may be <code>NULL</code>, however, then no spatial splitting in high quality mode is possible. The function pointer used to report the build progress (<code>buildProgress</code> argument) is optional and may also be <code>NULL</code>.</p>
+<p>The function gets passed the BVH objects (<code>bvh</code> argument), the build settings to use (<code>settings</code> argument), the array of primitives (<code>primitives</code> argument) and its size (<code>numPrimitives</code> argument), the previously described callback function pointers, and a user defined pointer (<code>userPtr</code> argument) that is passed to all callback functions. The function pointer to the primitive split function (<code>splitPrimitive</code> argument) may be <code>NULL</code>, however, then no spatial splitting in high quality mode is possible. The function pointer used to report the build progress (<code>buildProgress</code> argument) is optional and may also be <code>NULL</code>. The <code>primitives</code> array can be freed by the application again after the BVH is built.</p>
 <p>For static scenes that do not require a further <code>rtcBuildBVH</code> call one should use the <code>rtcMakeStatic</code> function after the build which clears some internal data.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcMakeStaticBVH(RTCBVH);</code></pre>
 <div class="footnotes">

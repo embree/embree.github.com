@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.17.0!
+      We recently released Embree v2.17.1!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -98,6 +98,21 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-2.17.1">New Features in Embree 2.17.1</h3>
+<ul>
+<li>Improved performance of occlusion ray packets by up to 50%.</li>
+<li>Fixed detection of Clang for CMake 3 under MacOSX</li>
+<li>Fixed AVX code compilation issue with GCC 7 compiler caused by explicit use of vzeroupper intrinsics.</li>
+<li>Fixed an issue where Clang address sanitizer reported an error in the internal tasking system.</li>
+<li>Added fix to compile on 32 bit Linux distribution.</li>
+<li>Fixed some wrong relative include paths in Embree.</li>
+<li>Improved performance of robust single ray mode by 5%.</li>
+<li>Added EMBREE_INSTALL_DEPENDENCIES option (default OFF) to enable installing of Embree dependencies.</li>
+<li>Fixed performance regression for occlusion ray streams.</li>
+<li>Reduced temporary memory requirements of BVH builder for curves and line segments.</li>
+<li>Fixed performance regression for user geometries and packet ray tracing.</li>
+<li>Fixed bug where wrong closest hit was reported for very curvy hair segment.</li>
+</ul>
 <h3 id="new-features-in-embree-2.17.0">New Features in Embree 2.17.0</h3>
 <ul>
 <li>Improved packet ray tracing performance for coherent rays by 10-60% (requires RTC_INTERSECT_COHERENT flag).</li>
