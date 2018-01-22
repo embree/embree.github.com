@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v2.17.2!
+      We recently released Embree v3.0.0-beta.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -98,6 +98,20 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-3.0.0">New Features in Embree 3.0.0</h3>
+<ul>
+<li>Switched to a new version of the API which provides improved flexibility but is not backwards compatible. Please see “Upgrading from Embree 2 to Embree 3” section of documentation for upgrade instructions. In particular, we provide a python script that performs most of the transition work.</li>
+<li>User geometries inside an instanced scene and a top-level scene no longer need to handle instID field of ray differently. They both just need to copy the context.instID into the ray.instID field.</li>
+<li>Support for context filter functions that can get assigned to a ray query.</li>
+<li>User geometries can now invoke filter functions using the rtcFilterIntersection and rtcFilterOcclusion calls.</li>
+<li>Higher flexibility through specifying build quality per scene and geometry.</li>
+<li>Geometry normal uses commonly used right hand rule from now on.</li>
+<li>Added self intersection avoidance to ribbon curves and lines. Applications do not have to implement self intersections workarounds for these primitive types anymore.</li>
+<li>Added support for 4 billion primitives in a single scene.</li>
+<li>Removed RTC_MAX_USER_VERTEX_BUFFERS and RTC_MAX_INDEX_BUFFERS limitation.</li>
+<li>Reduced memory consumption by 192 bytes per instance.</li>
+<li>Individual Contributor License Agreement (ICLA) and Corporate Contributor License Agreement (CCLA) no longer required to contribute to the project.</li>
+</ul>
 <h3 id="new-features-in-embree-2.17.2">New Features in Embree 2.17.2</h3>
 <ul>
 <li>Made BVH build of curve geometry deterministic.</li>
