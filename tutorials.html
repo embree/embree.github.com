@@ -37,22 +37,22 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v3.0.0-beta.0!
+      We recently released Embree v3.0.0!
     </a>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <div id="main_content" class="inner">
 <h1 id="embree-tutorials">Embree Tutorials</h1>
-<p>Embree comes with a set of tutorials aimed at helping users understand how Embree can be used and extended. All tutorials exist in an ISPC and C++ version to demonstrate the two versions of the API. Look for files named <code>tutorialname_device.ispc</code> for the ISPC implementation of the tutorial, and files named <code>tutorialname_device.cpp</code> for the single ray C++ version of the tutorial. To start the C++ version use the <code>tutorialname</code> executables, to start the ISPC version use the <code>tutorialname_ispc</code> executables.</p>
-<p>For all tutorials, you can select an initial camera using the <code>-vp</code> (camera position), <code>-vi</code> (camera look-at point), <code>-vu</code> (camera up vector), and <code>-fov</code> (vertical field of view) command line parameters:</p>
-<pre><code>./triangle_geometry -vp 10 10 10 -vi 0 0 0</code></pre>
-<p>You can select the initial windows size using the <code>-size</code> command line parameter, or start the tutorials in fullscreen using the <code>-fullscreen</code> parameter:</p>
-<pre><code>./triangle_geometry -size 1024 1024
-./triangle_geometry -fullscreen</code></pre>
-<p>Implementation specific parameters can be passed to the ray tracing core through the <code>-rtcore</code> command line parameter, e.g.:</p>
-<pre><code>./triangle_geometry -rtcore verbose=2,threads=1,accel=bvh4.triangle1</code></pre>
-<p>The navigation in the interactive display mode follows the camera orbit model, where the camera revolves around the current center of interest. With the left mouse button you can rotate around the center of interest (the point initially set with <code>-vi</code>). Holding Control pressed while clicking the left mouse button rotates the camera around its location. You can also use the arrow keys for navigation.</p>
+<p>Embree comes with a set of tutorials aimed at helping users understand how Embree can be used and extended. All tutorials exist in an ISPC and C++ version to demonstrate the two versions of the API. Look for files named <code>tutorialname_device.ispc</code> for the ISPC implementation of the tutorial, and files named <code>tutorialname_device.cpp</code> for the single ray C++ version of the tutorial. To start the C++ version use the <code>tutorialname</code> executables, to start the ISPC version use the <code>tutorialname_ispc</code> executables. All tutorials can print available command line options using the <code>--help</code> command line parameter.</p>
+<p>For all tutorials, you can select an initial camera using the <code>--vp</code> (camera position), <code>--vi</code> (camera look-at point), <code>--vu</code> (camera up vector), and <code>--fov</code> (vertical field of view) command line parameters:</p>
+<pre><code>./triangle_geometry --vp 10 10 10 --vi 0 0 0</code></pre>
+<p>You can select the initial window size using the <code>--size</code> command line parameter, or start the tutorials in full screen using the <code>--fullscreen</code> parameter:</p>
+<pre><code>./triangle_geometry --size 1024 1024
+./triangle_geometry --fullscreen</code></pre>
+<p>The initialization string for the Embree device (<code>rtcNewDevice</code> call) can be passed to the ray tracing core through the <code>--rtcore</code> command line parameter, e.g.:</p>
+<pre><code>./triangle_geometry --rtcore verbose=2,threads=1,accel=bvh4.triangle1</code></pre>
+<p>The navigation in the interactive display mode follows the camera orbit model, where the camera revolves around the current center of interest. With the left mouse button you can rotate around the center of interest (the point initially set with <code>--vi</code>). Holding Control pressed while clicking the left mouse button rotates the camera around its location. You can also use the arrow keys for navigation.</p>
 <p>You can use the following keys:</p>
 <dl>
 <dt>F1</dt>
@@ -103,25 +103,25 @@
 <img src="images/triangle_geometry.jpg" />
 
 </div>
-<p>This tutorial demonstrates the creation of a static cube and ground plane using triangle meshes. It also demonstrates the use of the <code>rtcIntersect</code> and <code>rtcOccluded</code> functions to render primary visibility and hard shadows. The cube sides are colored based on the ID of the hit primitive.</p>
+<p>This tutorial demonstrates the creation of a static cube and ground plane using triangle meshes. It also demonstrates the use of the <code>rtcIntersect1</code> and <code>rtcOccluded1</code> functions to render primary visibility and hard shadows. The cube sides are colored based on the ID of the hit primitive.</p>
 <h2 id="dynamic-scene">Dynamic Scene</h2>
 <div class="figure">
 <img src="images/dynamic_scene.jpg" />
 
 </div>
-<p>This tutorial demonstrates the creation of a dynamic scene, consisting of several deformed spheres. Half of the spheres use the <code>RTC_GEOMETRY_DEFORMABLE</code> flag, which allows Embree to use a refitting strategy for these spheres, the other half uses the <code>RTC_GEOMETRY_DYNAMIC</code> flag, causing a rebuild of their spatial data structure each frame. The spheres are colored based on the ID of the hit sphere geometry.</p>
+<p>This tutorial demonstrates the creation of a dynamic scene, consisting of several deforming spheres. Half of the spheres use the <code>RTC_BUILD_QUALITY_REFIT</code> geometry build quality, which allows Embree to use a refitting strategy for these spheres, the other half uses the <code>RTC_BUILD_QUALITY_LOW</code> geometry build quality, causing a high performance rebuild of their spatial data structure each frame. The spheres are colored based on the ID of the hit sphere geometry.</p>
 <h2 id="user-geometry">User Geometry</h2>
 <div class="figure">
 <img src="images/user_geometry.jpg" />
 
 </div>
-<p>This tutorial shows the use of user defined geometry, to re-implement instancing and to add analytic spheres. A two level scene is created, with a triangle mesh as ground plane, and several user geometries, that instance other scenes with a small number of spheres of different kind. The spheres are colored using the instance ID and geometry ID of the hit sphere, to demonstrate how the same geometry, instanced in different ways can be distinguished.</p>
+<p>This tutorial shows the use of user-defined geometry, to re-implement instancing, and to add analytic spheres. A two-level scene is created, with a triangle mesh as ground plane, and several user geometries that instance other scenes with a small number of spheres of different kinds. The spheres are colored using the instance ID and geometry ID of the hit sphere, to demonstrate how the same geometry instanced in different ways can be distinguished.</p>
 <h2 id="viewer">Viewer</h2>
 <div class="figure">
 <img src="images/viewer.jpg" />
 
 </div>
-<p>This tutorial demonstrates a simple OBJ viewer that traces primary visibility rays only. A scene consisting of multiple meshes is created, each mesh sharing the index and vertex buffer with the application. Demonstrated is also how to support additional per-vertex data, such as shading normals.</p>
+<p>This tutorial demonstrates a simple OBJ viewer that traces primary visibility rays only. A scene consisting of multiple meshes is created, each mesh sharing the index and vertex buffer with the application. It also demonstrates how to support additional per-vertex data, such as shading normals.</p>
 <p>You need to specify an OBJ file at the command line for this tutorial to work:</p>
 <pre><code>./viewer -i model.obj</code></pre>
 <h2 id="stream-viewer">Stream Viewer</h2>
@@ -129,28 +129,28 @@
 <img src="images/viewer_stream.jpg" />
 
 </div>
-<p>This tutorial demonstrates a simple OBJ viewer that demonstrates the use of ray streams. You need to specify an OBJ file at the command line for this tutorial to work:</p>
+<p>This tutorial is a simple OBJ viewer that demonstrates the use of ray streams. You need to specify an OBJ file at the command line for this tutorial to work:</p>
 <pre><code>./viewer_stream -i model.obj</code></pre>
 <h2 id="instanced-geometry">Instanced Geometry</h2>
 <div class="figure">
 <img src="images/instanced_geometry.jpg" />
 
 </div>
-<p>This tutorial demonstrates the in-build instancing feature of Embree, by instancing a number of other scenes build from triangulated spheres. The spheres are again colored using the instance ID and geometry ID of the hit sphere, to demonstrate how the same geometry, instanced in different ways can be distinguished.</p>
+<p>This tutorial demonstrates the in-build instancing feature of Embree, by instancing a number of other scenes built from triangulated spheres. The spheres are again colored using the instance ID and geometry ID of the hit sphere, to demonstrate how the same geometry instanced in different ways can be distinguished.</p>
 <h2 id="intersection-filter">Intersection Filter</h2>
 <div class="figure">
 <img src="images/intersection_filter.jpg" />
 
 </div>
-<p>This tutorial demonstrates the use of filter callback functions to efficiently implement transparent objects. The filter function used for primary rays, lets the ray pass through the geometry if it is entirely transparent. Otherwise the shading loop handles the transparency properly, by potentially shooting secondary rays. The filter function used for shadow rays accumulates the transparency of all surfaces along the ray, and terminates traversal if an opaque occluder is hit.</p>
-<h2 id="pathtracer">Pathtracer</h2>
+<p>This tutorial demonstrates the use of filter callback functions to efficiently implement transparent objects. The filter function used for primary rays lets the ray pass through the geometry if it is entirely transparent. Otherwise, the shading loop handles the transparency properly, by potentially shooting secondary rays. The filter function used for shadow rays accumulates the transparency of all surfaces along the ray, and terminates traversal if an opaque occluder is hit.</p>
+<h2 id="path-tracer">Path Tracer</h2>
 <div class="figure">
 <img src="images/pathtracer.jpg" />
 
 </div>
-<p>This tutorial is a simple path tracer, building on the viewer tutorial.</p>
+<p>This tutorial is a simple path tracer, based on the viewer tutorial.</p>
 <p>You need to specify an OBJ file and light source at the command line for this tutorial to work:</p>
-<pre><code>./pathtracer -i model.obj -ambientlight 1 1 1</code></pre>
+<pre><code>./pathtracer -i model.obj --ambientlight 1 1 1</code></pre>
 <p>As example models we provide the “Austrian Imperial Crown” model by <a href="http://www.loramel.net">Martin Lubich</a> and the “Asian Dragon” model from the <a href="http://graphics.stanford.edu/data/3Dscanrep/">Stanford 3D Scanning Repository</a>.</p>
 <p><a href="https://github.com/embree/models/releases/download/release/crown.zip">crown.zip</a></p>
 <p><a href="https://github.com/embree/models/releases/download/release/asian_dragon.zip">asian_dragon.zip</a></p>
@@ -174,32 +174,32 @@
 <img src="images/subdivision_geometry.jpg" />
 
 </div>
-<p>This tutorial demonstrates the use of Catmull Clark subdivision surfaces. Per default the edge tessellation level is set adaptively based on the distance to the camera origin. Embree currently supports three different modes for efficiently handling subdivision surfaces in various rendering scenarios. These three modes can be selected at the command line, e.g. <code>-lazy</code> builds internal per subdivision patch data structures on demand, <code>-cache</code> uses a small (per thread) tessellation cache for caching per patch data, and <code>-pregenerate</code> to generate and store most per patch data during the initial build process. The <code>cache</code> mode is most effective for coherent rays while providing a fixed memory footprint. The <code>pregenerate</code> modes is most effective for incoherent ray distributions while requiring more memory. The <code>lazy</code> mode works similar to the <code>pregenerate</code> mode but provides a middle ground in terms of memory consumption as it only builds and stores data only when the corresponding patch is accessed during the ray traversal. The <code>cache</code> mode is currently a bit more efficient at handling dynamic scenes where only the edge tessellation levels are changing per frame.</p>
+<p>This tutorial demonstrates the use of Catmull-Clark subdivision surfaces.</p>
 <h2 id="displacement-geometry">Displacement Geometry</h2>
 <div class="figure">
 <img src="images/displacement_geometry.jpg" />
 
 </div>
-<p>This tutorial demonstrates the use of Catmull Clark subdivision surfaces with procedural displacement mapping using a constant edge tessellation level.</p>
+<p>This tutorial demonstrates the use of Catmull-Clark subdivision surfaces with procedural displacement mapping using a constant edge tessellation level.</p>
 <h2 id="motion-blur-geometry">Motion Blur Geometry</h2>
 <div class="figure">
 <img src="images/motion_blur_geometry.jpg" />
 
 </div>
-<p>This tutorial demonstrates rendering of motion blur using the multi segment motion blur feature. Shown is motion blur of a triangle mesh, quad mesh, subdivision surface, line segments, hair geometry, bezier curves, instantiated triangle mesh where the instance moves, instantiated quad mesh where the instance and the quads move, and user geometry.</p>
+<p>This tutorial demonstrates rendering of motion blur using the multi-segment motion blur feature. Shown is motion blur of a triangle mesh, quad mesh, subdivision surface, line segments, hair geometry, Bézier curves, instantiated triangle mesh where the instance moves, instantiated quad mesh where the instance and the quads move, and user geometry.</p>
 <p>The number of time steps used can be configured using the <code>--time-steps &lt;int&gt;</code> and <code>--time-steps2 &lt;int&gt;</code> command line parameters, and the geometry can be rendered at a specific time using the the <code>--time &lt;float&gt;</code> command line parameter.</p>
 <h2 id="interpolation">Interpolation</h2>
 <div class="figure">
 <img src="images/interpolation.jpg" />
 
 </div>
-<p>This tutorial demonstrates interpolation of user defined per-vertex data.</p>
+<p>This tutorial demonstrates interpolation of user-defined per-vertex data.</p>
 <h2 id="bvh-builder">BVH Builder</h2>
-<p>This tutorial demonstrates how to use the templated hierarchy builders of Embree to build a bounding volume hierarchy with a user defined memory layout using a high quality SAH builder and very fast morton builder.</p>
+<p>This tutorial demonstrates how to use the templated hierarchy builders of Embree to build a bounding volume hierarchy with a user-defined memory layout using a high-quality SAH builder using spatial splits, a standard SAH builder, and a very fast Morton builder.</p>
 <h2 id="bvh-access">BVH Access</h2>
 <p>This tutorial demonstrates how to access the internal triangle acceleration structure build by Embree. Please be aware that the internal Embree data structures might change between Embree updates.</p>
 <h2 id="find-embree">Find Embree</h2>
-<p>This tutorial demonstrates how to use the <code>FIND_PACKAGE</code> CMake feature to use an installed Embree. Under Linux and Mac OS X the tutorial finds the Embree installation automatically, under Windows the <code>embree_DIR</code> CMake variable has to be set to the following folder of the Embree installation: <code>C:\Program Files\Intel\Embree X.Y.Z\lib\cmake\embree-X.Y.Z</code>.</p>
+<p>This tutorial demonstrates how to use the <code>FIND_PACKAGE</code> CMake feature to use an installed Embree. Under Linux and macOS the tutorial finds the Embree installation automatically, under Windows the <code>embree_DIR</code> CMake variable must be set to the following folder of the Embree installation: <code>C:\Program Files\Intel\Embree3</code>.</p>
       </div>
 
       <div id="footer">
