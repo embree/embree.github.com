@@ -57,7 +57,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v3.0.0!
+      We recently released Embree v3.1.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -66,7 +66,7 @@ div.sourceCode { overflow-x: initial; }
 <h1 id="embree-api">Embree API</h1>
 <p>The Embree API is a low-level C99 ray tracing API which can be used to construct 3D scenes and perform ray queries of different types inside these scenes. All API calls carry the prefix <code>rtc</code> (or <code>RTC</code> for types) which stands for <strong>r</strong>ay <strong>t</strong>racing <strong>c</strong>ore.</p>
 <p>The API also exists in an ISPC version, which is almost identical but contains additional functions that operate on ray packets with a size of the native SIMD width used by ISPC. For simplicity this document refers to the C99 version of the API functions. For changes when upgrading from the Embree 2 to the current Embree 3 API see Section <a href="#upgrading-from-embree-2-to-embree-3">Upgrading from Embree 2 to Embree 3</a>.</p>
-<p>The API supports scenes consisting of different geometry types such as triangle meshes, quad meshes (triangle pairs), curves, subdivision meshes, instanced geometries, and user-defined geometries. See Section <a href="#scene-object">Scene Object</a> for more information.</p>
+<p>The API supports scenes consisting of different geometry types such as triangle meshes, quad meshes (triangle pairs), grid meshes, flat curves, round curves, oriented curves, subdivision meshes, instances, and user-defined geometries. See Section <a href="#scene-object">Scene Object</a> for more information.</p>
 <p>Finding the closest hit of a ray segment with the scene (<code>rtcIntersect</code>-type functions), and determining whether any hit between a ray segment and the scene exists (<code>rtcOccluded</code>-type functions) are both supported. The API supports queries for single rays, ray packets, and ray streams. See Section <a href="#ray-queries">Ray Queries</a> for more information.</p>
 <p>The API is designed in an object-oriented manner, e.g. it contains device objects (<code>RTCDevice</code> type), scene objects (<code>RTCScene</code> type), geometry objects (<code>RTCGeometry</code> type), buffer objects (<code>RTCBuffer</code> type), and BVH objects (<code>RTCBVH</code> type). All objects are reference counted, and handles can be released by calling the appropriate release function (e.g. <code>rtcReleaseDevice</code>) or retained by incrementing the reference count (e.g. <code>rtcRetainDevice</code>). In general, API calls that access the same object are not thread-safe, unless specified differently. However, attaching geometries to the same scene and performing ray queries in a scene is thread-safe.</p>
 <h2 id="device-object">Device Object</h2>
@@ -665,6 +665,9 @@ rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST | flags);</code></pre>
  RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE,
  RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE,
  RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE,
+ RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BEZIER_CURVE,
+ RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BSPLINE_CURVE,
+ RTC_GEOMETRY_TYPE_GRID,
  RTC_GEOMETRY_TYPE_USER,
  RTC_GEOMETRY_TYPE_INSTANCE
 };
@@ -675,7 +678,7 @@ RTCGeometry rtcNewGeometry(
 );</code></pre>
 <h4 id="description">DESCRIPTION</h4>
 <p>Geometries are objects that represent an array of primitives of the same type. The <code>rtcNewGeometry</code> function creates a new geometry of specified type (<code>type</code> argument) bound to the specified device (<code>device</code> argument) and returns a handle to this geometry. The geometry object is reference counted with an initial reference count of 1. The geometry handle can be released using the <code>rtcReleaseGeometry</code> API call.</p>
-<p>Supported geometry types are triangle meshes (<code>RTC_GEOMETRY_TYPE_TRIANGLE</code> type), quad meshes (triangle pairs) (<code>RTC_GEOMETRY_TYPE_QUAD</code> type), Catmull-Clark subdivision surfaces (<code>RTC_GEOMETRY_TYPE_SUBDIVISION</code> type), curve geometries with different bases (<code>RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE</code> types), user-defined geometries (<code>RTC_GEOMETRY_TYPE_USER</code>), and instances (<code>RTC_GEOMETRY_TYPE_INSTANCE</code>).</p>
+<p>Supported geometry types are triangle meshes (<code>RTC_GEOMETRY_TYPE_TRIANGLE</code> type), quad meshes (triangle pairs) (<code>RTC_GEOMETRY_TYPE_QUAD</code> type), Catmull-Clark subdivision surfaces (<code>RTC_GEOMETRY_TYPE_SUBDIVISION</code> type), curve geometries with different bases (<code>RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BSPLINE_CURVE</code> types), grid meshes (<code>RTC_GEOMETRY_TYPE_GRID</code>), user-defined geometries (<code>RTC_GEOMETRY_TYPE_USER</code>), and instances (<code>RTC_GEOMETRY_TYPE_INSTANCE</code>).</p>
 <p>The types <code>RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE</code> and <code>RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE</code> will treat the curve as a sweep surface of a varying-radius circle swept tangentially along the curve. The types <code>RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE</code> and <code>RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE</code> use ray-facing ribbons as a faster-to-intersect approximation.</p>
 <p>After construction, geometries are enabled by default and not attached to any scene. Geometries can be disabled (<code>rtcDisableGeometry</code> call), and enabled again (<code>rtcEnableGeometry</code> call). A geometry can be attached to a single scene using the <code>rtcAttachGeometry</code> call (or <code>rtcAttachGeometryByID</code> call), and detached using the <code>rtcDetachGeometry</code> call. During attachment, a geometry ID is assigned to the geometry (or assigned by the user when using the <code>rtcAttachGeometryByID</code> call), which uniquely identifies the geometry inside that scene. This identifier is returned when primitives of the geometry are hit in later ray queries for the scene.</p>
 <p>Geometries can also be modified, including their vertex and index buffers. After modifying a buffer, <code>rtcUpdateGeometryBuffer</code> must be called to notify that the buffer got modified.</p>
@@ -685,7 +688,7 @@ RTCGeometry rtcNewGeometry(
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
-<p><a href="#rtcenablegeometry">rtcEnableGeometry</a>, <a href="#rtcdisablegeometry">rtcDisableGeometry</a>, <a href="#rtcattachgeometry">rtcAttachGeometry</a>, <a href="#rtcattachgeometrybyid">rtcAttachGeometryByID</a>, <a href="#rtcupdategeometrybuffer">rtcUpdateGeometryBuffer</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcgetgeometryuserdata">rtcGetGeometryUserData</a>, <a href="#rtccommitgeometry">rtcCommitGeometry</a>, <a href="#rtcinterpolate">rtcInterpolate</a>, <a href="#rtcinterpolaten">rtcInterpolateN</a>, <a href="#rtcsetgeometrybuildquality">rtcSetGeometryBuildQuality</a>, <a href="#rtcsetscenebuildquality">rtcSetSceneBuildQuality</a>, <a href="#rtc_geometry_type_triangle">RTC_GEOMETRY_TYPE_TRIANGLE</a>, <a href="#rtc_geometry_type_quad">RTC_GEOMETRY_TYPE_QUAD</a>, <a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a>, <a href="#rtc_geometry_type_curve">RTC_GEOMETRY_TYPE_CURVE</a>, <a href="#rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</a>, <a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a></p>
+<p><a href="#rtcenablegeometry">rtcEnableGeometry</a>, <a href="#rtcdisablegeometry">rtcDisableGeometry</a>, <a href="#rtcattachgeometry">rtcAttachGeometry</a>, <a href="#rtcattachgeometrybyid">rtcAttachGeometryByID</a>, <a href="#rtcupdategeometrybuffer">rtcUpdateGeometryBuffer</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcgetgeometryuserdata">rtcGetGeometryUserData</a>, <a href="#rtccommitgeometry">rtcCommitGeometry</a>, <a href="#rtcinterpolate">rtcInterpolate</a>, <a href="#rtcinterpolaten">rtcInterpolateN</a>, <a href="#rtcsetgeometrybuildquality">rtcSetGeometryBuildQuality</a>, <a href="#rtcsetscenebuildquality">rtcSetSceneBuildQuality</a>, <a href="#rtc_geometry_type_triangle">RTC_GEOMETRY_TYPE_TRIANGLE</a>, <a href="#rtc_geometry_type_quad">RTC_GEOMETRY_TYPE_QUAD</a>, <a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a>, <a href="#rtc_geometry_type_curve">RTC_GEOMETRY_TYPE_CURVE</a>, <a href="#rtc_geometry_type_grid">RTC_GEOMETRY_TYPE_GRID</a>, <a href="#rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</a>, <a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a></p>
 <p></p>
 <h2 id="rtc_geometry_type_triangle">RTC_GEOMETRY_TYPE_TRIANGLE</h2>
 <h4 id="name">NAME</h4>
@@ -724,6 +727,32 @@ RTCGeometry geometry =
 <p>Mixed triangle/quad meshes are supported by encoding a triangle as a quad, which can be achieved by replicating the last triangle vertex (<code>v0,v1,v2</code> -&gt; <code>v0,v1,v2,v2</code>). This way the second triangle is a line (which can never get hit), and the parametrization of the first triangle is compatible with the standard triangle parametrization.</p>
 <p>A quad whose vertices are laid out counter-clockwise has its geometry normal pointing upwards outside the front face, like illustrated in the following picture.</p>
 <p>[][imgQuadUV]</p>
+<p>For multi-segment motion blur, the number of time steps must be first specified using the <code>rtcSetGeometryTimeStepCount</code> call. Then a vertex buffer for each time step can be set using different buffer slots, and all these buffers must have the same stride and size.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
+<p></p>
+<h2 id="rtc_geometry_type_grid">RTC_GEOMETRY_TYPE_GRID</h2>
+<h4 id="name">NAME</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">RTC_GEOMETRY_TYPE_GRID - grid geometry type</code></pre>
+<h4 id="synopsis">SYNOPSIS</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
+
+RTCGeometry geometry =
+  rtcNewGeometry(device, RTC_GEOMETRY_TYPE_GRID);</code></pre>
+<h4 id="description">DESCRIPTION</h4>
+<p>Grid meshes are created by passing <code>RTC_GEOMETRY_TYPE_GRID</code> to the <code>rtcNewGeometry</code> function call, and contain an array of grid primitives. This array of grids can be specified by setting up a grid buffer (with <code>RTC_BUFFER_TYPE_GRID</code> type and <code>RTC_FORMAT_GRID</code> format) and the grid mesh vertices by setting a vertex buffer (<code>RTC_BUFFER_TYPE_VERTEX</code> type). See <code>rtcSetGeometryBuffer</code> and <code>rtcSetSharedGeometryBuffer</code> for more details on how to set buffers. The number of grid primitives in the grid mesh is inferred from the size of the grid buffer.</p>
+<p>The vertex buffer contains an array of single precision <code>x</code>, <code>y</code>, <code>z</code> floating point coordinates (<code>RTC_FORMAT_FLOAT3</code> format), and the number of vertices is inferred from the size of that buffer.</p>
+<p>Each grid in the grid buffer is of the type <code>RTCGrid</code>:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> RTCGrid
+{
+  <span class="dt">unsigned</span> <span class="dt">int</span> startVertexID;
+  <span class="dt">unsigned</span> <span class="dt">int</span> stride;
+  <span class="dt">unsigned</span> <span class="dt">short</span> width,height; 
+};</code></pre>
+<p>The <code>RTCGrid</code> structure describes a 2D grid of vertices (with respect to the vertex buffer of the grid mesh). The <code>width</code> and <code>height</code> members specify the number of vertices in u and v direction, e.g. setting both <code>width</code> and <code>height</code> to 3 sets up a 3x3 vertex grid. The maximum allowed <code>width</code> and <code>height</code> is 32767. The <code>startVertexID</code> specifies the ID of the top-left vertex in the vertex grid, while the <code>stride</code> parameter specifies a stride (in number of vertices) used to step to the next row.</p>
+<p>A vertex grid of dimensions <code>width</code> and <code>height</code> is treated as a <code>(width-1)</code> x <code>(height-1)</code> grid of <code>quads</code> (triangle-pairs), with the same shared edge handling as for regular quad meshes. However, the <code>u</code>/<code>v</code> coordinates have the uniform range <code>[0..1]</code> for an entire vertex grid. The <code>u</code> direction follows the <code>width</code> of the grid while the <code>v</code> direction the <code>height</code>.</p>
 <p>For multi-segment motion blur, the number of time steps must be first specified using the <code>rtcSetGeometryTimeStepCount</code> call. Then a vertex buffer for each time step can be set using different buffer slots, and all these buffers must have the same stride and size.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
@@ -781,10 +810,16 @@ RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE -
   linear curve geometry type
 
 RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE -
-  Bézier curve geometry type <span class="kw">using</span> a ribbon approximation
+  Bézier curve geometry type <span class="kw">using</span> a ray oriented ribbon approximation
 
 RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE - 
-  B-spline curve geometry type <span class="kw">using</span> a ribbon approximation</code></pre>
+  B-spline curve geometry type <span class="kw">using</span> a ray oriented ribbon approximation
+
+RTC_GEOMETRY_TYPE_ORIENTED_FLAT_BEZIER_CURVE -
+  flat Bézier curve geometry type oriented by normal
+
+RTC_GEOMETRY_TYPE_ORIENTED_FLAT_BSPLINE_CURVE - 
+  flat B-spline curve geometry type oriented by normal</code></pre>
 <h4 id="synopsis">SYNOPSIS</h4>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
@@ -792,11 +827,20 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE);
 rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE);
 rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE);
 rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE);
-rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE);</code></pre>
+rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE);
+rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ORIENTED_FLAT_BEZIER_CURVE);
+rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ORIENTED_FLAT_BSPLINE_CURVE);</code></pre>
 <h4 id="description">DESCRIPTION</h4>
-<p>Curves with per vertex radii are supported with linear, cubic Bézier, and cubic B-spline bases. Such curve geometries are created by passing <code>RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE</code>, or <code>RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE</code>, to the <code>rtcNewGeometry</code> function. The curve indices can be specified through an index buffer (<code>RTC_BUFFER_TYPE_INDEX</code>) and the curve vertices through a vertex buffer (<code>RTC_BUFFER_TYPE_VERTEX</code>). See <code>rtcSetGeometryBuffer</code> and <code>rtcSetSharedGeometryBuffer</code> for more details on how to set buffers.</p>
-<p>The index buffer contains an array of 32-bit indices (<code>RTC_FORMAT_UINT</code> format), each pointing to the ID of the first control vertex. The vertex buffer stores each control vertex in the form of a single precision position and radius stored in <code>x</code>, <code>y</code>, <code>z</code>, <code>r</code> order in memory (<code>RTC_FORMAT_FLOAT4</code> format). The number of vertices is inferred from the size of this buffer. The radii may be smaller than zero for the B-Spline basis, but the interpolated radii should always be greater or equal to zero.</p>
+<p>Curves with per vertex radii are supported with linear, cubic Bézier, and cubic B-spline bases. Such curve geometries are created by passing <code>RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ORIENTED_FLAT_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ORIENTED_FLAT_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE</code>, or <code>RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE</code>, to the <code>rtcNewGeometry</code> function. The curve indices can be specified through an index buffer (<code>RTC_BUFFER_TYPE_INDEX</code>) and the curve vertices through a vertex buffer (<code>RTC_BUFFER_TYPE_VERTEX</code>). For normal oriented curves a normal buffer (<code>RTC_BUFFER_TYPE_NORMAL</code>) has to get specified. See <code>rtcSetGeometryBuffer</code> and <code>rtcSetSharedGeometryBuffer</code> for more details on how to set buffers.</p>
+<p>The index buffer contains an array of 32-bit indices (<code>RTC_FORMAT_UINT</code> format), each pointing to the ID of the first control vertex. The vertex buffer stores each control vertex in the form of a single precision position and radius stored in <code>x</code>, <code>y</code>, <code>z</code>, <code>r</code> order in memory (<code>RTC_FORMAT_FLOAT4</code> format). The number of vertices is inferred from the size of this buffer. The radii may be smaller than zero for the B-Spline basis, but the interpolated radii should always be greater or equal to zero. The normal buffer stores a single precision normal per control vertex in <code>x</code>, <code>y</code>, <code>z</code> order.</p>
 <p>The <code>RTC_GEOMETRY_TYPE_FLAT_*</code> flat mode is a fast mode designed to render distant hair. In this mode the curve is rendered as a connected sequence of ray facing quads. Individual quads are considered to have subpixel size, and zooming onto the curve might show geometric artifacts. The number of quads to subdivide into can be specified through the <code>rtcSetGeometryTessellationRate</code> function. By default the tessellation rate is 4.</p>
+<p>The <code>RTC_GEOMETRY_TYPE_ORIENTED_FLAT_*</code> mode is a mode designed to render grass blades. In this mode the curve is rendered as a flat band whose center exactly follows the provided vertex spline, whose half width approximately follows the provided radius spline, and whose orientation approximately follows the provided normal spline.</p>
+<p>More precisely, we perform a newton-raphson style intersection of a ray with a tensor product surface of a linear basis (perpendicular to the curve) and cubic Bezier basis (along the curve). We construct the 8 control points of this surface in Bezier basis by calculating a normalized direction <code>d01=normalize(v1-v0,n0)</code> and <code>d23=normalize(v3-v2,n3)</code>. These directions are perpendicular to the direction of the center curve and evaluated normal curve at the curve start and end. The 8 control vertices of the surface are constructed as:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"> p00 = v0-r0*d01, p10 = v0+r0*d01
+ p01 = v1-r1*d01, p11 = v1+r1*d01
+ p02 = v2-r2*d23, p12 = v2+r2*d23
+ p03 = v3-r3*d23, p13 = v3+r3*d23</code></pre>
+<p>The center of this curve exactly follows the specified center spline, the normal at the start (and end) exactly match the evaluated normal spline at the start (and end), and the half width exactly matches the evaluated radius spline at the start (and end). In-between the radius and orientation of the curve smoothly changes. Note that the construction does not work when the provided normals are parallel to the curve direction, as then no well defined perpendicular direction <code>d01</code> or <code>d23</code> are defined, thus the provided normals should best be kept as perpendicular to the curve direction as possible.</p>
 <p>In the <code>RTC_GEOMETRY_TYPE_ROUND_*</code> round mode, a real geometric surface is rendered for the curve, which is more expensive but allows closeup views. For the Bézier and B-spline bases, this mode renders a sweep surface by sweeping a varying radius circle tangential along the curve. As a limitation, the radius of the curve has to be smaller than the curvature radius of the curve at each location on the curve. The round mode is currently not supported for the linear basis.</p>
 <p>The intersection with the curve segment stores the parametric hit location along the curve segment as u-coordinate (range 0 to +1).</p>
 <p>For Bézier and B-spline curves, the v-coordinate is set to the normalized distance in the range -1 to +1. For the linear basis and in round mode the v-coordinate is set to zero.</p>
@@ -1581,6 +1625,104 @@ RTCGeometry geometry =
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a></p>
 <p></p>
+<h2 id="rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</h2>
+<h4 id="name">NAME</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryFirstHalfEdge - returns the first half edge of a face</code></pre>
+<h4 id="synopsis">SYNOPSIS</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
+
+<span class="dt">unsigned</span> <span class="dt">int</span> rtcGetGeometryFirstHalfEdge(
+  RTCGeometry geometry,
+  <span class="dt">unsigned</span> <span class="dt">int</span> faceID
+);</code></pre>
+<h4 id="description">DESCRIPTION</h4>
+<p>The <code>rtcGetGeometryFirstHalfEdge</code> function returns the ID of the first half edge belonging to the specified face (<code>faceID</code> argument). For instance in the following example the first half edge of face <code>f1</code> is <code>e4</code>.</p>
+<p>[][imgHalfEdges]</p>
+<p>This function can only be used for subdivision geometries. As all topologies of a subdivision geometry share the same face buffer the function does not depend on the topology ID.</p>
+<p>Here f0 to f7 are 8 quadrilateral faces with 4 vertices each. The edges e0 to e23 of these faces are shown with their orientation. For each face the ID of the edges corresponds to the slots the face occupies in the index array of the geometry. E.g. as the indices of face f1 start at location 4 of the index array, the first edge is edge e4, the next edge e5, etc.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
+<p></p>
+<h2 id="rtcgetgeometryface">rtcGetGeometryFace</h2>
+<h4 id="name">NAME</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryFace - returns the face of some half edge</code></pre>
+<h4 id="synopsis">SYNOPSIS</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
+
+<span class="dt">unsigned</span> <span class="dt">int</span> rtcGetGeometryFace(
+  RTCGeometry geometry,
+  <span class="dt">unsigned</span> <span class="dt">int</span> edgeID
+);</code></pre>
+<h4 id="description">DESCRIPTION</h4>
+<p>The <code>rtcGetGeometryFace</code> function returns the ID of the face the specified half edge (<code>edgeID</code> argument) belongs to. For instance in the following example the face <code>f1</code> is returned for edges <code>e4</code>, <code>e5</code>, <code>e6</code>, and <code>e7</code>.</p>
+<p>[][imgHalfEdges]</p>
+<p>This function can only be used for subdivision geometries. As all topologies of a subdivision geometry share the same face buffer the function does not depend on the topology ID.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
+<p></p>
+<h2 id="rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</h2>
+<h4 id="name">NAME</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryNextHalfEdge - returns the next half edge</code></pre>
+<h4 id="synopsis">SYNOPSIS</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
+
+<span class="dt">unsigned</span> <span class="dt">int</span> rtcGetGeometryNextHalfEdge(
+  RTCGeometry geometry,
+  <span class="dt">unsigned</span> <span class="dt">int</span> edgeID
+);</code></pre>
+<h4 id="description">DESCRIPTION</h4>
+<p>The <code>rtcGetGeometryNextHalfEdge</code> function returns the ID of the next half edge of the specified half edge (<code>edgeID</code> argument). For instance in the following example the next half edge of <code>e10</code> is <code>e11</code>.</p>
+<p>[][imgHalfEdges]</p>
+<p>This function can only be used for subdivision geometries. As all topologies of a subdivision geometry share the same face buffer the function does not depend on the topology ID.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
+<p></p>
+<h2 id="rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</h2>
+<h4 id="name">NAME</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryPreviousHalfEdge - returns the previous half edge</code></pre>
+<h4 id="synopsis">SYNOPSIS</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
+
+<span class="dt">unsigned</span> <span class="dt">int</span> rtcGetGeometryPreviousHalfEdge(
+  RTCGeometry geometry,
+  <span class="dt">unsigned</span> <span class="dt">int</span> edgeID
+);</code></pre>
+<h4 id="description">DESCRIPTION</h4>
+<p>The <code>rtcGetGeometryPreviousHalfEdge</code> function returns the ID of the previous half edge of the specified half edge (<code>edgeID</code> argument). For instance in the following example the previous half edge of <code>e6</code> is <code>e5</code>.</p>
+<p>[][imgHalfEdges]</p>
+<p>This function can only be used for subdivision geometries. As all topologies of a subdivision geometry share the same face buffer the function does not depend on the topology ID.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
+<p></p>
+<h2 id="rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</h2>
+<h4 id="name">NAME</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryOppositeHalfEdge - returns the opposite half edge</code></pre>
+<h4 id="synopsis">SYNOPSIS</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
+
+<span class="dt">unsigned</span> <span class="dt">int</span> rtcGetGeometryOppositeHalfEdge(
+  RTCGeometry geometry,
+  <span class="dt">unsigned</span> <span class="dt">int</span> topologyID,
+  <span class="dt">unsigned</span> <span class="dt">int</span> edgeID
+);</code></pre>
+<h4 id="description">DESCRIPTION</h4>
+<p>The <code>rtcGetGeometryOppositeHalfEdge</code> function returns the ID of the opposite half edge of the specified half edge (<code>edgeID</code> argument) in the specified topology (<code>topologyID</code> argument). For instance in the following example the opposite half edge of <code>e6</code> is <code>e16</code>.</p>
+<p>[][imgHalfEdges]</p>
+<p>An opposite half edge does not exist if the specified half edge has either no neighboring face, or more than 2 neighboring faces. In these cases the function just returns the same edge <code>edgeID</code> again.</p>
+<p>This function can only be used for subdivision geometries. The function depends on the topology as the topologies of a subdivision geometry have different index buffers assigned.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
+<p></p>
 <h2 id="rtcinterpolate">rtcInterpolate</h2>
 <h4 id="name">NAME</h4>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">rtcInterpolate - interpolates vertex attributes</code></pre>
@@ -1916,8 +2058,8 @@ RTCBuffer rtcNewSharedBuffer(
 <p>The intersection context flag can be used to tune the behavior of the traversal algorithm. Using the <code>RTC_INTERSECT_CONTEXT_FLAG_INCOHERENT</code> flags uses an optimized traversal algorithm for incoherent rays (default), while <code>RTC_INTERSECT_CONTEXT_FLAG_COHERENT</code> uses an optimized traversal algorithm for coherent rays (e.g. primary camera rays).</p>
 <p>Best primary ray performance can be obtained by using the ray stream API and setting the intersect context flag to <code>RTC_INTERSECT_CONTEXT_FLAG_COHERENT</code>. For secondary rays, it is typically better to use the <code>RTC_INTERSECT_CONTEXT_FLAG_INCOHERENT</code> flag, unless the rays are known to be very coherent too (e.g. for primary transparency rays).</p>
 <p>A filter function can be specified inside the context. This filter function is invoked as a second filter stage after the per-geometry intersect or occluded filter function is invoked. Only rays that passed the first filter stage are valid in this second filter stage. Having such a per ray-query filter function can be useful to implement modifications of the behavior of the query, such as collecting all hits or accumulating transparencies. The support for the context filter function must be enabled for a scene by using the <code>RTC_SCENE_FLAG_CONTEXT_FILTER_FUNCTION</code> scene flag.</p>
-<p>Is is guaranteed that the pointer to the intersection context passed to a ray query is directly passed to the registered callback functions. This way it is possible to attach arbitrary data to the end of the intersection context, such as a per-ray payload.</p>
-<p>Please not that the ray pointer is not guaranteed to be passed to the callback functions, thus reading additional data from the ray pointer passed to callbacks is not possible.</p>
+<p>It is guaranteed that the pointer to the intersection context passed to a ray query is directly passed to the registered callback functions. This way it is possible to attach arbitrary data to the end of the intersection context, such as a per-ray payload.</p>
+<p>Please note that the ray pointer is not guaranteed to be passed to the callback functions, thus reading additional data from the ray pointer passed to callbacks is not possible.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>No error code is set by this function.</p>
 <h4 id="see-also">SEE ALSO</h4>
