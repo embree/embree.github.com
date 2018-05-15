@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v3.1.0!
+      We recently released Embree v3.2.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -98,9 +98,22 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-3.2.0">New Features in Embree 3.2.0</h3>
+<ul>
+<li>Improved watertightness of robust mode.</li>
+<li>Line segments, and other curves are now all contained in a single BVH which improves performance when these are both used in a scene.</li>
+<li>Performance improvement of up to 20% for line segments.</li>
+<li>Bugfix to Embree2 to Embree3 conversion script.</li>
+<li>Added support for Hermite curve basis.</li>
+<li>Semantics of normal buffer for normal oriented curves has changed to simplify usage. Please see documentation for details.</li>
+<li>Using GLFW and imgui in tutorials.</li>
+<li>Fixed floating point exception in static variable initialization.</li>
+<li>Fixed invalid memory access in rtcGetGeometryTransform for non-motion blur instances.</li>
+<li>Improved self intersection avoidance for flat curves. Transparency rays with tnear set to previous hit distance do not need curve radius based self intersection avoidance as same hit is calculated again. For this reason self intersection avoidance is now only applied to ray origin.</li>
+</ul>
 <h3 id="new-features-in-embree-3.1.0">New Features in Embree 3.1.0</h3>
 <ul>
-<li>Added new normal oriented curve primitive for ray tracing of grass-like structures.</li>
+<li>Added new normal-oriented curve primitive for ray tracing of grass-like structures.</li>
 <li>Added new grid primitive for ray tracing tessellated and displaced surfaces in very memory efficient manner.</li>
 <li>Fixed bug of ribbon curve intersector when derivative was zero.</li>
 <li>Installing all static libraries when EMBREE_STATIC_LIB is enabled.</li>
