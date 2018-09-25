@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta name="description" content="Embree: High Performance Ray Tracing Kernels" />
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-    <title>Embree</title>
+    <title>Intel® Embree</title>
     <link rel="icon" type="image/png" href="images/icon192.png" sizes="192x192">
     <link rel="SHORTCUT ICON" HREF="images/icon32.ico">
   </head>
@@ -17,7 +17,7 @@
     <div id="header_wrap" class="outer">
       <div class="inner">
         <a id="forkme_banner" href="https://github.com/embree">View on GitHub</a>
-        <h1 id="project_title">Embree</h1>
+        <h1 id="project_title">Intel® Embree</h1>
         <h2 id="project_tagline">High Performance Ray Tracing Kernels</h2>
       </div>
 
@@ -37,19 +37,19 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v3.2.0!
+      We recently released Intel® Embree v3.2.1!
     </a>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <div id="main_content" class="inner">
 <h1 id="embree-overview">Embree Overview</h1>
-<p>Embree is a collection of high-performance ray tracing kernels, developed at Intel. The target users of Embree are graphics application engineers who want to improve the performance of their photo-realistic rendering application by leveraging Embree’s performance-optimized ray tracing kernels. The kernels are optimized for the latest Intel® processors with support for SSE, AVX, AVX2, and AVX-512 instructions. Embree supports runtime code selection to choose the traversal and build algorithms that best matches the instruction set of your CPU. We recommend using Embree through its API to get the highest benefit from future improvements. Embree is released as Open Source under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.</p>
-<p>Embree supports applications written with the Intel SPMD Program Compiler (ISPC, <a href="https://ispc.github.io/" class="uri">https://ispc.github.io/</a>) by also providing an ISPC interface to the core ray tracing algorithms. This makes it possible to write a renderer in ISPC that automatically vectorizes and leverages SSE, AVX, AVX2, and AVX-512 instructions. ISPC also supports runtime code selection, thus ISPC will select the best code path for your application.</p>
-<p>Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays).</p>
-<p>The single-ray traversal kernels of Embree provide high performance for incoherent workloads and are very easy to integrate into existing rendering applications. Using the stream kernels, even higher performance for incoherent rays is possible, but integration might require significant code changes to the application to use the stream paradigm. In general for coherent workloads, the stream mode with coherent flag set gives the best performance.</p>
-<p>Embree also supports dynamic scenes by implementing high-performance two-level spatial index structure construction algorithms.</p>
-<p>In addition to the ray tracing kernels, Embree provides some <a href="tutorials.html">tutorials</a> to demonstrate how to use the <a href="api.html">Embree API</a>.</p>
+<p>Intel® Embree is a collection of high-performance ray tracing kernels, developed at Intel. The target users of Intel® Embree are graphics application engineers who want to improve the performance of their photo-realistic rendering application by leveraging Embree’s performance-optimized ray tracing kernels. The kernels are optimized for the latest Intel® processors with support for SSE, AVX, AVX2, and AVX-512 instructions. Intel® Embree supports runtime code selection to choose the traversal and build algorithms that best matches the instruction set of your CPU. We recommend using Intel® Embree through its API to get the highest benefit from future improvements. Intel® Embree is released as Open Source under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.</p>
+<p>Intel® Embree supports applications written with the Intel® SPMD Program Compiler (ISPC, <a href="https://ispc.github.io/" class="uri">https://ispc.github.io/</a>) by also providing an ISPC interface to the core ray tracing algorithms. This makes it possible to write a renderer in ISPC that automatically vectorizes and leverages SSE, AVX, AVX2, and AVX-512 instructions. ISPC also supports runtime code selection, thus ISPC will select the best code path for your application.</p>
+<p>Intel® Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays).</p>
+<p>The single-ray traversal kernels of Intel® Embree provide high performance for incoherent workloads and are very easy to integrate into existing rendering applications. Using the stream kernels, even higher performance for incoherent rays is possible, but integration might require significant code changes to the application to use the stream paradigm. In general for coherent workloads, the stream mode with coherent flag set gives the best performance.</p>
+<p>Intel® Embree also supports dynamic scenes by implementing high-performance two-level spatial index structure construction algorithms.</p>
+<p>In addition to the ray tracing kernels, Intel® Embree provides some <a href="tutorials.html">Embree Tutorials</a> to demonstrate how to use the <a href="api.html">Embree API</a>.</p>
 <h2>
 Embree Resources
 </h2>
@@ -58,9 +58,6 @@ Presentations
 </h3>
 <p>
 <a href="data/embree-siggraph-2018-final.pdf">Embree Presentation</a> at SIGGRAPH 2018
-</p>
-<p>
-<a href="data/compressedleafbvh-hpg-2018-final.pdf">Compressed-Leaf Bounding Volume Hierarchies</a> at HPG 2018
 </p>
 <p>
 <a href="data/embree-siggraph-2017-final.pdf">Embree Presentation</a> at SIGGRAPH 2017
@@ -104,6 +101,20 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-3.2.1">New Features in Embree 3.2.1</h3>
+<ul>
+<li>Bugfix in flat mode for hermite curves.</li>
+<li>Added EMBREE_CURVE_SELF_INTERSECTION_AVOIDANCE_FACTOR cmake option to control self intersection avoidance for flat curves.</li>
+<li>Performance fix when instantiating motion blurred scenes. The application should best use two (or more) time steps for an instance that instantiates a motion blurred scene.</li>
+<li>Fixed AVX512 compile issue with GCC 6.1.1.</li>
+<li>Fixed performance issue with rtcGetGeometryUserData when used during rendering.</li>
+<li>Bugfix in length of derivatives for grid geometry.</li>
+<li>Added BVH8 support for motion blurred curves and lines. For some workloads this increases performance by up to 7%.</li>
+<li>Fixed rtcGetGeometryTransform to return the local to world transform.</li>
+<li>Fixed bug in multi segment motion blur that caused missing of perfectly axis aligned geometry.</li>
+<li>Reduced memory consumption of small scenes by 4x.</li>
+<li>Reduced temporal storage of grid builder.</li>
+</ul>
 <h3 id="new-features-in-embree-3.2.0">New Features in Embree 3.2.0</h3>
 <ul>
 <li>Improved watertightness of robust mode.</li>
@@ -147,6 +158,29 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <li>Reduced memory consumption by 192 bytes per instance.</li>
 <li>Fixed some performance issues on AVX-512 architectures.</li>
 <li>Individual Contributor License Agreement (ICLA) and Corporate Contributor License Agreement (CCLA) no longer required to contribute to the project.</li>
+</ul>
+<h3 id="new-features-in-embree-2.17.5">New Features in Embree 2.17.5</h3>
+<ul>
+<li>Improved watertightness of robust mode.</li>
+<li>Fixed floating point exception in static variable initialization.</li>
+<li>Fixed AVX512 compile issue with GCC 6.1.1.</li>
+</ul>
+<h3 id="new-features-in-embree-2.17.4">New Features in Embree 2.17.4</h3>
+<ul>
+<li>Fixed AVX512 compile issue with GCC 7.</li>
+<li>Fixed issue with not thread safe local static variable initialization in VS2013.</li>
+<li>Fixed bug in the 4 and 8-wide packet intersection of instances with multi-segment motion blur on AVX-512 architectures.</li>
+<li>Fixed bug in rtcOccluded4/8/16 when only AVX-512 ISA was enabled.</li>
+</ul>
+<h3 id="new-features-in-embree-2.17.3">New Features in Embree 2.17.3</h3>
+<ul>
+<li>Fixed GCC compile warning in debug mode.</li>
+<li>Fixed bug of ribbon curve intersector when derivative was zero.</li>
+<li>Installing all static libraries when EMBREE_STATIC_LIB is enabled.</li>
+</ul>
+<h3 id="new-features-in-embree-2.17.2">New Features in Embree 2.17.2</h3>
+<ul>
+<li>Made BVH build of curve geometry deterministic.</li>
 </ul>
 <h3 id="new-features-in-embree-2.17.1">New Features in Embree 2.17.1</h3>
 <ul>

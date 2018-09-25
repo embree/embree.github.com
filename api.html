@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta name="description" content="Embree: High Performance Ray Tracing Kernels" />
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-    <title>Embree</title>
+    <title>Intel® Embree</title>
     <link rel="icon" type="image/png" href="images/icon192.png" sizes="192x192">
     <link rel="SHORTCUT ICON" HREF="images/icon32.ico">
     <style type="text/css">
@@ -37,7 +37,7 @@ div.sourceCode { overflow-x: initial; }
     <div id="header_wrap" class="outer">
       <div class="inner">
         <a id="forkme_banner" href="https://github.com/embree">View on GitHub</a>
-        <h1 id="project_title">Embree</h1>
+        <h1 id="project_title">Intel® Embree</h1>
         <h2 id="project_tagline">High Performance Ray Tracing Kernels</h2>
       </div>
 
@@ -57,7 +57,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Embree v3.2.0!
+      We recently released Intel® Embree v3.2.1!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -241,7 +241,7 @@ RTCDevice rtcNewDevice(<span class="dt">const</span> <span class="dt">char</span
 
 ssize_t rtcGetDeviceProperty(
   RTCDevice device,
-  RTCDeviceProperty prop
+  <span class="kw">enum</span> RTCDeviceProperty prop
 );</code></pre>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcGetDeviceProperty</code> function can be used to query properties (<code>prop</code> argument) of a device object (<code>device</code> argument). The returned property is an integer of type <code>ssize_t</code>.</p>
@@ -275,8 +275,6 @@ ssize_t rtcGetDeviceProperty(
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On success returns the value of the queried property. For properties returning a boolean value, the return value 0 denotes <code>false</code> and 1 denotes <code>true</code>.</p>
 <p>On failure zero is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
-<h4 id="see-also">SEE ALSO</h4>
-<p>[rtcSetDeviceProperty]</p>
 <p></p>
 <h2 id="rtcgetdeviceerror">rtcGetDeviceError</h2>
 <h4 id="name">NAME</h4>
@@ -488,7 +486,7 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
-<p>[rtcCommitJoinScene]</p>
+<p><a href="#rtcjoincommitscene">rtcJoinCommitScene</a></p>
 <p></p>
 <h2 id="rtcjoincommitscene">rtcJoinCommitScene</h2>
 <h4 id="name">NAME</h4>
@@ -561,7 +559,7 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
-<p>[rtcGetSceneBuildQuality], <a href="#rtcsetgeometrybuildquality">rtcSetGeometryBuildQuality</a></p>
+<p><a href="#rtcsetgeometrybuildquality">rtcSetGeometryBuildQuality</a></p>
 <p></p>
 <h2 id="rtcsetsceneflags">rtcSetSceneFlags</h2>
 <h4 id="name">NAME</h4>
@@ -721,7 +719,7 @@ RTCGeometry geometry =
 RTCGeometry geometry =
   rtcNewGeometry(device, RTC_GEOMETRY_TYPE_QUAD);</code></pre>
 <h4 id="description">DESCRIPTION</h4>
-<p>Quad meshes are created by passing <code>RTC_GEOMETRY_TYPE_QUAD</code> to the <code>rtcNewGeometry</code> function call. The quad indices can be specified by setting an index buffer (<code>RTC_BUFFER_TYPE_INDEX</code> type) and the quad vertices by setting a vertex buffer (<code>RTC_BUFFER_TYPE_VERTEX</code> type). See <code>rtcSetGeometryBuffer</code> and <code>rtcSetSharedGeometryBuffer</code> for more details on how to set buffers. The index buffer contains an array of four 32-bit indices per quad (<code>RTC_FORMAT_UINT</code> format), and the number of primitives is inferred from the size of that buffer. The vertex buffer contains an array of single precision <code>x</code>, <code>y</code>, <code>z</code> floating point coordinates (<code>RTC_FORMAT_FLOAT3</code> format), and the number of vertices is inferred from the size of that buffer. The vertex buffer can be at most 16 GB large.</p>
+<p>Quad meshes are created by passing <code>RTC_GEOMETRY_TYPE_QUAD</code> to the <code>rtcNewGeometry</code> function call. The quad indices can be specified by setting an index buffer (<code>RTC_BUFFER_TYPE_INDEX</code> type) and the quad vertices by setting a vertex buffer (<code>RTC_BUFFER_TYPE_VERTEX</code> type). See <code>rtcSetGeometryBuffer</code> and <code>rtcSetSharedGeometryBuffer</code> for more details on how to set buffers. The index buffer contains an array of four 32-bit indices per quad (<code>RTC_FORMAT_UINT4</code> format), and the number of primitives is inferred from the size of that buffer. The vertex buffer contains an array of single precision <code>x</code>, <code>y</code>, <code>z</code> floating point coordinates (<code>RTC_FORMAT_FLOAT3</code> format), and the number of vertices is inferred from the size of that buffer. The vertex buffer can be at most 16 GB large.</p>
 <p>A quad is internally handled as a pair of two triangles <code>v0,v1,v3</code> and <code>v2,v3,v1</code>, with the <code>u'</code>/<code>v'</code> coordinates of the second triangle corrected by <code>u = 1-u'</code> and <code>v = 1-v'</code> to produce a quad parametrization where <code>u</code> and <code>v</code> are in the range 0 to 1. Thus the parametrization of a quad uses the first vertex <code>p0</code> as base point, and the vector <code>p1 - p0</code> as <code>u</code>-direction, and <code>p3 - p0</code> as v-direction. Thus vertex attributes <code>t0,t1,t2,t3</code> can be bilinearly interpolated over the quadrilateral the following way:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-v)((<span class="dv">1</span>-u)*t0 + u*t1) + v*((<span class="dv">1</span>-u)*t3 + u*t2)</code></pre>
 <p>Mixed triangle/quad meshes are supported by encoding a triangle as a quad, which can be achieved by replicating the last triangle vertex (<code>v0,v1,v2</code> -&gt; <code>v0,v1,v2,v2</code>). This way the second triangle is a line (which can never get hit), and the parametrization of the first triangle is compatible with the standard triangle parametrization.</p>
