@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.2.1!
+      We recently released Intel® Embree v3.2.2!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -51,7 +51,7 @@
 <pre><code>./triangle_geometry --size 1024 1024
 ./triangle_geometry --fullscreen</code></pre>
 <p>The initialization string for the Embree device (<code>rtcNewDevice</code> call) can be passed to the ray tracing core through the <code>--rtcore</code> command line parameter, e.g.:</p>
-<pre><code>./triangle_geometry --rtcore verbose=2,threads=1,accel=bvh4.triangle1</code></pre>
+<pre><code>./triangle_geometry --rtcore verbose=2,threads=1</code></pre>
 <p>The navigation in the interactive display mode follows the camera orbit model, where the camera revolves around the current center of interest. With the left mouse button you can rotate around the center of interest (the point initially set with <code>--vi</code>). Holding Control pressed while clicking the left mouse button rotates the camera around its location. You can also use the arrow keys for navigation.</p>
 <p>You can use the following keys:</p>
 <dl>
