@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.2.4!
+      We recently released Intel® Embree v3.3.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -101,6 +101,13 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-3.3.0">New Features in Embree 3.3.0</h3>
+<ul>
+<li>Added support for motion blur time range per geometry. This way geometries can appear and disappear during the camera shutter and time steps do not have to start and end at camera shutter interval boundaries.</li>
+<li>Fixed crash with pathtracer when using –triangle-sphere command line.</li>
+<li>Fixed crash with pathtracer when using –shader ao command line.</li>
+<li>Fixed tutorials showing a black window on macOS 10.14 until moved.</li>
+</ul>
 <h3 id="new-features-in-embree-3.2.4">New Features in Embree 3.2.4</h3>
 <ul>
 <li>Fixed compile issues with ICC 2019.</li>

@@ -57,7 +57,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.2.4!
+      We recently released Intel® Embree v3.3.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -81,7 +81,7 @@ div.sourceCode { overflow-x: initial; }
 <h2 id="geometry-object">Geometry Object</h2>
 <p>A new geometry is created using the <code>rtcNewGeometry</code> function. Depending on the geometry type, different buffers must be bound (e.g. using <code>rtcSetSharedGeometryBuffer</code>) to set up the geometry data. In most cases, binding of a vertex and index buffer is required. The number of primitives and vertices of that geometry is typically inferred from the size of these bound buffers.</p>
 <p>Changes to the geometry always must be committed using the <code>rtcCommitGeometry</code> call before using the geometry. After committing, a geometry is not included in any scene. A geometry can be added to a scene by using the <code>rtcAttachGeometry</code> function (to automatically assign a geometry ID) or using the <code>rtcAttachGeometryById</code> function (to specify the geometry ID manually). A geometry can only be attached to a single scene at a time.</p>
-<p>All geometry types support multi-segment motion blur with an arbitrary number of equidistant time steps (in the range of 2 to 129). Each geometry can have a different number of time steps. The motion blur geometry is defined by linearly interpolating the geometries of neighboring time steps. To construct a motion blur geometry, first the number of time steps of the geometry must be specified using the <code>rtcSetGeometryTimeStepCount</code> function, and then a vertex buffer for each time step must be bound, e.g. using the <code>rtcSetSharedGeometryBuffer</code> function.</p>
+<p>All geometry types support multi-segment motion blur with an arbitrary number of equidistant time steps (in the range of 2 to 129) inside a user specified time range. Each geometry can have a different number of time steps and a different time range. The motion blur geometry is defined by linearly interpolating the geometries of neighboring time steps. To construct a motion blur geometry, first the number of time steps of the geometry must be specified using the <code>rtcSetGeometryTimeStepCount</code> function, and then a vertex buffer for each time step must be bound, e.g. using the <code>rtcSetSharedGeometryBuffer</code> function. Optionally, a time range defining the start (and end time) of the first (and last) time step can be set using the <code>rtcSetGeometryTimeRange</code> function. This feature will also allow geometries to appear and disappear during the camera shutter time if the time range is a sub range of [0,1].</p>
 <p>The API supports per-geometry filter callback functions (see <code>rtcSetGeometryIntersectFilterFunction</code> and <code>rtcSetGeometryOccludedFilterFunction</code>) that are invoked for each intersection found during the <code>rtcIntersect</code>-type or <code>rtcOccluded</code>-type calls. The former ones are called geometry intersection filter functions, the latter ones geometry occlusion filter functions. These filter functions are designed to be used to ignore intersections outside of a user-defined silhouette of a primitive, e.g. to model tree leaves using transparency textures.</p>
 <h2 id="ray-queries">Ray Queries</h2>
 <p>The API supports finding the closest hit of a ray segment with the scene (<code>rtcIntersect</code>-type functions), and determining whether any hit between a ray segment and the scene exists (<code>rtcOccluded</code>-type functions).</p>
@@ -1004,7 +1004,28 @@ RTCGeometry geometry =
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
-<p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
+<p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcsetgeometrytimerange">rtcSetGeometryTimeRange</a></p>
+<p></p>
+<h2 id="rtcsetgeometrytimerange">rtcSetGeometryTimeRange</h2>
+<h4 id="name">NAME</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryTimeRange - sets the time range <span class="kw">for</span> a motion blur geometry</code></pre>
+<h4 id="synopsis">SYNOPSIS</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
+
+<span class="dt">void</span> rtcSetGeometryTimeRange(
+  RTCGeometry geometry,
+  <span class="dt">float</span> startTime,
+  <span class="dt">float</span> endTime
+);</code></pre>
+<h4 id="description">DESCRIPTION</h4>
+<p>The <code>rtcSetGeometryTimeRange</code> function sets a time range which defines the start (and end time) of the first (and last) time step of a motion blur geometry. The time range is defined relative to the camera shutter interval [0,1] but it can be arbitrary. Thus the startTime can be smaller, equal, or larger 0, indicating a geometry whose animation definition start before, at, or after the camera shutter opens. Similar the endTime can be smaller, equal, or larger than 1, indicating a geometry whose animation definition ends after, at, or before the camera shutter closes. The startTime has to be smaller or equal to the endTime.</p>
+<p>The default time range when this function is not called is the entire camera shutter [0,1]. For best performance at most one time segment of the piece wise linear definition of the motion should fall outside the shutter window to the left and to the right. Thus do not set the startTime or endTime too far outside the [0,1] interval for best performance.</p>
+<p>This time range feature will also allow geometries to appear and disappear during the camera shutter time if the specified time range is a sub range of [0,1].</p>
+<p>Please also have a look at the <code>rtcSetGeometryTimeStepCount</code> function to see how to define the time steps for the specified time range.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcsetgeometrytimestepcount">rtcSetGeometryTimeStepCount</a></p>
 <p></p>
 <h2 id="rtcsetgeometryvertexattributecount">rtcSetGeometryVertexAttributeCount</h2>
 <h4 id="name">NAME</h4>
