@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.3.0!
+      We recently released Intel® Embree v3.4.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -45,7 +45,7 @@
       <div id="main_content" class="inner">
 <h1 id="embree-overview">Embree Overview</h1>
 <p>Intel® Embree is a collection of high-performance ray tracing kernels, developed at Intel. The target users of Intel® Embree are graphics application engineers who want to improve the performance of their photo-realistic rendering application by leveraging Embree’s performance-optimized ray tracing kernels. The kernels are optimized for the latest Intel® processors with support for SSE, AVX, AVX2, and AVX-512 instructions. Intel® Embree supports runtime code selection to choose the traversal and build algorithms that best matches the instruction set of your CPU. We recommend using Intel® Embree through its API to get the highest benefit from future improvements. Intel® Embree is released as Open Source under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.</p>
-<p>Intel® Embree supports applications written with the Intel® SPMD Program Compiler (ISPC, <a href="https://ispc.github.io/" class="uri">https://ispc.github.io/</a>) by also providing an ISPC interface to the core ray tracing algorithms. This makes it possible to write a renderer in ISPC that automatically vectorizes and leverages SSE, AVX, AVX2, and AVX-512 instructions. ISPC also supports runtime code selection, thus ISPC will select the best code path for your application.</p>
+<p>Intel® Embree supports applications written with the Intel® SPMD Program Compiler (ISPC, <a href="https://ispc.github.io/">https://ispc.github.io/</a>) by also providing an ISPC interface to the core ray tracing algorithms. This makes it possible to write a renderer in ISPC that automatically vectorizes and leverages SSE, AVX, AVX2, and AVX-512 instructions. ISPC also supports runtime code selection, thus ISPC will select the best code path for your application.</p>
 <p>Intel® Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays).</p>
 <p>The single-ray traversal kernels of Intel® Embree provide high performance for incoherent workloads and are very easy to integrate into existing rendering applications. Using the stream kernels, even higher performance for incoherent rays is possible, but integration might require significant code changes to the application to use the stream paradigm. In general for coherent workloads, the stream mode with coherent flag set gives the best performance.</p>
 <p>Intel® Embree also supports dynamic scenes by implementing high-performance two-level spatial index structure construction algorithms.</p>
@@ -53,54 +53,76 @@
 <h2>
 Embree Resources
 </h2>
+
 <h3>
 Presentations
 </h3>
+
 <p>
 <a href="data/embree-siggraph-2018-final.pdf">Embree Presentation</a> at SIGGRAPH 2018
 </p>
+
 <p>
 <a href="data/embree-siggraph-2017-final.pdf">Embree Presentation</a> at SIGGRAPH 2017
 </p>
+
 <p>
 <a href="data/msmblur-hpg-2017-final.pdf">STBVH: A Spatial-Temporal BVH for Efficient Multi-Segment Motion Blur</a> presentation at HPG 2017
 </p>
+
 <p>
 <a href="data/openmerge-hpg-2017-final.pdf">Improved Two-Level BVHs using Partial Re-Braiding</a> presentation at HPG 2017
 </p>
+
 <p>
 <a href="data/embree-siggraph-2016-final.pdf">Embree Presentation</a> at SIGGRAPH 2016
 </p>
+
 <p>
 <a href="data/embree-siggraph-2015-final.pdf">Embree Presentation</a> at SIGGRAPH 2015
 </p>
+
 <p>
 <a href="data/siggraph2014_embree_paper.pdf">Embree Paper Talk</a> at SIGGRAPH 2014
 </p>
+
 <p>
 <a href="data/siggraph2014_embree_tutorial.pdf">Embree Tutorial</a> at SIGGRAPH 2014
 </p>
+
 <p>
 <a href="data/embree-siggraph-2013-final.pdf">Embree 2.0 Presentation</a> at SIGGRAPH 2013
 </p>
+
 <p>
 <a href="data/embree-siggraph-2012-final.pdf">Embree 1.1 Presentation</a> at SIGGRAPH 2012
 </p>
+
 <h3>
 Blogs / Forum
 </h3>
+
 <p>
 Read the <a
 href="http://software.intel.com/en-us/blogs/2014/01/24/introduction-to-embree-21-part-1">Embree Blog</a> for more details about Embree.
 </p>
+
 <p>
 Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-realistic-ray-tracing-kernels">Embree Forum</a> Discussion.
 </p>
+
 <h2 id="embree-support-and-contact">Embree Support and Contact</h2>
 <p>If you encounter bugs please report them via <a href="https://github.com/embree/embree/issues">Embree’s GitHub Issue Tracker</a>.</p>
 <p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-3.4.0">New Features in Embree 3.4.0</h3>
+<ul>
+<li>Added point primitives (spheres, ray-oriented discs, normal-oriented discs).</li>
+<li>Fixed crash triggered by scenes with only invalid primitives.</li>
+<li>Improved robustness of quad/grid-based intersectors.</li>
+<li>Upgraded to TBB 2019.2 for release builds.</li>
+</ul>
 <h3 id="new-features-in-embree-3.3.0">New Features in Embree 3.3.0</h3>
 <ul>
 <li>Added support for motion blur time range per geometry. This way geometries can appear and disappear during the camera shutter and time steps do not have to start and end at camera shutter interval boundaries.</li>
@@ -350,7 +372,7 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 </ul>
 <h3 id="new-features-in-embree-2.11.0">New Features in Embree 2.11.0</h3>
 <ul>
-<li>Improved performance for streams of coherent (single) rays flagged with <code>RTC_INTERSECT_COHERENT</code>. For such coherent ray streams, e.g. primary rays, the performance typically improves by 1.3-2×.</li>
+<li>Improved performance for streams of coherent (single) rays flagged with <code>RTC_INTERSECT_COHERENT</code>. For such coherent ray streams, e.g. primary rays, the performance typically improves by 1.3-2×.</li>
 <li>New spatial split BVH builder for triangles, which is 2-6× faster than the previous version and more memory conservative.</li>
 <li>Improved performance and scalability of all standard BVH builders on systems with large core counts.</li>
 <li>Fixed <code>rtcGetBounds</code> for motion blur scenes.</li>

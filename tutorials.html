@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.3.0!
+      We recently released Intel® Embree v3.4.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -56,70 +56,66 @@
 <p>You can use the following keys:</p>
 <dl>
 <dt>F1</dt>
-<dd>Default shading
+<dd><p>Default shading</p>
 </dd>
 <dt>F2</dt>
-<dd>Gray EyeLight shading
+<dd><p>Gray EyeLight shading</p>
 </dd>
 <dt>F3</dt>
-<dd>Traces occlusion rays only.
+<dd><p>Traces occlusion rays only.</p>
 </dd>
 <dt>F4</dt>
-<dd>UV Coordinate visualization
+<dd><p>UV Coordinate visualization</p>
 </dd>
 <dt>F5</dt>
-<dd>Geometry normal visualization
+<dd><p>Geometry normal visualization</p>
 </dd>
 <dt>F6</dt>
-<dd>Geometry ID visualization
+<dd><p>Geometry ID visualization</p>
 </dd>
 <dt>F7</dt>
-<dd>Geometry ID and Primitive ID visualization
+<dd><p>Geometry ID and Primitive ID visualization</p>
 </dd>
 <dt>F8</dt>
-<dd>Simple shading with 16 rays per pixel for benchmarking.
+<dd><p>Simple shading with 16 rays per pixel for benchmarking.</p>
 </dd>
 <dt>F9</dt>
-<dd>Switches to render cost visualization. Pressing again reduces brightness.
+<dd><p>Switches to render cost visualization. Pressing again reduces brightness.</p>
 </dd>
 <dt>F10</dt>
-<dd>Switches to render cost visualization. Pressing again increases brightness.
+<dd><p>Switches to render cost visualization. Pressing again increases brightness.</p>
 </dd>
 <dt>f</dt>
-<dd>Enters or leaves full screen mode.
+<dd><p>Enters or leaves full screen mode.</p>
 </dd>
 <dt>c</dt>
-<dd>Prints camera parameters.
+<dd><p>Prints camera parameters.</p>
 </dd>
 <dt>ESC</dt>
-<dd>Exits the tutorial.
+<dd><p>Exits the tutorial.</p>
 </dd>
 <dt>q</dt>
-<dd>Exits the tutorial.
+<dd><p>Exits the tutorial.</p>
 </dd>
 </dl>
 <h2 id="triangle-geometry">Triangle Geometry</h2>
 <div class="figure">
 <img src="images/triangle_geometry.jpg" />
-
 </div>
 <p>This tutorial demonstrates the creation of a static cube and ground plane using triangle meshes. It also demonstrates the use of the <code>rtcIntersect1</code> and <code>rtcOccluded1</code> functions to render primary visibility and hard shadows. The cube sides are colored based on the ID of the hit primitive.</p>
 <h2 id="dynamic-scene">Dynamic Scene</h2>
 <div class="figure">
 <img src="images/dynamic_scene.jpg" />
-
 </div>
 <p>This tutorial demonstrates the creation of a dynamic scene, consisting of several deforming spheres. Half of the spheres use the <code>RTC_BUILD_QUALITY_REFIT</code> geometry build quality, which allows Embree to use a refitting strategy for these spheres, the other half uses the <code>RTC_BUILD_QUALITY_LOW</code> geometry build quality, causing a high performance rebuild of their spatial data structure each frame. The spheres are colored based on the ID of the hit sphere geometry.</p>
 <h2 id="user-geometry">User Geometry</h2>
 <div class="figure">
 <img src="images/user_geometry.jpg" />
-
 </div>
 <p>This tutorial shows the use of user-defined geometry, to re-implement instancing, and to add analytic spheres. A two-level scene is created, with a triangle mesh as ground plane, and several user geometries that instance other scenes with a small number of spheres of different kinds. The spheres are colored using the instance ID and geometry ID of the hit sphere, to demonstrate how the same geometry instanced in different ways can be distinguished.</p>
 <h2 id="viewer">Viewer</h2>
 <div class="figure">
 <img src="images/viewer.jpg" />
-
 </div>
 <p>This tutorial demonstrates a simple OBJ viewer that traces primary visibility rays only. A scene consisting of multiple meshes is created, each mesh sharing the index and vertex buffer with the application. It also demonstrates how to support additional per-vertex data, such as shading normals.</p>
 <p>You need to specify an OBJ file at the command line for this tutorial to work:</p>
@@ -127,26 +123,22 @@
 <h2 id="stream-viewer">Stream Viewer</h2>
 <div class="figure">
 <img src="images/viewer_stream.jpg" />
-
 </div>
 <p>This tutorial is a simple OBJ viewer that demonstrates the use of ray streams. You need to specify an OBJ file at the command line for this tutorial to work:</p>
 <pre><code>./viewer_stream -i model.obj</code></pre>
 <h2 id="instanced-geometry">Instanced Geometry</h2>
 <div class="figure">
 <img src="images/instanced_geometry.jpg" />
-
 </div>
 <p>This tutorial demonstrates the in-build instancing feature of Embree, by instancing a number of other scenes built from triangulated spheres. The spheres are again colored using the instance ID and geometry ID of the hit sphere, to demonstrate how the same geometry instanced in different ways can be distinguished.</p>
 <h2 id="intersection-filter">Intersection Filter</h2>
 <div class="figure">
 <img src="images/intersection_filter.jpg" />
-
 </div>
 <p>This tutorial demonstrates the use of filter callback functions to efficiently implement transparent objects. The filter function used for primary rays lets the ray pass through the geometry if it is entirely transparent. Otherwise, the shading loop handles the transparency properly, by potentially shooting secondary rays. The filter function used for shadow rays accumulates the transparency of all surfaces along the ray, and terminates traversal if an opaque occluder is hit.</p>
 <h2 id="path-tracer">Path Tracer</h2>
 <div class="figure">
 <img src="images/pathtracer.jpg" />
-
 </div>
 <p>This tutorial is a simple path tracer, based on the viewer tutorial.</p>
 <p>You need to specify an OBJ file and light source at the command line for this tutorial to work:</p>
@@ -160,44 +152,42 @@
 <h2 id="hair">Hair</h2>
 <div class="figure">
 <img src="images/hair_geometry.jpg" />
-
 </div>
 <p>This tutorial demonstrates the use of the hair geometry to render a hairball.</p>
 <h2 id="bézier-curves">Bézier Curves</h2>
 <div class="figure">
 <img src="images/curve_geometry.jpg" />
-
 </div>
 <p>This tutorial demonstrates the use of the Bézier curve geometry.</p>
 <h2 id="subdivision-geometry">Subdivision Geometry</h2>
 <div class="figure">
 <img src="images/subdivision_geometry.jpg" />
-
 </div>
 <p>This tutorial demonstrates the use of Catmull-Clark subdivision surfaces.</p>
 <h2 id="displacement-geometry">Displacement Geometry</h2>
 <div class="figure">
 <img src="images/displacement_geometry.jpg" />
-
 </div>
 <p>This tutorial demonstrates the use of Catmull-Clark subdivision surfaces with procedural displacement mapping using a constant edge tessellation level.</p>
 <h2 id="grid-geometry">Grid Geometry</h2>
 <div class="figure">
 <img src="images/grid_geometry.jpg" />
-
 </div>
 <p>This tutorial demonstrates the use of the memory efficient grid primitive to handle highly tessellated and displaced geometry.</p>
+<h2 id="point-geometry">Point Geometry</h2>
+<div class="figure">
+<img src="images/point_geometry.jpg" />
+</div>
+<p>This tutorial demonstrates the use of the three representations of point geometry.</p>
 <h2 id="motion-blur-geometry">Motion Blur Geometry</h2>
 <div class="figure">
 <img src="images/motion_blur_geometry.jpg" />
-
 </div>
 <p>This tutorial demonstrates rendering of motion blur using the multi-segment motion blur feature. Shown is motion blur of a triangle mesh, quad mesh, subdivision surface, line segments, hair geometry, Bézier curves, instantiated triangle mesh where the instance moves, instantiated quad mesh where the instance and the quads move, and user geometry.</p>
 <p>The number of time steps used can be configured using the <code>--time-steps &lt;int&gt;</code> and <code>--time-steps2 &lt;int&gt;</code> command line parameters, and the geometry can be rendered at a specific time using the the <code>--time &lt;float&gt;</code> command line parameter.</p>
 <h2 id="interpolation">Interpolation</h2>
 <div class="figure">
 <img src="images/interpolation.jpg" />
-
 </div>
 <p>This tutorial demonstrates interpolation of user-defined per-vertex data.</p>
 <h2 id="bvh-builder">BVH Builder</h2>

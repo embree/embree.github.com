@@ -57,7 +57,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.3.0!
+      We recently released Intel® Embree v3.4.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -263,6 +263,7 @@ ssize_t rtcGetDeviceProperty(
 <li><p><code>RTC_DEVICE_PROPERTY_QUAD_GEOMETRY_SUPPORTED</code>: Queries whether quads are supported, which is the case if Embree is compiled with <code>EMBREE_GEOMETRY_QUAD</code> enabled.</p></li>
 <li><p><code>RTC_DEVICE_PROPERTY_SUBDIVISION_GEOMETRY_SUPPORTED</code>: Queries whether subdivision meshes are supported, which is the case if Embree is compiled with <code>EMBREE_GEOMETRY_SUBDIVISION</code> enabled.</p></li>
 <li><p><code>RTC_DEVICE_PROPERTY_CURVE_GEOMETRY_SUPPORTED</code>: Queries whether curves are supported, which is the case if Embree is compiled with <code>EMBREE_GEOMETRY_CURVE</code> enabled.</p></li>
+<li><p><code>RTC_DEVICE_PROPERTY_POINT_GEOMETRY_SUPPORTED</code>: Queries whether points are supported, which is the case if Embree is compiled with <code>EMBREE_GEOMETRY_POINT</code> enabled.</p></li>
 <li><p><code>RTC_DEVICE_PROPERTY_USER_GEOMETRY_SUPPORTED</code>: Queries whether user geometries are supported, which is the case if Embree is compiled with <code>EMBREE_GEOMETRY_USER</code> enabled.</p></li>
 <li><p><code>RTC_DEVICE_PROPERTY_TASKING_SYSTEM</code>: Queries the tasking system Embree is compiled with. Possible return values are:</p>
 <ol start="0" style="list-style-type: decimal">
@@ -551,7 +552,7 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetSceneBuildQuality</code> function sets the build quality (<code>quality</code> argument) for the specified scene (<code>scene</code> argument). Possible values for the build quality are:</p>
 <ul>
-<li><p><code>RTC_BUILD_QUALITY_LOW</code>: Create lower quality data structures, e.g. for dynamic scenes. A two-level spatial index structure is built when enabling this mode, which supports fast partial scene updates, and allows for setting a per-geometry build quality through the <code>rtcSetGeometryBuildQuality</code> function.</p></li>
+<li><p><code>RTC_BUILD_QUALITY_LOW</code>: Create lower quality data structures, e.g. for dynamic scenes. A two-level spatial index structure is built when enabling this mode, which supports fast partial scene updates, and allows for setting a per-geometry build quality through the <code>rtcSetGeometryBuildQuality</code> function.</p></li>
 <li><p><code>RTC_BUILD_QUALITY_MEDIUM</code>: Default build quality for most usages. Gives a good compromise between build and render performance.</p></li>
 <li><p><code>RTC_BUILD_QUALITY_HIGH</code>: Create higher quality data structures for final-frame rendering. For certain geometry types this enables a spatial split BVH.</p></li>
 </ul>
@@ -666,6 +667,9 @@ rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST | flags);</code></pre>
  RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BEZIER_CURVE,
  RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BSPLINE_CURVE,
  RTC_GEOMETRY_TYPE_GRID,
+ RTC_GEOMETRY_TYPE_SPHERE_POINT,
+ RTC_GEOMETRY_TYPE_DISC_POINT,
+ RTC_GEOMETRY_TYPE_ORIENTED_DISC_POINT,
  RTC_GEOMETRY_TYPE_USER,
  RTC_GEOMETRY_TYPE_INSTANCE
 };
@@ -676,7 +680,7 @@ RTCGeometry rtcNewGeometry(
 );</code></pre>
 <h4 id="description">DESCRIPTION</h4>
 <p>Geometries are objects that represent an array of primitives of the same type. The <code>rtcNewGeometry</code> function creates a new geometry of specified type (<code>type</code> argument) bound to the specified device (<code>device</code> argument) and returns a handle to this geometry. The geometry object is reference counted with an initial reference count of 1. The geometry handle can be released using the <code>rtcReleaseGeometry</code> API call.</p>
-<p>Supported geometry types are triangle meshes (<code>RTC_GEOMETRY_TYPE_TRIANGLE</code> type), quad meshes (triangle pairs) (<code>RTC_GEOMETRY_TYPE_QUAD</code> type), Catmull-Clark subdivision surfaces (<code>RTC_GEOMETRY_TYPE_SUBDIVISION</code> type), curve geometries with different bases (<code>RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BSPLINE_CURVE</code> types), grid meshes (<code>RTC_GEOMETRY_TYPE_GRID</code>), user-defined geometries (<code>RTC_GEOMETRY_TYPE_USER</code>), and instances (<code>RTC_GEOMETRY_TYPE_INSTANCE</code>).</p>
+<p>Supported geometry types are triangle meshes (<code>RTC_GEOMETRY_TYPE_TRIANGLE</code> type), quad meshes (triangle pairs) (<code>RTC_GEOMETRY_TYPE_QUAD</code> type), Catmull-Clark subdivision surfaces (<code>RTC_GEOMETRY_TYPE_SUBDIVISION</code> type), curve geometries with different bases (<code>RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BSPLINE_CURVE</code> types), grid meshes (<code>RTC_GEOMETRY_TYPE_GRID</code>), point geometries (<code>RTC_GEOMETRY_TYPE_SPHERE_POINT</code>, <code>RTC_GEOMETRY_TYPE_DISC_POINT</code>, <code>RTC_TYPE_ORIENTED_DISC_POINT</code>), user-defined geometries (<code>RTC_GEOMETRY_TYPE_USER</code>), and instances (<code>RTC_GEOMETRY_TYPE_INSTANCE</code>).</p>
 <p>The types <code>RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE</code> and <code>RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE</code> will treat the curve as a sweep surface of a varying-radius circle swept tangentially along the curve. The types <code>RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE</code> and <code>RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE</code> use ray-facing ribbons as a faster-to-intersect approximation.</p>
 <p>After construction, geometries are enabled by default and not attached to any scene. Geometries can be disabled (<code>rtcDisableGeometry</code> call), and enabled again (<code>rtcEnableGeometry</code> call). A geometry can be attached to a single scene using the <code>rtcAttachGeometry</code> call (or <code>rtcAttachGeometryByID</code> call), and detached using the <code>rtcDetachGeometry</code> call. During attachment, a geometry ID is assigned to the geometry (or assigned by the user when using the <code>rtcAttachGeometryByID</code> call), which uniquely identifies the geometry inside that scene. This identifier is returned when primitives of the geometry are hit in later ray queries for the scene.</p>
 <p>Geometries can also be modified, including their vertex and index buffers. After modifying a buffer, <code>rtcUpdateGeometryBuffer</code> must be called to notify that the buffer got modified.</p>
@@ -686,7 +690,7 @@ RTCGeometry rtcNewGeometry(
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
-<p><a href="#rtcenablegeometry">rtcEnableGeometry</a>, <a href="#rtcdisablegeometry">rtcDisableGeometry</a>, <a href="#rtcattachgeometry">rtcAttachGeometry</a>, <a href="#rtcattachgeometrybyid">rtcAttachGeometryByID</a>, <a href="#rtcupdategeometrybuffer">rtcUpdateGeometryBuffer</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcgetgeometryuserdata">rtcGetGeometryUserData</a>, <a href="#rtccommitgeometry">rtcCommitGeometry</a>, <a href="#rtcinterpolate">rtcInterpolate</a>, <a href="#rtcinterpolaten">rtcInterpolateN</a>, <a href="#rtcsetgeometrybuildquality">rtcSetGeometryBuildQuality</a>, <a href="#rtcsetscenebuildquality">rtcSetSceneBuildQuality</a>, <a href="#rtc_geometry_type_triangle">RTC_GEOMETRY_TYPE_TRIANGLE</a>, <a href="#rtc_geometry_type_quad">RTC_GEOMETRY_TYPE_QUAD</a>, <a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a>, <a href="#rtc_geometry_type_curve">RTC_GEOMETRY_TYPE_CURVE</a>, <a href="#rtc_geometry_type_grid">RTC_GEOMETRY_TYPE_GRID</a>, <a href="#rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</a>, <a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a></p>
+<p><a href="#rtcenablegeometry">rtcEnableGeometry</a>, <a href="#rtcdisablegeometry">rtcDisableGeometry</a>, <a href="#rtcattachgeometry">rtcAttachGeometry</a>, <a href="#rtcattachgeometrybyid">rtcAttachGeometryByID</a>, <a href="#rtcupdategeometrybuffer">rtcUpdateGeometryBuffer</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcgetgeometryuserdata">rtcGetGeometryUserData</a>, <a href="#rtccommitgeometry">rtcCommitGeometry</a>, <a href="#rtcinterpolate">rtcInterpolate</a>, <a href="#rtcinterpolaten">rtcInterpolateN</a>, <a href="#rtcsetgeometrybuildquality">rtcSetGeometryBuildQuality</a>, <a href="#rtcsetscenebuildquality">rtcSetSceneBuildQuality</a>, <a href="#rtc_geometry_type_triangle">RTC_GEOMETRY_TYPE_TRIANGLE</a>, <a href="#rtc_geometry_type_quad">RTC_GEOMETRY_TYPE_QUAD</a>, <a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a>, <a href="#rtc_geometry_type_curve">RTC_GEOMETRY_TYPE_CURVE</a>, <a href="#rtc_geometry_type_grid">RTC_GEOMETRY_TYPE_GRID</a>, <a href="#rtc_geometry_type_point">RTC_GEOMETRY_TYPE_POINT</a>, <a href="#rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</a>, <a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a></p>
 <p></p>
 <h2 id="rtc_geometry_type_triangle">RTC_GEOMETRY_TYPE_TRIANGLE</h2>
 <h4 id="name">NAME</h4>
@@ -749,7 +753,7 @@ RTCGeometry geometry =
   <span class="dt">unsigned</span> <span class="dt">int</span> stride;
   <span class="dt">unsigned</span> <span class="dt">short</span> width,height; 
 };</code></pre>
-<p>The <code>RTCGrid</code> structure describes a 2D grid of vertices (with respect to the vertex buffer of the grid mesh). The <code>width</code> and <code>height</code> members specify the number of vertices in u and v direction, e.g. setting both <code>width</code> and <code>height</code> to 3 sets up a 3x3 vertex grid. The maximum allowed <code>width</code> and <code>height</code> is 32767. The <code>startVertexID</code> specifies the ID of the top-left vertex in the vertex grid, while the <code>stride</code> parameter specifies a stride (in number of vertices) used to step to the next row.</p>
+<p>The <code>RTCGrid</code> structure describes a 2D grid of vertices (with respect to the vertex buffer of the grid mesh). The <code>width</code> and <code>height</code> members specify the number of vertices in u and v direction, e.g. setting both <code>width</code> and <code>height</code> to 3 sets up a 3×3 vertex grid. The maximum allowed <code>width</code> and <code>height</code> is 32767. The <code>startVertexID</code> specifies the ID of the top-left vertex in the vertex grid, while the <code>stride</code> parameter specifies a stride (in number of vertices) used to step to the next row.</p>
 <p>A vertex grid of dimensions <code>width</code> and <code>height</code> is treated as a <code>(width-1)</code> x <code>(height-1)</code> grid of <code>quads</code> (triangle-pairs), with the same shared edge handling as for regular quad meshes. However, the <code>u</code>/<code>v</code> coordinates have the uniform range <code>[0..1]</code> for an entire vertex grid. The <code>u</code> direction follows the <code>width</code> of the grid while the <code>v</code> direction the <code>height</code>.</p>
 <p>For multi-segment motion blur, the number of time steps must be first specified using the <code>rtcSetGeometryTimeStepCount</code> call. Then a vertex buffer for each time step can be set using different buffer slots, and all these buffers must have the same stride and size.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
@@ -780,11 +784,11 @@ RTCGeometry geometry =
 <p>The parametrization for subdivision faces is different for quadrilaterals and non-quadrilateral faces.</p>
 <p>The parametrization of a quadrilateral face uses the first vertex <code>p0</code> as base point, and the vector <code>p1 - p0</code> as u-direction and <code>p3 - p0</code> as v-direction.</p>
 <p>The parametrization for all other face types (with number of vertices not equal 4), have a special parametrization where the subpatch ID <code>n</code> (of the <code>n</code>-th quadrilateral that would be obtained by a single subdivision step) and the local hit location inside this quadrilateral are encoded in the UV coordinates. The following code extracts the sub-patch ID <code>i</code> and local UVs of this subpatch:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> <span class="dt">int</span> l = floorf(<span class="fl">0.</span><span class="er">5f</span>*U);
-<span class="dt">unsigned</span> <span class="dt">int</span> h = floorf(<span class="fl">0.</span><span class="er">5f</span>*V);
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> <span class="dt">int</span> l = floorf(<span class="fl">0.</span>5f*U);
+<span class="dt">unsigned</span> <span class="dt">int</span> h = floorf(<span class="fl">0.</span>5f*V);
 <span class="dt">unsigned</span> <span class="dt">int</span> i = <span class="dv">4</span>*h+l;
-<span class="dt">float</span> u = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">0.</span><span class="er">5f</span>*U)<span class="fl">-0.</span><span class="er">5f</span>;
-<span class="dt">float</span> v = <span class="fl">2.</span><span class="er">0f</span>*fracf(<span class="fl">0.</span><span class="er">5f</span>*V)<span class="fl">-0.</span><span class="er">5f</span>;</code></pre>
+<span class="dt">float</span> u = <span class="fl">2.</span>0f*fracf(<span class="fl">0.</span>5f*U)-<span class="fl">0.</span>5f;
+<span class="dt">float</span> v = <span class="fl">2.</span>0f*fracf(<span class="fl">0.</span>5f*V)-<span class="fl">0.</span>5f;</code></pre>
 <p>This encoding allows local subpatch UVs to be in the range <code>[-0.5,1.5[</code> thus negative subpatch UVs can be passed to <code>rtcInterpolate</code> to sample subpatches slightly out of bounds. This can be useful to calculate derivatives using finite differences if required. The encoding further has the property that one can just move the value <code>u</code> (or <code>v</code>) on a subpatch by adding <code>du</code> (or <code>dv</code>) to the special UV encoding as long as it does not fall out of the <code>[-0.5,1.5[</code> range.</p>
 <p>To smoothly interpolate vertex attributes over the subdivision surface we recommend using the <code>rtcInterpolate</code> function, which will apply the standard subdivision rules for interpolation and automatically takes care of the special UV encoding for non-quadrilaterals.</p>
 <h4 id="face-varying-data">Face-Varying Data</h4>
@@ -867,6 +871,35 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ROUND_HERMITE_CURVE);</code></pre>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
 <p></p>
+<h2 id="rtc_geometry_type_point">RTC_GEOMETRY_TYPE_POINT</h2>
+<h4 id="name">NAME</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">RTC_GEOMETRY_TYPE_SPHERE_POINT -
+  point geometry spheres
+
+RTC_GEOMETRY_TYPE_DISC_POINT -
+  point geometry with ray-oriented discs
+
+RTC_GEOMETRY_TYPE_ORIENTED_DISC_POINT -
+  point geometry with normal-oriented discs</code></pre>
+<h4 id="synopsis">SYNOPSIS</h4>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
+
+rtcNewGeometry(device, RTC_GEOMETRY_TYPE_SPHERE_POINT);
+rtcNewGeometry(device, RTC_GEOMETRY_TYPE_DISC_POINT);
+rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ORIENTED_DISC_POINT);</code></pre>
+<h4 id="description">DESCRIPTION</h4>
+<p>Points with per vertex radii are supported with sphere, ray-oriented discs, and normal-oriented discs geometric represetntations. Such point geometries are created by passing <code>RTC_GEOMETRY_TYPE_SPHERE_POINT</code>, <code>RTC_GEOMETRY_TYPE_DISC_POINT</code>, or <code>RTC_GEOMETRY_TYPE_ORIENTED_DISC_POINT</code> to the <code>rtcNewGeometry</code> function. The point vertices can be specified t through a vertex buffer (<code>RTC_BUFFER_TYPE_VERTEX</code>). For the normal oriented discs a normal buffer (<code>RTC_BUFFER_TYPE_NORMAL</code>) has to get specified additionally. See <code>rtcSetGeometryBuffer</code> and <code>rtcSetSharedGeometryBuffer</code> for more details on how to set buffers.</p>
+<p>The vertex buffer stores each control vertex in the form of a single precision position and radius stored in (<code>x</code>, <code>y</code>, <code>z</code>, <code>r</code>) order in memory (<code>RTC_FORMAT_FLOAT4</code> format). The number of vertices is inferred from the size of this buffer. Similarly, the normal buffer stores a single precision normal per control vertex (<code>x</code>, <code>y</code>, <code>z</code> order and <code>RTC_FORMAT_FLOAT3</code> format).</p>
+<p>In the <code>RTC_GEOMETRY_TYPE_SPHERE_POINT</code> mode, a real geometric surface is rendered for the curve, which is more expensive but allows closeup views.</p>
+<p>The <code>RTC_GEOMETRY_TYPE_DISC_POINT</code> flat mode is a fast mode designed to render distant points. In this mode the point is rendered as a ray facing disc.</p>
+<p>The <code>RTC_GEOMETRY_TYPE__ORIENTED_DISC_POINT</code> mode is a mode designed as a midpoint geometrically between ray facing discs and spheres. In this mode the point is rendered as a normal oriented disc.</p>
+<p>For multi-segment motion blur, the number of time steps must be first specified using the <code>rtcSetGeometryTimeStepCount</code> call. Then a vertex buffer for each time step can be set using different buffer slots, and all these buffers must have the same stride and size.</p>
+<p>Also see tutorials[Points] for an example of how to create and use point geometries.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
+<p></p>
 <h2 id="rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</h2>
 <h4 id="name">NAME</h4>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">RTC_GEOMETRY_TYPE_USER - user geometry type</code></pre>
@@ -901,7 +934,7 @@ rtcSetGeometryOccludedFunction(geometry, occludedFunction);</code></pre>
 RTCGeometry geometry =
    rtcNewGeometry(device, RTC_GEOMETRY_TYPE_INSTANCE);</code></pre>
 <h4 id="description">DESCRIPTION</h4>
-<p>Embree supports instancing of scenes using affine transformations (3x3 matrix plus translation). As the instanced scene is stored only a single time, even if instanced to multiple locations, this feature can be used to create very complex scenes with small memory footprint. Only single-level instancing is supported natively by Embree, however, multi-level instancing can be manually implemented through user geometries.</p>
+<p>Embree supports instancing of scenes using affine transformations (3×3 matrix plus translation). As the instanced scene is stored only a single time, even if instanced to multiple locations, this feature can be used to create very complex scenes with small memory footprint. Only single-level instancing is supported natively by Embree, however, multi-level instancing can be manually implemented through user geometries.</p>
 <p>Instances are created by passing <code>RTC_GEOMETRY_TYPE_INSTANCE</code> to the <code>rtcNewGeometry</code> function call. The instanced scene can be set using the <code>rtcSetGeometryInstancedScene</code> call, and the affine transformation can be set using the <code>rtcSetGeometryTransform</code> function.</p>
 <p>Please note that <code>rtcCommitScene</code> on the instanced scene should be called first, followed by <code>rtcCommitGeometry</code> on the instance, followed by <code>rtcCommitScene</code> for the top-level scene containing the instance.</p>
 <p>If a ray hits the instance, the <code>geomID</code> and <code>primID</code> members of the hit are set to the geometry ID and primitive ID of the hit primitive in the instanced scene, and the <code>instID</code> member of the hit is set to the geometry ID of the instance in the top-level scene.</p>
@@ -998,7 +1031,7 @@ RTCGeometry geometry =
 );</code></pre>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetGeometryTimeStepCount</code> function sets the number of time steps for multi-segment motion blur (<code>timeStepCount</code> parameter) of the specified geometry (<code>geometry</code> parameter).</p>
-<p>For triangle meshes (<code>RTC_GEOMETRY_TYPE_TRIANGLE</code>), quad meshes (<code>RTC_GEOMETRY_TYPE_QUAD</code>), curves (<code>RTC_GEOMETRY_TYPE_CURVE</code>), and subdivision geometries (<code>RTC_GEOMETRY_TYPE_SUBDIVISION</code>), the number of time steps directly corresponds to the number of vertex buffer slots available (<code>RTC_BUFFER_TYPE_VERTEX</code> buffer type). For these geometries, one vertex buffer per time step must be specified when creating multi-segment motion blur geometries.</p>
+<p>For triangle meshes (<code>RTC_GEOMETRY_TYPE_TRIANGLE</code>), quad meshes (<code>RTC_GEOMETRY_TYPE_QUAD</code>), curves (<code>RTC_GEOMETRY_TYPE_CURVE</code>), points (<code>RTC_GEOMETRY_TYPE_POINT</code>), and subdivision geometries (<code>RTC_GEOMETRY_TYPE_SUBDIVISION</code>), the number of time steps directly corresponds to the number of vertex buffer slots available (<code>RTC_BUFFER_TYPE_VERTEX</code> buffer type). For these geometries, one vertex buffer per time step must be specified when creating multi-segment motion blur geometries.</p>
 <p>For instance geometries (<code>RTC_GEOMETRY_TYPE_INSTANCE</code>), a transformation must be specified for each time step (see <code>rtcSetGeometryTransform</code>).</p>
 <p>For user geometries, the registered bounding callback function must provide a bounding box per primitive and time step, and the intersection and occlusion callback functions should properly intersect the motion-blurred geometry at the ray time.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
@@ -1040,7 +1073,7 @@ RTCGeometry geometry =
 );</code></pre>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetGeometryVertexAttributeCount</code> function sets the number of slots (<code>vertexAttributeCount</code> parameter) for vertex attribute buffers (<code>RTC_BUFFER_TYPE_VERTEX_ATTRIBUTE</code>) that can be used for the specified geometry (<code>geometry</code> parameter).</p>
-<p>This function is supported only for triangle meshes (<code>RTC_GEOMETRY_TYPE_TRIANGLE</code>), quad meshes (<code>RTC_GEOMETRY_TYPE_QUAD</code>), curves (<code>RTC_GEOMETRY_TYPE_CURVE</code>), and subdivision geometries (<code>RTC_GEOMETRY_TYPE_SUBDIVISION</code>).</p>
+<p>This function is supported only for triangle meshes (<code>RTC_GEOMETRY_TYPE_TRIANGLE</code>), quad meshes (<code>RTC_GEOMETRY_TYPE_QUAD</code>), curves (<code>RTC_GEOMETRY_TYPE_CURVE</code>), points (<code>RTC_GEOMETRY_TYPE_POINT</code>), and subdivision geometries (<code>RTC_GEOMETRY_TYPE_SUBDIVISION</code>).</p>
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
@@ -1078,7 +1111,7 @@ RTCGeometry geometry =
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetGeometryBuildQuality</code> function sets the build quality (<code>quality</code> argument) for the specified geometry (<code>geometry</code> argument). The per-geometry build quality is only a hint and may be ignored. Embree currently uses the per-geometry build quality when the scene build quality is set to <code>RTC_BUILD_QUALITY_LOW</code>. In this mode a two-level acceleration structure is build, and geometries build a separate acceleration structure using the geometry build quality. The per-geometry build quality can be one of:</p>
 <ul>
-<li><p><code>RTC_BUILD_QUALITY_LOW</code>: Creates lower quality data structures, e.g. for dynamic scenes.</p></li>
+<li><p><code>RTC_BUILD_QUALITY_LOW</code>: Creates lower quality data structures, e.g. for dynamic scenes.</p></li>
 <li><p><code>RTC_BUILD_QUALITY_MEDIUM</code>: Default build quality for most usages. Gives a good compromise between build and render performance.</p></li>
 <li><p><code>RTC_BUILD_QUALITY_HIGH</code>: Creates higher quality data structures for final-frame rendering. Enables a spatial split builder for certain primitive types.</p></li>
 <li><p><code>RTC_BUILD_QUALITY_REFIT</code>: Uses a BVH refitting approach when changing only the vertex buffer.</p></li>
@@ -1525,7 +1558,7 @@ RTCGeometry geometry =
 <ul>
 <li><p><code>RTC_FORMAT_FLOAT3X4_ROW_MAJOR</code>: The 3×4 float matrix is laid out in row-major form.</p></li>
 <li><p><code>RTC_FORMAT_FLOAT3X4_COLUMN_MAJOR</code>: The 3×4 float matrix is laid out in column-major form.</p></li>
-<li><p><code>RTC_FORMAT_FLOAT4X4_COLUMN_MAJOR</code>: The 3×4 float matrix is laid out in column-major form as a 4x4 homogeneous matrix with last row equal to (0, 0, 0, 1).</p></li>
+<li><p><code>RTC_FORMAT_FLOAT4X4_COLUMN_MAJOR</code>: The 3×4 float matrix is laid out in column-major form as a 4×4 homogeneous matrix with last row equal to (0, 0, 0, 1).</p></li>
 </ul>
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
