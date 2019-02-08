@@ -37,14 +37,14 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.4.0!
+      We recently released Intel® Embree v3.5.0!
     </a>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <div id="main_content" class="inner">
 <h1 id="embree-example-renderer">Embree Example Renderer</h1>
-<p>The Embree Example Renderer is a photo-realistic path tracer that builds on the Embree high performance ray tracing kernels. The renderer is used to demonstrate how Embree is used in practice and to measure Embree’s performance in a realistic application scenario. The Embree Example Renderer is not a full featured renderer and not designed to be used for production rendering. The Embree Example Renderer is released as Open Source under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.</p>
+<p>The Embree Example Renderer is a photo-realistic path tracer that builds on the Embree high performance ray tracing kernels. The renderer is used to demonstrate how Embree is used in practice and to measure Embree's performance in a realistic application scenario. The Embree Example Renderer is not a full featured renderer and not designed to be used for production rendering. The Embree Example Renderer is released as Open Source under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.</p>
 <p>We provide binaries for the Embree Example Renderer for Linux (64-bit), macOS (64-bit), and Windows (64-bit):</p>
 <p><a href="http://github.com/embree/embree-renderer-bin/archive/v2.3.2_linux.zip">embree-renderer-2.3.2-linux.zip</a><br /><a href="http://github.com/embree/embree-renderer-bin/archive/v2.3.2_macos.zip">embree-renderer-2.3.2-macos.zip</a><br /><a href="http://github.com/embree/embree-renderer-bin/archive/v2.3.2_win.zip">embree-renderer-2.3.2-win.zip</a></p>
 <p>In case the Windows reports a missing <code>MSVCP120.DLL</code> please install the <a href="http://www.microsoft.com/en-us/download/details.aspx?id=40784">Visual C++ Redistributable Packages for Visual Studio 2013.</a></p>
@@ -68,8 +68,10 @@ ccmake ..</code></pre>
 <p>This will open a configuration dialog where you should set the build mode to <code>Release</code> and the compiler to either GCC, CLANG, or ICC. You can configure which parts of the Embree Example Renderer to build:</p>
 <table>
 <caption>CMake build options for Embree Example Renderer.</caption>
+<colgroup>
 <col width="48%" />
 <col width="48%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">Option</th>
@@ -102,7 +104,7 @@ ccmake ..</code></pre>
 <p>When enabling any ISPC renderer, you also have to install ISPC. If you select <code>BUILD_ISPC_DEVICE</code>, you should select which instructions sets to enable for ISPC (<code>TARGET_SSE2</code>, <code>TARGET_SSE41</code>, <code>TARGET_AVX</code>, and <code>TARGET_AVX2</code>).</p>
 <p>All target ISAs you select when compiling the Embree Example Render, have also to be enabled when compiling Embree. Due to some limitation of ISPC you have to enable more than one target ISA if you also enabled more than one target ISA when compiling Embree, otherwise you will get link errors.</p>
 <p>If you installed Embree, CMake will find it automatically and set the <code>EMBREE_INCLUDE_PATH</code> and <code>EMBREE_LIBRARY</code> variables.</p>
-<p>If you cannot install Embree on your system (e.g. when you don’t have administrator rights) some additional configurations are required to use Embree from its build folder. Set the <code>EMBREE_INCLUDE_PATH</code> to the embree_root_directory/include folder and the <code>EMBREE_LIBRARY</code> to embree_root_directory/build/libembree.2.3.2.dylib for macOS or embree_root_directory/build/libembree.so.2.3.2 for Linux. Under Linux you have to additionally add embree_root_directory/build to your <code>LD_LIBRARY_PATH</code> (and <code>SINK_LD_LIBRARY_PATH</code> in case you want to use Embree on the Intel® Xeon Phi™ coprocessor).</p>
+<p>If you cannot install Embree on your system (e.g. when you don't have administrator rights) some additional configurations are required to use Embree from its build folder. Set the <code>EMBREE_INCLUDE_PATH</code> to the embree_root_directory/include folder and the <code>EMBREE_LIBRARY</code> to embree_root_directory/build/libembree.2.3.2.dylib for macOS or embree_root_directory/build/libembree.so.2.3.2 for Linux. Under Linux you have to additionally add embree_root_directory/build to your <code>LD_LIBRARY_PATH</code> (and <code>SINK_LD_LIBRARY_PATH</code> in case you want to use Embree on the Intel® Xeon Phi™ coprocessor).</p>
 <p>Press c (for configure) and g (for generate) to generate a Makefile and leave the configuration. The code can now be compiled by executing make. The executables will be generated in the build folder.</p>
 <pre><code>make</code></pre>
 <h2 id="using-the-embree-example-renderer">Using the Embree Example Renderer</h2>
@@ -126,28 +128,28 @@ ccmake ..</code></pre>
 <p>The navigation in the interactive display mode follows the camera orbit model, where the camera revolves around the current center of interest. The camera navigation assumes the <span class="math"><em>y</em></span>-axis to point upwards. If your scene is modeled using the <span class="math"><em>z</em></span>-axis as up axis we recommend rotating the scene.</p>
 <dl>
 <dt>Left Mouse Button</dt>
-<dd><p>Rotate around center of interest</p>
+<dd>Rotate around center of interest
 </dd>
 <dt>Middle Mouse Button</dt>
-<dd><p>Pan</p>
+<dd>Pan
 </dd>
 <dt>Right Mouse Button</dt>
-<dd><p>Dolly (move camera closer or away from center of interest)</p>
+<dd>Dolly (move camera closer or away from center of interest)
 </dd>
 <dt>Ctrl+Left Mouse Button</dt>
-<dd><p>Pick center of interest</p>
+<dd>Pick center of interest
 </dd>
 <dt>Ctrl+Shift+Left Mouse Button</dt>
-<dd><p>Pick focal distances</p>
+<dd>Pick focal distances
 </dd>
 <dt>Alt+Left Mouse Button</dt>
-<dd><p>Roll camera around view direction</p>
+<dd>Roll camera around view direction
 </dd>
 <dt>L Key</dt>
-<dd><p>Decrease lens radius by one world space unit</p>
+<dd>Decrease lens radius by one world space unit
 </dd>
 <dt>Shift+L Key</dt>
-<dd><p>Increase lens radius by one world space unit</p>
+<dd>Increase lens radius by one world space unit
 </dd>
 </dl>
 <h2 id="example-models">Example Models</h2>
