@@ -57,7 +57,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.5.0!
+      We recently released Intel® Embree v3.5.1!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -200,7 +200,7 @@ RTCDevice rtcNewDevice(<span class="dt">const</span> <span class="dt">char</span
 <p>Different configuration options should be separated by commas, e.g.:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">rtcNewDevice(<span class="st">&quot;threads=1,isa=avx&quot;</span>);</code></pre>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On success returns a handle of the created device. On failure returns <code>NULL</code> as device and sets a per-thread error code that can be queried using <code>rtcDeviceGetError(NULL)</code>.</p>
+<p>On success returns a handle of the created device. On failure returns <code>NULL</code> as device and sets a per-thread error code that can be queried using <code>rtcGetDeviceError(NULL)</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcretaindevice">rtcRetainDevice</a>, <a href="#rtcreleasedevice">rtcReleaseDevice</a></p>
 <p></p>
@@ -214,7 +214,7 @@ RTCDevice rtcNewDevice(<span class="dt">const</span> <span class="dt">char</span
 <h4 id="description">DESCRIPTION</h4>
 <p>Device objects are reference counted. The <code>rtcRetainDevice</code> function increments the reference count of the passed device object (<code>device</code> argument). This function together with <code>rtcReleaseDevice</code> allows to use the internal reference counting in a C++ wrapper class to manage the ownership of the object.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewdevice">rtcNewDevice</a>, <a href="#rtcreleasedevice">rtcReleaseDevice</a></p>
 <p></p>
@@ -229,7 +229,7 @@ RTCDevice rtcNewDevice(<span class="dt">const</span> <span class="dt">char</span
 <p>Device objects are reference counted. The <code>rtcReleaseDevice</code> function decrements the reference count of the passed device object (<code>device</code> argument). When the reference count falls to 0, the device gets destroyed.</p>
 <p>All objects created from the device (like scenes, geometries, etc.) hold a reference to the device, thus the device will not get destroyed unless these objects are destroyed first.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewdevice">rtcNewDevice</a>, <a href="#rtcretaindevice">rtcRetainDevice</a></p>
 <p></p>
@@ -275,7 +275,7 @@ ssize_t rtcGetDeviceProperty(
 </ul>
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On success returns the value of the queried property. For properties returning a boolean value, the return value 0 denotes <code>false</code> and 1 denotes <code>true</code>.</p>
-<p>On failure zero is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure zero is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <p></p>
 <h2 id="rtcgetdeviceerror">rtcGetDeviceError</h2>
 <h4 id="name">NAME</h4>
@@ -325,7 +325,7 @@ RTCError rtcGetDeviceError(RTCDevice device);</code></pre>
 <p>When the registered callback function is invoked, it gets passed the user-defined payload (<code>userPtr</code> argument as specified at registration time), the error code (<code>code</code> argument) of the occurred error, as well as a string (<code>str</code> argument) that further describes the error.</p>
 <p>The error code is also set if an error callback function is registered.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetdeviceerror">rtcGetDeviceError</a></p>
 <p></p>
@@ -355,7 +355,7 @@ RTCError rtcGetDeviceError(RTCDevice device);</code></pre>
 <p>Embree will continue its operation normally when returning <code>true</code> from the callback function. If <code>false</code> is returned, Embree will cancel the current operation with the <code>RTC_ERROR_OUT_OF_MEMORY</code> error code. Issuing multiple cancel requests from different threads is allowed. Canceling will only happen when the callback was called for allocations (bytes &gt; 0), otherwise the cancel request will be ignored.</p>
 <p>If a callback to cancel was invoked before the allocation happens (<code>post == false</code>), then the <code>bytes</code> parameter should not be accumulated, as the allocation will never happen. If the callback to cancel was invoked after the allocation happened (<code>post == true</code>), then the <code>bytes</code> parameter should be accumulated, as the allocation properly happened and a deallocation will later free that data block.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewdevice">rtcNewDevice</a></p>
 <p></p>
@@ -369,7 +369,7 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre>
 <h4 id="description">DESCRIPTION</h4>
 <p>This function creates a new scene bound to the specified device (<code>device</code> argument), and returns a handle to this scene. The scene object is reference counted with an initial reference count of 1. The scene handle can be released using the <code>rtcReleaseScene</code> API call.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On success a scene handle is returned. On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On success a scene handle is returned. On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcretainscene">rtcRetainScene</a>, <a href="#rtcreleasescene">rtcReleaseScene</a></p>
 <p></p>
@@ -383,7 +383,7 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre>
 <h4 id="description">DESCRIPTION</h4>
 <p>Scene objects are reference counted. The <code>rtcRetainScene</code> function increments the reference count of the passed scene object (<code>scene</code> argument). This function together with <code>rtcReleaseScene</code> allows to use the internal reference counting in a C++ wrapper class to handle the ownership of the object.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewscene">rtcNewScene</a>, <a href="#rtcreleasescene">rtcReleaseScene</a></p>
 <p></p>
@@ -398,7 +398,7 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre>
 <p>Scene objects are reference counted. The <code>rtcReleaseScene</code> function decrements the reference count of the passed scene object (<code>scene</code> argument). When the reference count falls to 0, the scene gets destroyed.</p>
 <p>The scene holds a reference to all attached geometries, thus if the scene gets destroyed, all geometries get detached and their reference count decremented.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewscene">rtcNewScene</a>, <a href="#rtcretainscene">rtcRetainScene</a></p>
 <p></p>
@@ -418,7 +418,7 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre>
 <p>The geometry IDs are assigned sequentially, starting from 0, as long as no geometry got detached. If geometries got detached, the implementation will reuse IDs in an implementation dependent way. Consequently sequential assignment is no longer guaranteed, but a compact range of IDs.</p>
 <p>These rules allow the application to manage a dynamic array to efficiently map from geometry IDs to its own geometry representation. Alternatively, the application can also use per-geometry user data to map to its geometry representation. See <code>rtcSetGeometryUserData</code> and <code>rtcGetGeometryUserData</code> for more information.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcgetgeometryuserdata">rtcGetGeometryUserData</a></p>
 <p></p>
@@ -439,7 +439,7 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre>
 <p>This function is thread-safe, thus multiple threads can attach geometries to a scene in parallel.</p>
 <p>The user-provided geometry ID must be unused in the scene, otherwise the creation of the geometry will fail. Further, the user-provided geometry IDs should be compact, as Embree internally creates a vector which size is equal to the largest geometry ID used. Creating very large geometry IDs for small scenes would thus cause a memory consumption and performance overhead.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcattachgeometry">rtcAttachGeometry</a></p>
 <p></p>
@@ -454,7 +454,7 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre>
 <p>This function detaches a geometry identified by its geometry ID (<code>geomID</code> argument) from a scene (<code>scene</code> argument). When detached, the geometry is no longer contained in the scene.</p>
 <p>This function is thread-safe, thus multiple threads can detach geometries from a scene at the same time.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcattachgeometry">rtcAttachGeometry</a>, <a href="#rtcattachgeometrybyid">rtcAttachGeometryByID</a></p>
 <p></p>
@@ -469,7 +469,7 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcGetGeometry</code> function returns the geometry that is bound to the specified geometry ID (<code>geomID</code> argument) for the specified scene (<code>scene</code> argument). This function just looks up the handle and does <em>not</em> increment the reference count. If you want to get ownership of the handle, you need to additionally call <code>rtcRetainGeometry</code>. For this reason, this function is fast and can be used during rendering. However, it is generally recommended to store the geometry handle inside the application's geometry representation and look up the geometry handle from that representation directly.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcattachgeometry">rtcAttachGeometry</a>, <a href="#rtcattachgeometrybyid">rtcAttachGeometryByID</a></p>
 <p></p>
@@ -485,7 +485,7 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <p>The kind of acceleration structure built can be influenced using scene flags (see <code>rtcSetSceneFlags</code>), and the quality can be specified using the <code>rtcSetSceneBuildQuality</code> function.</p>
 <p>Embree silently ignores primitives during spatial acceleration structure construction that would cause numerical issues, e.g. primitives containing NaNs, INFs, or values greater than 1.844E18f (as no reasonable calculations can be performed with such values without causing overflows).</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcjoincommitscene">rtcJoinCommitScene</a></p>
 <p></p>
@@ -506,7 +506,7 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <p>When using Embree with the Parallel Patterns Library (PPL), <code>rtcJoinCommitScene</code> is not supported and calling that function will result in an error.</p>
 <p>To detect whether <code>rtcJoinCommitScene</code> is supported, use the <code>rtcGetDeviceProperty</code> function.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtccommitscene">rtcCommitScene</a>, <a href="#rtcgetdeviceproperty">rtcGetDeviceProperty</a></p>
 <p></p>
@@ -534,7 +534,7 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <p>Once registered, Embree will invoke the callback function multiple times during hierarchy build operations of the scene, by passing the payload as set at registration time (<code>userPtr</code> argument), and a double in the range <span class="math">[0, 1]</span> which estimates the progress of the operation (<code>n</code> argument). The callback function might be called from multiple threads concurrently.</p>
 <p>When returning <code>true</code> from the callback function, Embree will continue the build operation normally. When returning <code>false</code>, Embree will cancel the build operation with the <code>RTC_ERROR_CANCELLED</code> error code. Issuing multiple cancel requests for the same build operation is allowed.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewscene">rtcNewScene</a></p>
 <p></p>
@@ -558,7 +558,7 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 </ul>
 <p>Selecting a higher build quality results in better rendering performance but slower scene commit times. The default build quality for a scene is <code>RTC_BUILD_QUALITY_MEDIUM</code>.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrybuildquality">rtcSetGeometryBuildQuality</a></p>
 <p></p>
@@ -580,7 +580,7 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 </ul>
 <p>Multiple flags can be enabled using an <code>or</code> operation, e.g. <code>RTC_SCENE_FLAG_COMPACT | RTC_SCENE_FLAG_ROBUST</code>.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetsceneflags">rtcGetSceneFlags</a></p>
 <p></p>
@@ -596,7 +596,7 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <pre class="sourceCode cpp"><code class="sourceCode cpp">RTCSceneFlags flags = rtcGetSceneFlags(scene);
 rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST | flags);</code></pre>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>RTC_SCENE_FLAG_NONE</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>RTC_SCENE_FLAG_NONE</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetsceneflags">rtcSetSceneFlags</a></p>
 <p></p>
@@ -620,7 +620,7 @@ rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST | flags);</code></pre>
 <p>The <code>rtcGetSceneBounds</code> function queries the axis-aligned bounding box of the specified scene (<code>scene</code> argument) and stores that bounding box to the provided destination pointer (<code>bounds_o</code> argument). The stored bounding box consists of lower and upper bounds for the x, y, and z dimensions as specified by the <code>RTCBounds</code> structure.</p>
 <p>The provided destination pointer must be aligned to 16 bytes. The function may be invoked only after committing the scene; otherwise the result is undefined.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetscenelinearbounds">rtcGetSceneLinearBounds</a>, <a href="#rtccommitscene">rtcCommitScene</a>, <a href="#rtcjoincommitscene">rtcJoinCommitScene</a></p>
 <p></p>
@@ -644,7 +644,7 @@ rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST | flags);</code></pre>
 <p>The <code>rtcGetSceneLinearBounds</code> function queries the linear bounds of the specified scene (<code>scene</code> argument) and stores them to the provided destination pointer (<code>bounds_o</code> argument). The stored linear bounds consist of bounding boxes for time 0 (<code>bounds0</code> member) and time 1 (<code>bounds1</code> member) as specified by the <code>RTCLinearBounds</code> structure. Linearly interpolating these bounds to a specific time <code>t</code> yields bounds for the geometry at that time.</p>
 <p>The provided destination pointer must be aligned to 16 bytes. The function may be called only after committing the scene, otherwise the result is undefined.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetscenebounds">rtcGetSceneBounds</a>, <a href="#rtccommitscene">rtcCommitScene</a>, <a href="#rtcjoincommitscene">rtcJoinCommitScene</a></p>
 <p></p>
@@ -688,7 +688,7 @@ RTCGeometry rtcNewGeometry(
 <p>After setting up the geometry or modifying it, <code>rtcCommitGeometry</code> must be called to finish the geometry setup. After committing the geometry, vertex data interpolation can be performed using the <code>rtcInterpolate</code> and <code>rtcInterpolateN</code> functions.</p>
 <p>A build quality can be specified for a geometry using the <code>rtcSetGeometryBuildQuality</code> function, to balance between acceleration structure build performance and ray query performance. The build quality per geometry will be used if a two-level acceleration structure is built internally, which is the case if the <code>RTC_BUILD_QUALITY_LOW</code> is set as the scene build quality. See Section <a href="#rtcsetscenebuildquality">rtcSetSceneBuildQuality</a> for more details.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcenablegeometry">rtcEnableGeometry</a>, <a href="#rtcdisablegeometry">rtcDisableGeometry</a>, <a href="#rtcattachgeometry">rtcAttachGeometry</a>, <a href="#rtcattachgeometrybyid">rtcAttachGeometryByID</a>, <a href="#rtcupdategeometrybuffer">rtcUpdateGeometryBuffer</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcgetgeometryuserdata">rtcGetGeometryUserData</a>, <a href="#rtccommitgeometry">rtcCommitGeometry</a>, <a href="#rtcinterpolate">rtcInterpolate</a>, <a href="#rtcinterpolaten">rtcInterpolateN</a>, <a href="#rtcsetgeometrybuildquality">rtcSetGeometryBuildQuality</a>, <a href="#rtcsetscenebuildquality">rtcSetSceneBuildQuality</a>, <a href="#rtc_geometry_type_triangle">RTC_GEOMETRY_TYPE_TRIANGLE</a>, <a href="#rtc_geometry_type_quad">RTC_GEOMETRY_TYPE_QUAD</a>, <a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a>, <a href="#rtc_geometry_type_curve">RTC_GEOMETRY_TYPE_CURVE</a>, <a href="#rtc_geometry_type_grid">RTC_GEOMETRY_TYPE_GRID</a>, <a href="#rtc_geometry_type_point">RTC_GEOMETRY_TYPE_POINT</a>, <a href="#rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</a>, <a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a></p>
 <p></p>
@@ -713,7 +713,7 @@ RTCGeometry geometry =
 <p>For multi-segment motion blur, the number of time steps must be first specified using the <code>rtcSetGeometryTimeStepCount</code> call. Then a vertex buffer for each time step can be set using different buffer slots, and all these buffers have to have the same stride and size.</p>
 <p>Also see tutorial <a href="tutorials.html#triangle-geometry">Triangle Geometry</a> for an example of how to create triangle meshes.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that be get queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that be get queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
 <p></p>
@@ -737,7 +737,7 @@ RTCGeometry geometry =
 </div>
 <p>For multi-segment motion blur, the number of time steps must be first specified using the <code>rtcSetGeometryTimeStepCount</code> call. Then a vertex buffer for each time step can be set using different buffer slots, and all these buffers must have the same stride and size.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
 <p></p>
@@ -763,7 +763,7 @@ RTCGeometry geometry =
 <p>A vertex grid of dimensions <code>width</code> and <code>height</code> is treated as a <code>(width-1)</code> x <code>(height-1)</code> grid of <code>quads</code> (triangle-pairs), with the same shared edge handling as for regular quad meshes. However, the <code>u</code>/<code>v</code> coordinates have the uniform range <code>[0..1]</code> for an entire vertex grid. The <code>u</code> direction follows the <code>width</code> of the grid while the <code>v</code> direction the <code>height</code>.</p>
 <p>For multi-segment motion blur, the number of time steps must be first specified using the <code>rtcSetGeometryTimeStepCount</code> call. Then a vertex buffer for each time step can be set using different buffer slots, and all these buffers must have the same stride and size.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
 <p></p>
@@ -802,7 +802,7 @@ RTCGeometry geometry =
 <p>Each such topology <code>i</code> has a separate index buffer (specified using <code>RTC_BUFFER_TYPE_INDEX</code> with buffer slot <code>i</code>) and separate subdivision mode that can be set using <code>rtcSetGeometrySubdivisionMode</code>. A vertex attribute buffer <code>RTC_BUFFER_TYPE_VERTEX_ATTRIBUTE</code> bound to a buffer slot <code>j</code> can be assigned to use a topology for interpolation using the <code>rtcSetGeometryVertexAttributeTopology</code> call.</p>
 <p>The face buffer (<code>RTC_BUFFER_TYPE_FACE</code> type) is shared between all topologies, which means that the <code>n</code>-th primitive always has the same number of vertices (e.g. being a triangle or a quad) for each topology. However, the indices of the topologies themselves may be different.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
 <p></p>
@@ -869,7 +869,7 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ROUND_HERMITE_CURVE);</code></pre>
 <p>For multi-segment motion blur, the number of time steps must be first specified using the <code>rtcSetGeometryTimeStepCount</code> call. Then a vertex buffer for each time step can be set using different buffer slots, and all these buffers must have the same stride and size. For the Hermite basis also a tangent buffer has to be set for each time step and for normal oriented curves a normal buffer has to get specified for each time step.</p>
 <p>Also see tutorials <a href="tutorials.html#hair">Hair</a> and <a href="tutorials.html#bézier-curves">Curves</a> for examples of how to create and use curve geometries.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
 <p></p>
@@ -899,7 +899,7 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ORIENTED_DISC_POINT);</code></pre>
 <p>For multi-segment motion blur, the number of time steps must be first specified using the <code>rtcSetGeometryTimeStepCount</code> call. Then a vertex buffer for each time step can be set using different buffer slots, and all these buffers must have the same stride and size.</p>
 <p>Also see tutorial [Points] for an example of how to create and use point geometries.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
 <p></p>
@@ -924,7 +924,7 @@ rtcSetGeometryOccludedFunction(geometry, occludedFunction);</code></pre>
 <p>Please have a look at the <code>rtcSetGeometryBoundsFunction</code>, <code>rtcSetGeometryIntersectFunction</code>, and <code>rtcSetGeometryOccludedFunction</code> functions on the implementation of the callback functions.</p>
 <p>See tutorial <a href="tutorials.html#user-geometry">User Geometry</a> for an example of how to use the user-defined geometries.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcsetgeometryuserprimitivecount">rtcSetGeometryUserPrimitiveCount</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcsetgeometryboundsfunction">rtcSetGeometryBoundsFunction</a>, <a href="#rtcsetgeometryintersectfunction">rtcSetGeometryIntersectFunction</a>, <a href="#rtcsetgeometryoccludedfunction">rtcSetGeometryOccludedFunction</a></p>
 <p></p>
@@ -945,7 +945,7 @@ RTCGeometry geometry =
 <p>For multi-segment motion blur, the number of time steps must be first specified using the <code>rtcSetGeometryTimeStepCount</code> function. Then a transformation for each time step can be specified using the <code>rtcSetGeometryTransform</code> function.</p>
 <p>See tutorial <a href="tutorials.html#instanced-geometry">Instanced Geometry</a> for an example of how to use instances.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcsetgeometryinstancedscene">rtcSetGeometryInstancedScene</a>, <a href="#rtcsetgeometrytransform">rtcSetGeometryTransform</a></p>
 <p></p>
@@ -959,7 +959,7 @@ RTCGeometry geometry =
 <h4 id="description">DESCRIPTION</h4>
 <p>Geometry objects are reference counted. The <code>rtcRetainGeometry</code> function increments the reference count of the passed geometry object (<code>geometry</code> argument). This function together with <code>rtcReleaseGeometry</code> allows to use the internal reference counting in a C++ wrapper class to handle the ownership of the object.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcreleasegeometry">rtcReleaseGeometry</a></p>
 <p></p>
@@ -973,7 +973,7 @@ RTCGeometry geometry =
 <h4 id="description">DESCRIPTION</h4>
 <p>Geometry objects are reference counted. The <code>rtcReleaseGeometry</code> function decrements the reference count of the passed geometry object (<code>geometry</code> argument). When the reference count falls to 0, the geometry gets destroyed.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcretaingeometry">rtcRetainGeometry</a></p>
 <p></p>
@@ -987,7 +987,7 @@ RTCGeometry geometry =
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcCommitGeometry</code> function is used to commit all geometry changes performed to a geometry (<code>geometry</code> parameter). After a geometry gets modified, this function must be called to properly update the internal state of the geometry to perform interpolations using <code>rtcInterpolate</code> or to commit a scene containing the geometry using <code>rtcCommitScene</code>.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcinterpolate">rtcInterpolate</a>, <a href="#rtccommitscene">rtcCommitScene</a></p>
 <p></p>
@@ -1002,7 +1002,7 @@ RTCGeometry geometry =
 <p>The <code>rtcEnableGeometry</code> function enables the specified geometry (<code>geometry</code> argument). Only enabled geometries are rendered. Each geometry is enabled by default at construction time.</p>
 <p>After enabling a geometry, the scene containing that geometry must be committed using <code>rtcCommitScene</code> for the change to have effect.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcdisablegeometry">rtcDisableGeometry</a>, <a href="#rtccommitscene">rtcCommitScene</a></p>
 <p></p>
@@ -1017,7 +1017,7 @@ RTCGeometry geometry =
 <p>The <code>rtcDisableGeometry</code> function disables the specified geometry (<code>geometry</code> argument). A disabled geometry is not rendered. Each geometry is enabled by default at construction time.</p>
 <p>After disabling a geometry, the scene containing that geometry must be committed using <code>rtcCommitScene</code> for the change to have effect.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcenablegeometry">rtcEnableGeometry</a>, <a href="#rtccommitscene">rtcCommitScene</a></p>
 <p></p>
@@ -1038,7 +1038,7 @@ RTCGeometry geometry =
 <p>For instance geometries (<code>RTC_GEOMETRY_TYPE_INSTANCE</code>), a transformation must be specified for each time step (see <code>rtcSetGeometryTransform</code>).</p>
 <p>For user geometries, the registered bounding callback function must provide a bounding box per primitive and time step, and the intersection and occlusion callback functions should properly intersect the motion-blurred geometry at the ray time.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcsetgeometrytimerange">rtcSetGeometryTimeRange</a></p>
 <p></p>
@@ -1059,7 +1059,7 @@ RTCGeometry geometry =
 <p>This time range feature will also allow geometries to appear and disappear during the camera shutter time if the specified time range is a sub range of [0,1].</p>
 <p>Please also have a look at the <code>rtcSetGeometryTimeStepCount</code> function to see how to define the time steps for the specified time range.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrytimestepcount">rtcSetGeometryTimeStepCount</a></p>
 <p></p>
@@ -1078,7 +1078,7 @@ RTCGeometry geometry =
 <p>The <code>rtcSetGeometryVertexAttributeCount</code> function sets the number of slots (<code>vertexAttributeCount</code> parameter) for vertex attribute buffers (<code>RTC_BUFFER_TYPE_VERTEX_ATTRIBUTE</code>) that can be used for the specified geometry (<code>geometry</code> parameter).</p>
 <p>This function is supported only for triangle meshes (<code>RTC_GEOMETRY_TYPE_TRIANGLE</code>), quad meshes (<code>RTC_GEOMETRY_TYPE_QUAD</code>), curves (<code>RTC_GEOMETRY_TYPE_CURVE</code>), points (<code>RTC_GEOMETRY_TYPE_POINT</code>), and subdivision geometries (<code>RTC_GEOMETRY_TYPE_SUBDIVISION</code>).</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, [RTCBufferType]</p>
 <p></p>
@@ -1097,7 +1097,7 @@ RTCGeometry geometry =
 <p>This geometry mask is used together with the ray mask stored inside the <code>mask</code> field of the ray. The primitives of the geometry are hit by the ray only if the bitwise <code>and</code> operation of the geometry mask with the ray mask is not 0. This feature can be used to disable selected geometries for specifically tagged rays, e.g. to disable shadow casting for certain geometries.</p>
 <p>Ray masks are disabled in Embree by default at compile time, and can be enabled through the <code>EMBREE_RAY_MASK</code> parameter in CMake. One can query whether ray masks are enabled by querying the <code>RTC_DEVICE_PROPERTY_RAY_MASK_SUPPORTED</code> device property using <code>rtcGetDeviceProperty</code>.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcray">RTCRay</a>, <a href="#rtcgetdeviceproperty">rtcGetDeviceProperty</a></p>
 <p></p>
@@ -1120,7 +1120,7 @@ RTCGeometry geometry =
 <li><p><code>RTC_BUILD_QUALITY_REFIT</code>: Uses a BVH refitting approach when changing only the vertex buffer.</p></li>
 </ul>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetscenebuildquality">rtcSetSceneBuildQuality</a></p>
 <p></p>
@@ -1146,7 +1146,7 @@ RTCGeometry geometry =
 <p>The start address (<code>byteOffset</code> argument) and stride (<code>byteStride</code> argument) must be both aligned to 4 bytes, otherwise the <code>rtcSetGeometryBuffer</code> function will fail.</p>
 <p>After successful completion of this function, the geometry will hold a reference to the buffer object.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</a>, <a href="#rtcsetnewgeometrybuffer">rtcSetNewGeometryBuffer</a></p>
 <p></p>
@@ -1175,7 +1175,7 @@ RTCGeometry geometry =
 <p>The buffer data must remain valid for as long as the buffer may be used, and the user is responsible for freeing the buffer data when no longer required.</p>
 <p>Sharing buffers can significantly reduce the memory required by the application, thus we recommend using this feature. When enabling the <code>RTC_SCENE_COMPACT</code> scene flag, the spatial index structures index into the vertex buffer, resulting in even higher memory savings.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrybuffer">rtcSetGeometryBuffer</a>, <a href="#rtcsetnewgeometrybuffer">rtcSetNewGeometryBuffer</a></p>
 <p></p>
@@ -1199,7 +1199,7 @@ RTCGeometry geometry =
 <p>The byte stride (<code>byteStride</code> argument) must be aligned to 4 bytes; otherwise the <code>rtcSetNewGeometryBuffer</code> function will fail.</p>
 <p>The allocated buffer will be automatically over-allocated slightly when used as a vertex buffer, where a requirement is that each buffer element should be readable using 16-byte SSE load instructions.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrybuffer">rtcSetGeometryBuffer</a>, <a href="#rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</a></p>
 <p></p>
@@ -1218,7 +1218,7 @@ RTCGeometry geometry =
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcGetGeometryBufferData</code> function returns a pointer to the first element of the buffer view attached to the specified buffer type and slot (<code>type</code> and <code>slot</code> argument) of the geometry (<code>geometry</code> argument).</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrybuffer">rtcSetGeometryBuffer</a>, <a href="#rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</a>, <a href="#rtcsetnewgeometrybuffer">rtcSetNewGeometryBuffer</a></p>
 <p></p>
@@ -1238,7 +1238,7 @@ RTCGeometry geometry =
 <p>The <code>rtcUpdateGeometryBuffer</code> function marks the buffer view bound to the specified buffer type and slot (<code>type</code> and <code>slot</code> argument) of a geometry (<code>geometry</code> argument) as modified.</p>
 <p>If a data buffer is changed by the application, the <code>rtcUpdateGeometryBuffer</code> call must be invoked for that buffer. Each buffer view assigned to a buffer slot is initially marked as modified, thus this function needs to be called only when doing buffer modifications after the first <code>rtcCommitScene</code>.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtccommitscene">rtcCommitScene</a></p>
 <p></p>
@@ -1278,7 +1278,7 @@ RTCGeometry geometry =
 <p>For many usage scenarios, repacking and re-ordering of rays does not cause difficulties in implementing the callback function. However, algorithms that need to extend the ray with additional data must use the <code>rayID</code> component of the ray to identify the original ray to access the per-ray data.</p>
 <p>The implementation of the filter function can choose to implement a single code path that uses the ray access helper functions <code>RTCRay_XXX</code> and hit access helper functions <code>RTCHit_XXX</code> to access ray and hit data. Alternatively the code can branch to optimized implementations for specific sizes of <code>N</code> and cast the <code>ray</code> and <code>hit</code> inputs to the proper packet types.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryoccludedfilterfunction">rtcSetGeometryOccludedFilterFunction</a></p>
 <p></p>
@@ -1299,7 +1299,7 @@ RTCGeometry geometry =
 <p>The registered intersection filter function is invoked for every hit encountered during the <code>rtcOccluded</code>-type ray queries and can accept or reject that hit. The feature can be used to define a silhouette for a primitive and reject hits that are outside the silhouette. E.g. a tree leaf could be modeled with an alpha texture that decides whether hit points lie inside or outside the leaf.</p>
 <p>Please see the description of the <code>rtcSetGeometryIntersectFilterFunction</code> for a description of the filter callback function.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryintersectfilterfunction">rtcSetGeometryIntersectFilterFunction</a></p>
 <p></p>
@@ -1349,7 +1349,7 @@ RTCGeometry geometry =
 <p>The <code>rtcSetGeometryUserData</code> function sets the user-defined data pointer (<code>userPtr</code> argument) for a geometry (<code>geometry</code> argument). This user data pointer is intended to be pointing to the application's representation of the geometry, and is passed to various callback functions. The application can use this pointer inside the callback functions to access its geometry representation.</p>
 <p>The <code>rtcGetGeometryUserData</code> function can be used to query an already set user data pointer of a geometry.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryuserdata">rtcGetGeometryUserData</a></p>
 <p></p>
@@ -1364,7 +1364,7 @@ RTCGeometry geometry =
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcGetGeometryUserData</code> function queries the user data pointer previously set with <code>rtcSetGeometryUserData</code>. When <code>rtcSetGeometryUserData</code> was not called yet, <code>NULL</code> is returned.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a></p>
 <p></p>
@@ -1382,7 +1382,7 @@ RTCGeometry geometry =
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetGeometryUserPrimitiveCount</code> function sets the number of user-defined primitives (<code>userPrimitiveCount</code> parameter) of the specified user-defined geometry (<code>geometry</code> parameter).</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</a></p>
 <p></p>
@@ -1416,7 +1416,7 @@ RTCGeometry geometry =
 <p>The registered bounding box callback function is invoked to calculate axis-aligned bounding boxes of the primitives of the user-defined geometry during spatial acceleration structure construction. The bounding box callback of <code>RTCBoundsFunction</code> type is invoked with a pointer to a structure of type <code>RTCBoundsFunctionArguments</code> which contains various arguments, such as: the user data of the geometry (<code>geometryUserPtr</code> member), the ID of the primitive to calculate the bounds for (<code>primID</code> member), the time step at which to calculate the bounds (<code>timeStep</code> member), and a memory location to write the calculated bound to (<code>bounds_o</code> member).</p>
 <p>In a typical usage scenario one would store a pointer to the internal representation of the user geometry object using <code>rtcSetGeometryUserData</code>. The callback function can then read that pointer from the <code>geometryUserPtr</code> field and calculate the proper bounding box for the requested primitive and time, and store that bounding box to the destination structure (<code>bounds_o</code> member).</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</a></p>
 <p></p>
@@ -1456,7 +1456,7 @@ RTCGeometry geometry =
 <p>When performing ray queries using <code>rtcIntersect1</code>, it is guaranteed that the packet size is 1 when the callback is invoked. When performing ray queries using the <code>rtcIntersect4/8/16</code> functions, it is not generally guaranteed that the ray packet size (and order of rays inside the packet) passed to the callback matches the initial ray packet. However, under some circumstances these properties are guaranteed, and whether this is the case can be queried using <code>rtcGetDeviceProperty</code>. When performing ray queries using the stream API such as <code>rtcIntersect1M</code>, <code>rtcIntersect1Mp</code>, <code>rtcIntersectNM</code>, or <code>rtcIntersectNp</code> the order of rays and ray packet size of the callback function might change to either 1, 4, 8, or 16.</p>
 <p>For many usage scenarios, repacking and re-ordering of rays does not cause difficulties in implementing the callback function. However, algorithms that need to extend the ray with additional data must use the <code>rayID</code> component of the ray to identify the original ray to access the per-ray data.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryoccludedfunction">rtcSetGeometryOccludedFunction</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcfilterintersection">rtcFilterIntersection</a></p>
 <p></p>
@@ -1495,7 +1495,7 @@ RTCGeometry geometry =
 <p>When performing ray queries using <code>rtcOccluded1</code>, it is guaranteed that the packet size is 1 when the callback is invoked. When performing ray queries using the <code>rtcOccluded4/8/16</code> functions, it is not generally guaranteed that the ray packet size (and order of rays inside the packet) passed to the callback matches the initial ray packet. However, under some circumstances these properties are guaranteed, and whether this is the case can be queried using <code>rtcGetDeviceProperty</code>. When performing ray queries using the stream API such as <code>rtcOccluded1M</code>, <code>rtcOccluded1Mp</code>, <code>rtcOccludedNM</code>, or <code>rtcOccludedNp</code> the order of rays and ray packet size of the callback function might change to either 1, 4, 8, or 16.</p>
 <p>For many usage scenarios, repacking and re-ordering of rays does not cause difficulties in implementing the callback function. However, algorithms that need to extend the ray with additional data must use the <code>rayID</code> component of the ray to identify the original ray to access the per-ray data.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryintersectfunction">rtcSetGeometryIntersectFunction</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcfilterocclusion">rtcFilterOcclusion</a></p>
 <p></p>
@@ -1513,7 +1513,7 @@ RTCGeometry geometry =
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetGeometryInstancedScene</code> function sets the instanced scene (<code>scene</code> argument) of the specified instance geometry (<code>geometry</code> argument).</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a>, <a href="#rtcsetgeometrytransform">rtcSetGeometryTransform</a></p>
 <p></p>
@@ -1538,7 +1538,7 @@ RTCGeometry geometry =
 <li><p><code>RTC_FORMAT_FLOAT4X4_COLUMN_MAJOR</code>: The 3×4 float matrix is laid out in column-major form as a 4×4 homogeneous matrix with the last row being equal to (0, 0, 0, 1).</p></li>
 </ul>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a></p>
 <p></p>
@@ -1564,7 +1564,7 @@ RTCGeometry geometry =
 <li><p><code>RTC_FORMAT_FLOAT4X4_COLUMN_MAJOR</code>: The 3×4 float matrix is laid out in column-major form as a 4×4 homogeneous matrix with last row equal to (0, 0, 0, 1).</p></li>
 </ul>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a>, <a href="#rtcsetgeometrytransform">rtcSetGeometryTransform</a></p>
 <p></p>
@@ -1582,7 +1582,7 @@ RTCGeometry geometry =
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetGeometryTessellationRate</code> function sets the tessellation rate (<code>tessellationRate</code> argument) for the specified geometry (<code>geometry</code> argument). The tessellation rate can only be set for flat curves and subdivision geometries. For curves, the tessellation rate specifies the number of ray-facing quads per curve segment. For subdivision surfaces, the tessellation rate specifies the number of quads along each edge.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_curve">RTC_GEOMETRY_TYPE_CURVE</a>, <a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a></p>
 <p></p>
@@ -1601,7 +1601,7 @@ RTCGeometry geometry =
 <p>The <code>rtcSetGeometryTopologyCount</code> function sets the number of topologies (<code>topologyCount</code> parameter) for the specified subdivision geometry (<code>geometry</code> parameter). The number of topologies of a subdivision geometry must be greater or equal to 1.</p>
 <p>To use multiple topologies, first the number of topologies must be specified, then the individual topologies can be configured using <code>rtcSetGeometrySubdivisionMode</code> and by setting an index buffer (<code>RTC_BUFFER_TYPE_INDEX</code>) using the topology ID as the buffer slot.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a>, <a href="#rtcsetgeometrysubdivisionmode">rtcSetGeometrySubdivisionMode</a></p>
 <p></p>
@@ -1628,7 +1628,7 @@ RTCGeometry geometry =
 <li><p><code>RTC_SUBDIVISION_MODE_PIN_ALL</code>: All vertices at the border are pinned to their location during subdivision. This way all patches are linearly interpolated.</p></li>
 </ul>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a></p>
 <p></p>
@@ -1648,7 +1648,7 @@ RTCGeometry geometry =
 <p>The <code>rtcSetGeometryVertexAttributeTopology</code> function binds a vertex attribute buffer slot (<code>vertexAttributeID</code> argument) to a topology (<code>topologyID</code> argument) for the specified subdivision geometry (<code>geometry</code> argument). Standard vertex buffers are always bound to the default topology (topology 0) and cannot be bound differently. A vertex attribute buffer always uses the topology it is bound to when used in the <code>rtcInterpolate</code> and <code>rtcInterpolateN</code> calls.</p>
 <p>A topology with ID <code>i</code> consists of a subdivision mode set through <code>rtcSetGeometrySubdivisionMode</code> and the index buffer bound to the index buffer slot <code>i</code>. This index buffer can assign indices for each face of the subdivision geometry that are different to the indices of the default topology. These new indices can for example be used to introduce additional borders into the subdivision mesh to map multiple textures onto one subdivision geometry.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrysubdivisionmode">rtcSetGeometrySubdivisionMode</a>, <a href="#rtcinterpolate">rtcInterpolate</a>, <a href="#rtcinterpolaten">rtcInterpolateN</a></p>
 <p></p>
@@ -1693,7 +1693,7 @@ RTCGeometry geometry =
 <p>All passed arrays must be aligned to 64 bytes and properly padded to make wide vector processing inside the displacement function easily possible.</p>
 <p>Also see tutorial <a href="tutorials.html#displacement-geometry">Displacement Geometry</a> for an example of how to use the displacement mapping functions.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a></p>
 <p></p>
@@ -1716,7 +1716,7 @@ RTCGeometry geometry =
 <p>This function can only be used for subdivision geometries. As all topologies of a subdivision geometry share the same face buffer the function does not depend on the topology ID.</p>
 <p>Here f0 to f7 are 8 quadrilateral faces with 4 vertices each. The edges e0 to e23 of these faces are shown with their orientation. For each face the ID of the edges corresponds to the slots the face occupies in the index array of the geometry. E.g. as the indices of face f1 start at location 4 of the index array, the first edge is edge e4, the next edge e5, etc.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
 <p></p>
@@ -1738,7 +1738,7 @@ RTCGeometry geometry =
 </div>
 <p>This function can only be used for subdivision geometries. As all topologies of a subdivision geometry share the same face buffer the function does not depend on the topology ID.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
 <p></p>
@@ -1760,7 +1760,7 @@ RTCGeometry geometry =
 </div>
 <p>This function can only be used for subdivision geometries. As all topologies of a subdivision geometry share the same face buffer the function does not depend on the topology ID.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
 <p></p>
@@ -1782,7 +1782,7 @@ RTCGeometry geometry =
 </div>
 <p>This function can only be used for subdivision geometries. As all topologies of a subdivision geometry share the same face buffer the function does not depend on the topology ID.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
 <p></p>
@@ -1806,7 +1806,7 @@ RTCGeometry geometry =
 <p>An opposite half edge does not exist if the specified half edge has either no neighboring face, or more than 2 neighboring faces. In these cases the function just returns the same edge <code>edgeID</code> again.</p>
 <p>This function can only be used for subdivision geometries. The function depends on the topology as the topologies of a subdivision geometry have different index buffers assigned.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
 <p></p>
@@ -1900,7 +1900,7 @@ RTCBuffer rtcNewBuffer(
 <p>The <code>rtcNewBuffer</code> function creates a new data buffer object of specified size in bytes (<code>byteSize</code> argument) that is bound to the specified device (<code>device</code> argument). The buffer object is reference counted with an initial reference count of 1. The returned buffer object can be released using the <code>rtcReleaseBuffer</code> API call. The specified number of bytes are allocated at buffer construction time and deallocated when the buffer is destroyed.</p>
 <p>When the buffer will be used as a vertex buffer (<code>RTC_BUFFER_TYPE_VERTEX</code> and <code>RTC_BUFFER_TYPE_VERTEX_ATTRIBUTE</code>), the last buffer element must be readable using 16-byte SSE load instructions, thus padding the last element is required for certain layouts. E.g. a standard <code>float3</code> vertex buffer layout should add storage for at least one more float to the end of the buffer.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcretainbuffer">rtcRetainBuffer</a>, <a href="#rtcreleasebuffer">rtcReleaseBuffer</a></p>
 <p></p>
@@ -1921,7 +1921,7 @@ RTCBuffer rtcNewSharedBuffer(
 <p>When the buffer will be used as a vertex buffer (<code>RTC_BUFFER_TYPE_VERTEX</code> and <code>RTC_BUFFER_TYPE_VERTEX_ATTRIBUTE</code>), the last buffer element must be readable using 16-byte SSE load instructions, thus padding the last element is required for certain layouts. E.g. a standard <code>float3</code> vertex buffer layout should add storage for at least one more float to the end of the buffer.</p>
 <p>The data pointer (<code>ptr</code> argument) must be aligned to 4 bytes; otherwise the <code>rtcNewSharedBuffer</code> function will fail.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcretainbuffer">rtcRetainBuffer</a>, <a href="#rtcreleasebuffer">rtcReleaseBuffer</a></p>
 <p></p>
@@ -1935,7 +1935,7 @@ RTCBuffer rtcNewSharedBuffer(
 <h4 id="description">DESCRIPTION</h4>
 <p>Buffer objects are reference counted. The <code>rtcRetainBuffer</code> function increments the reference count of the passed buffer object (<code>buffer</code> argument). This function together with <code>rtcReleaseBuffer</code> allows to use the internal reference counting in a C++ wrapper class to handle the ownership of the object.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbuffer">rtcNewBuffer</a>, <a href="#rtcreleasebuffer">rtcReleaseBuffer</a></p>
 <p></p>
@@ -1949,7 +1949,7 @@ RTCBuffer rtcNewSharedBuffer(
 <h4 id="description">DESCRIPTION</h4>
 <p>Buffer objects are reference counted. The <code>rtcReleaseBuffer</code> function decrements the reference count of the passed buffer object (<code>buffer</code> argument). When the reference count falls to 0, the buffer gets destroyed.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbuffer">rtcNewBuffer</a>, <a href="#rtcretainbuffer">rtcRetainBuffer</a></p>
 <p></p>
@@ -1963,7 +1963,7 @@ RTCBuffer rtcNewSharedBuffer(
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcGetBufferData</code> function returns a pointer to the buffer data of the specified buffer object (<code>buffer</code> argument).</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbuffer">rtcNewBuffer</a></p>
 <p></p>
@@ -2489,7 +2489,7 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre>
 <p>This function creates a new BVH object and returns a handle to this BVH. The BVH object is reference counted with an initial reference count of 1. The handle can be released using the <code>rtcReleaseBVH</code> API call.</p>
 <p>The BVH object can be used to build a BVH in a user-specified format over user-specified primitives. See the documentation of the <code>rtcBuildBVH</code> call for more details.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcretainbvh">rtcRetainBVH</a>, <a href="#rtcreleasebvh">rtcReleaseBVH</a>, <a href="#rtcbuildbvh">rtcBuildBVH</a></p>
 <p></p>
@@ -2503,7 +2503,7 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre>
 <h4 id="description">DESCRIPTION</h4>
 <p>BVH objects are reference counted. The <code>rtcRetainBVH</code> function increments the reference count of the passed BVH object (<code>bvh</code> argument). This function together with <code>rtcReleaseBVH</code> allows to use the internal reference counting in a C++ wrapper class to handle the ownership of the object.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbvh">rtcNewBVH</a>, <a href="#rtcreleasebvh">rtcReleaseBVH</a></p>
 <p></p>
@@ -2517,7 +2517,7 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre>
 <h4 id="description">DESCRIPTION</h4>
 <p>BVH objects are reference counted. The <code>rtcReleaseBVH</code> function decrements the reference count of the passed BVH object (<code>bvh</code> argument). When the reference count falls to 0, the BVH gets destroyed.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbvh">rtcNewBVH</a>, <a href="#rtcretainbvh">rtcRetainBVH</a></p>
 <p></p>
@@ -2629,7 +2629,7 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre>
 <p>The <code>RTCSplitPrimitiveFunc</code> callback is invoked in high quality mode to split a primitive (<code>primitive</code> argument) at the specified position (<code>position</code> argument) and dimension (<code>dimension</code> argument). The callback should return bounds of the clipped left and right parts of the primitive (<code>leftBounds</code> and <code>rightBounds</code> arguments).</p>
 <p>The <code>RTCProgressMonitorFunction</code> callback function is called with the estimated completion rate <code>n</code> in the range <span class="math">[0, 1]</span>. Returning <code>true</code> from the callback lets the build continue; returning <code>false</code> cancels the build.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
-<p>On failure an error code is set that can be queried using <code>rtcDeviceGetError</code>.</p>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbvh">rtcNewBVH</a></p>
 <p></p>
