@@ -57,7 +57,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.5.1!
+      We recently released Intel® Embree v3.5.2!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -196,6 +196,7 @@ RTCDevice rtcNewDevice(<span class="dt">const</span> <span class="dt">char</span
 <li><p><code>enable_selockmemoryprivilege=[0/1]</code>: When set to 1, this enables the <code>SeLockMemoryPrivilege</code> privilege with is required to use huge pages on Windows. This option has an effect only under Windows and is ignored on other platforms. See Section <a href="#huge-page-support">Huge Page Support</a> for more details.</p></li>
 <li><p><code>ignore_config_files=[0/1]</code>: When set to 1, configuration files are ignored. Default is 0.</p></li>
 <li><p><code>verbose=[0,1,2,3]</code>: Sets the verbosity of the output. When set to 0, no output is printed by Embree, when set to a higher level more output is printed. By default Embree does not print anything on the console.</p></li>
+<li><p><code>frequency_level=[simd128,simd256,simd512]</code>: Specifies the frequency level the application want to run on, which can be either: a) simd128 for apps that do not use AVX instructions, b) simd256 for apps that use heavy AVX instruction, c) simd512 for apps that use heavy AVX-512 instructions. When some frequency level is specified, Embree will avoid doing optimizations that may reduce the frequency level below the level specified. E.g. if your app does not use AVX instructions setting &quot;frequency_level=simd128&quot; will cause some CPUs to run at highest frequency, which may result in higher application performance. However, this will prevent Embree from using AVX optimizations to achieve higher ray tracing performance, thus applications that trace many rays may still perform better with the default setting of simd256, even though this reduces frequency on some CPUs.</p></li>
 </ul>
 <p>Different configuration options should be separated by commas, e.g.:</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp">rtcNewDevice(<span class="st">&quot;threads=1,isa=avx&quot;</span>);</code></pre>
@@ -864,7 +865,7 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ROUND_HERMITE_CURVE);</code></pre>
 <p>To intersect the normal oriented curve, we perform a newton-raphson style intersection of a ray with a tensor product surface of a linear basis (perpendicular to the curve) and cubic Bézier basis (along the curve). We use a guide curve and its derivatives to construct the control points of that surface. The guide curve is defined by a sweep surface defined by sweeping a line centered at the vertex spline location along the curve. At each parameter value the half width of the line matches the radius spline, and the direction matches the cross product of the normal from the normal spline and tangent of the vertex spline. Note that this construction does not work when the provided normals are parallel to the curve direction. For this reason the provided normals should best be kept as perpendicular to the curve direction as possible.</p>
 <p>In the <code>RTC_GEOMETRY_TYPE_ROUND_*</code> round mode, a real geometric surface is rendered for the curve, which is more expensive but allows closeup views. This mode renders a sweep surface by sweeping a varying radius circle tangential along the curve. As a limitation, the radius of the curve has to be smaller than the curvature radius of the curve at each location on the curve. The round mode is currently not supported for the linear basis.</p>
 <p>The intersection with the curve segment stores the parametric hit location along the curve segment as u-coordinate (range 0 to +1).</p>
-<p>For Bézier, B-spline, and Hermite curves, the v-coordinate is set to the normalized distance in the range -1 to +1. For the linear basis and in round mode the v-coordinate is set to zero.</p>
+<p>For flat curves, the v-coordinate is set to the normalized distance in the range -1 to +1. For normal oriented curves the v-coordinate is in the range 0 to 1. For the linear basis and in round mode the v-coordinate is set to zero.</p>
 <p>In flat mode, the geometry normal <code>Ng</code> is set to the tangent of the curve at the hit location. In round mode and for normal oriented curves, the geometry normal <code>Ng</code> is set to the non-normalized geometric normal of the surface.</p>
 <p>For multi-segment motion blur, the number of time steps must be first specified using the <code>rtcSetGeometryTimeStepCount</code> call. Then a vertex buffer for each time step can be set using different buffer slots, and all these buffers must have the same stride and size. For the Hermite basis also a tangent buffer has to be set for each time step and for normal oriented curves a normal buffer has to get specified for each time step.</p>
 <p>Also see tutorials <a href="tutorials.html#hair">Hair</a> and <a href="tutorials.html#bézier-curves">Curves</a> for examples of how to create and use curve geometries.</p>
