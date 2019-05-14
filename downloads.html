@@ -111,7 +111,7 @@ source embree-3.5.2.x86_64.linux/embree-vars.sh</code></pre>
 <p>If you want to ship Embree with your application, best use the Embree version provided in the <code>tar.gz</code> file.</p>
 <p>We recommend adding a relative <code>RPATH</code> to your application that points to the location where Embree (and TBB) can be found, e.g. <code>$ORIGIN/../lib</code>.</p>
 <h2 id="macos-pkg-installer">macOS PKG Installer</h2>
-<p>To install the Embree library on your macOS system use the provided package installer inside <a href="https://github.com/embree/embree/releases/download/v3.5.2/embree-3.5.2.x86_64.dmg">embree-3.5.2.x86_64.dmg</a>. This will install Embree by default into <code>/opt/local/lib</code> and <code>/opt/local/include</code> directories. The Embree tutorials are installed into the <code>/Applications/Embree3</code> directory.</p>
+<p>To install the Embree library on your macOS system use the provided package installer inside <a href="https://github.com/embree/embree/releases/download/v3.5.2/embree-3.5.2.x86_64.pkg">embree-3.5.2.x86_64.pkg</a>. This will install Embree by default into <code>/opt/local/lib</code> and <code>/opt/local/include</code> directories. The Embree tutorials are installed into the <code>/Applications/Embree3</code> directory.</p>
 <p>You also have to install the Intel® Threading Building Blocks (TBB) using <a href="http://www.macports.org/">MacPorts</a>:</p>
 <pre><code>sudo port install tbb</code></pre>
 <p>Alternatively you can download the latest TBB version from <a href="https://www.threadingbuildingblocks.org/download" class="uri">https://www.threadingbuildingblocks.org/download</a> and set the <code>DYLD_LIBRARY_PATH</code> environment variable to point to the TBB library.</p>
