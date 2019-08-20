@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.5.2!
+      We recently released Intel® Embree v3.6.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -46,7 +46,9 @@
 <h1 id="embree-example-renderer">Embree Example Renderer</h1>
 <p>The Embree Example Renderer is a photo-realistic path tracer that builds on the Embree high performance ray tracing kernels. The renderer is used to demonstrate how Embree is used in practice and to measure Embree's performance in a realistic application scenario. The Embree Example Renderer is not a full featured renderer and not designed to be used for production rendering. The Embree Example Renderer is released as Open Source under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.</p>
 <p>We provide binaries for the Embree Example Renderer for Linux (64-bit), macOS (64-bit), and Windows (64-bit):</p>
-<p><a href="http://github.com/embree/embree-renderer-bin/archive/v2.3.2_linux.zip">embree-renderer-2.3.2-linux.zip</a><br /><a href="http://github.com/embree/embree-renderer-bin/archive/v2.3.2_macos.zip">embree-renderer-2.3.2-macos.zip</a><br /><a href="http://github.com/embree/embree-renderer-bin/archive/v2.3.2_win.zip">embree-renderer-2.3.2-win.zip</a></p>
+<p><a href="http://github.com/embree/embree-renderer-bin/archive/v2.3.2_linux.zip">embree-renderer-2.3.2-linux.zip</a><br />
+<a href="http://github.com/embree/embree-renderer-bin/archive/v2.3.2_macos.zip">embree-renderer-2.3.2-macos.zip</a><br />
+<a href="http://github.com/embree/embree-renderer-bin/archive/v2.3.2_win.zip">embree-renderer-2.3.2-win.zip</a></p>
 <p>In case the Windows reports a missing <code>MSVCP120.DLL</code> please install the <a href="http://www.microsoft.com/en-us/download/details.aspx?id=40784">Visual C++ Redistributable Packages for Visual Studio 2013.</a></p>
 <p>If you need to recompile the Embree Example Renderer for your platform, please download the sources and follow the compilation instructions below:</p>
 <p><a href="http://github.com/embree/embree-renderer/archive/v2.3.2.zip">embree-renderer-2.3.2.zip</a></p>
@@ -66,7 +68,7 @@ git checkout v2.3.2</code></pre>
 cd build
 ccmake ..</code></pre>
 <p>This will open a configuration dialog where you should set the build mode to <code>Release</code> and the compiler to either GCC, CLANG, or ICC. You can configure which parts of the Embree Example Renderer to build:</p>
-<table>
+<table style="width:97%;">
 <caption>CMake build options for Embree Example Renderer.</caption>
 <colgroup>
 <col width="48%" />
@@ -125,7 +127,7 @@ ccmake ..</code></pre>
 <p>Make sure that port 8484 is not blocked by the firewall. Now you can connect from a second machine to the render server:</p>
 <pre><code>renderer -connect ip_of_render_server -c ../../models/cornell_box.ecs</code></pre>
 <h3 id="navigation">Navigation</h3>
-<p>The navigation in the interactive display mode follows the camera orbit model, where the camera revolves around the current center of interest. The camera navigation assumes the <span class="math"><em>y</em></span>-axis to point upwards. If your scene is modeled using the <span class="math"><em>z</em></span>-axis as up axis we recommend rotating the scene.</p>
+<p>The navigation in the interactive display mode follows the camera orbit model, where the camera revolves around the current center of interest. The camera navigation assumes the <span class="math inline"><em>y</em></span>-axis to point upwards. If your scene is modeled using the <span class="math inline"><em>z</em></span>-axis as up axis we recommend rotating the scene.</p>
 <dl>
 <dt>Left Mouse Button</dt>
 <dd>Rotate around center of interest

@@ -37,15 +37,15 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.5.2!
+      We recently released Intel® Embree v3.6.0!
     </a>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <div id="main_content" class="inner">
 <h1 id="embree-tutorials">Embree Tutorials</h1>
-<p>Embree comes with a set of tutorials aimed at helping users understand how Embree can be used and extended. All tutorials exist in an ISPC and C++ version to demonstrate the two versions of the API. Look for files named <code>tutorialname_device.ispc</code> for the ISPC implementation of the tutorial, and files named <code>tutorialname_device.cpp</code> for the single ray C++ version of the tutorial. To start the C++ version use the <code>tutorialname</code> executables, to start the ISPC version use the <code>tutorialname_ispc</code> executables. All tutorials can print available command line options using the <code>--help</code> command line parameter.</p>
-<p>For all tutorials, you can select an initial camera using the <code>--vp</code> (camera position), <code>--vi</code> (camera look-at point), <code>--vu</code> (camera up vector), and <code>--fov</code> (vertical field of view) command line parameters:</p>
+<p>Embree comes with a set of tutorials aimed at helping users understand how Embree can be used and extended. There is a very basic minimal that can be compiled as both C and C++, which should get new users started quickly. All other tutorials exist in an ISPC and C++ version to demonstrate the two versions of the API. Look for files named <code>tutorialname_device.ispc</code> for the ISPC implementation of the tutorial, and files named <code>tutorialname_device.cpp</code> for the single ray C++ version of the tutorial. To start the C++ version use the <code>tutorialname</code> executables, to start the ISPC version use the <code>tutorialname_ispc</code> executables. All tutorials can print available command line options using the <code>--help</code> command line parameter.</p>
+<p>For all tutorials except minimal, you can select an initial camera using the <code>--vp</code> (camera position), <code>--vi</code> (camera look-at point), <code>--vu</code> (camera up vector), and <code>--fov</code> (vertical field of view) command line parameters:</p>
 <pre><code>./triangle_geometry --vp 10 10 10 --vi 0 0 0</code></pre>
 <p>You can select the initial window size using the <code>--size</code> command line parameter, or start the tutorials in full screen using the <code>--fullscreen</code> parameter:</p>
 <pre><code>./triangle_geometry --size 1024 1024
@@ -98,6 +98,8 @@
 <dd>Exits the tutorial.
 </dd>
 </dl>
+<h2 id="minimal">Minimal</h2>
+<p>This tutorial is designed to get new users started with Embree. It can be compiled as both C and C++. It demonstrates how to initialize a device and scene, and how to intersect rays with the scene. There is no image output to keep the tutorial as simple as possible.</p>
 <h2 id="triangle-geometry">Triangle Geometry</h2>
 <div class="figure">
 <img src="images/triangle_geometry.jpg" />
@@ -131,18 +133,25 @@
 </div>
 <p>This tutorial is a simple OBJ viewer that demonstrates the use of ray streams. You need to specify an OBJ file at the command line for this tutorial to work:</p>
 <pre><code>./viewer_stream -i model.obj</code></pre>
-<h2 id="instanced-geometry">Instanced Geometry</h2>
-<div class="figure">
-<img src="images/instanced_geometry.jpg" />
-
-</div>
-<p>This tutorial demonstrates the in-build instancing feature of Embree, by instancing a number of other scenes built from triangulated spheres. The spheres are again colored using the instance ID and geometry ID of the hit sphere, to demonstrate how the same geometry instanced in different ways can be distinguished.</p>
 <h2 id="intersection-filter">Intersection Filter</h2>
 <div class="figure">
 <img src="images/intersection_filter.jpg" />
 
 </div>
 <p>This tutorial demonstrates the use of filter callback functions to efficiently implement transparent objects. The filter function used for primary rays lets the ray pass through the geometry if it is entirely transparent. Otherwise, the shading loop handles the transparency properly, by potentially shooting secondary rays. The filter function used for shadow rays accumulates the transparency of all surfaces along the ray, and terminates traversal if an opaque occluder is hit.</p>
+<h2 id="instanced-geometry">Instanced Geometry</h2>
+<div class="figure">
+<img src="images/instanced_geometry.jpg" />
+
+</div>
+<p>This tutorial demonstrates the in-build instancing feature of Embree, by instancing a number of other scenes built from triangulated spheres. The spheres are again colored using the instance ID and geometry ID of the hit sphere, to demonstrate how the same geometry instanced in different ways can be distinguished.</p>
+<h2 id="multi-level-instancing">Multi Level Instancing</h2>
+<div class="figure">
+<img src="images/multi_level_instancing.jpg" />
+
+</div>
+<p>This tutorial demonstrates multi-level instancing, i.e., nesting instances into instances. To enable the tutorial, set the compile-time variable <code>EMBREE_MAX_INSTANCE_LEVEL_COUNT</code> to a value other than the default 1. This variable is available in the code as <code>RTC_MAX_INSTANCE_LEVEL_COUNT</code>.</p>
+<p>The renderer uses a basic path tracing approach, and the image will progressively refine over time. There are two levels of instances in this scene: multiple instances of the same tree nest instances of a twig. Intersections on up to <code>RTC_MAX_INSTANCE_LEVEL_COUNT</code> nested levels of instances work out of the box. Users may obtain the <em>instance ID stack</em> for a given hitpoint from the <code>instID</code> member. During shading, the instance ID stack is used to accumulate normal transformation matrices for each hit. The tutorial visualizes transformed normals as colors.</p>
 <h2 id="path-tracer">Path Tracer</h2>
 <div class="figure">
 <img src="images/pathtracer.jpg" />
@@ -163,12 +172,12 @@
 
 </div>
 <p>This tutorial demonstrates the use of the hair geometry to render a hairball.</p>
-<h2 id="bézier-curves">Bézier Curves</h2>
+<h2 id="curve-geometry">Curve Geometry</h2>
 <div class="figure">
 <img src="images/curve_geometry.jpg" />
 
 </div>
-<p>This tutorial demonstrates the use of the Bézier curve geometry.</p>
+<p>This tutorial demonstrates the use of the B-Spline and Catmull-Rom curve geometries.</p>
 <h2 id="subdivision-geometry">Subdivision Geometry</h2>
 <div class="figure">
 <img src="images/subdivision_geometry.jpg" />
@@ -206,6 +215,12 @@
 
 </div>
 <p>This tutorial demonstrates interpolation of user-defined per-vertex data.</p>
+<h2 id="closest-point">Closest Point</h2>
+<p>[][imgClosestPoint]</p>
+<p>This tutorial demonstrates a use-case of the point query API. The scene consists of a simple collection of objects that are instanced and for several point in the scene (red points) the closest point on the surfaces of the scene are computed (white points). The closest point functionality is implemented for Embree internal and for user-defined instancing. The tutorial also illustrates how to handle instance transformations that are not similarity transforms.</p>
+<h2 id="voronoi">Voronoi</h2>
+<p>[][imgVoronoi]</p>
+<p>This tutorial demonstrates how to implement nearest neighbour lookups using the point query API. Several colored points are located on a plane and the corresponding voroni regions are illustrated.</p>
 <h2 id="bvh-builder">BVH Builder</h2>
 <p>This tutorial demonstrates how to use the templated hierarchy builders of Embree to build a bounding volume hierarchy with a user-defined memory layout using a high-quality SAH builder using spatial splits, a standard SAH builder, and a very fast Morton builder.</p>
 <h2 id="bvh-access">BVH Access</h2>

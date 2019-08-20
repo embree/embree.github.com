@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.5.2!
+      We recently released Intel® Embree v3.6.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -101,9 +101,19 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="new-features-in-embree-3.6">New Features in Embree 3.6</h3>
+<ul>
+<li>Added Catmull-Rom curve types.</li>
+<li>Added support for multi-level instancing.</li>
+<li>Added support for point queries.</li>
+<li>Fixed a bug preventing normal oriented curves being used unless timesteps were specified.</li>
+<li>Fixed bug in external BVH builder when configured for dynamic build.</li>
+<li>Added support for new config flag &quot;user_threads=N&quot; to device initialization which sets the number of threads used by TBB but created by the user.</li>
+<li>Fixed automatic vertex buffer padding when using rtcSetNewGeometry API function.</li>
+</ul>
 <h3 id="new-features-in-embree-3.5.2">New Features in Embree 3.5.2</h3>
 <ul>
-<li>Added EMBREE_ISA_NAMESPACE cmake option that allows to put all Embree API functions inside a user defined namespace.</li>
+<li>Added EMBREE_API_NAMESPACE cmake option that allows to put all Embree API functions inside a user defined namespace.</li>
 <li>Added EMBREE_LIBRARY_NAME cmake option that allows to rename the Embree library.</li>
 <li>When Embree is compiled as static library, EMBREE_STATIC_LIB has no longer to get defined before including the Embree API headers.</li>
 <li>Added CPU frequency_level device configuration to allow an application to specify the frequency level it wants to run on. This forces Embree to not use optimizations that may reduce the CPU frequency below that level. By default Embree is configured to the the AVX-heavy frequency level, thus if the application uses solely non-AVX code, configuring the Embree device with &quot;frequency_level=simd128&quot; may give better performance.</li>
