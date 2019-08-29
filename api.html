@@ -75,7 +75,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.6.0!
+      We recently released Intel® Embree v3.6.1!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -1309,7 +1309,7 @@ RTCGeometry geometry =
 <p>The <code>rtcSetGeometryIntersectFilterFunction</code> function registers an intersection filter callback function (<code>filter</code> argument) for the specified geometry (<code>geometry</code> argument).</p>
 <p>Only a single callback function can be registered per geometry, and further invocations overwrite the previously set callback function. Passing <code>NULL</code> as function pointer disables the registered callback function.</p>
 <p>The registered intersection filter function is invoked for every hit encountered during the <code>rtcIntersect</code>-type ray queries and can accept or reject that hit. The feature can be used to define a silhouette for a primitive and reject hits that are outside the silhouette. E.g. a tree leaf could be modeled with an alpha texture that decides whether hit points lie inside or outside the leaf.</p>
-<p>If the <code>RTC_SCENE_HIGH_QUALITY</code> mode is set, the filter functions may be called multiple times for the same primitive hit. Further, rays hitting exactly the edge might also report two hits for the same surface. For certain use cases, the application may have to work around this limitation by collecting already reported hits (<code>geomID</code>/<code>primID</code> pairs) and ignoring duplicates.</p>
+<p>If the <code>RTC_BUILD_QUALITY_HIGH</code> mode is set, the filter functions may be called multiple times for the same primitive hit. Further, rays hitting exactly the edge might also report two hits for the same surface. For certain use cases, the application may have to work around this limitation by collecting already reported hits (<code>geomID</code>/<code>primID</code> pairs) and ignoring duplicates.</p>
 <p>The filter function callback of type <code>RTCFilterFunctionN</code> gets passed a number of arguments through the <code>RTCFilterFunctionNArguments</code> structure. The <code>valid</code> parameter of that structure points to an integer valid mask (0 means invalid and -1 means valid). The <code>geometryUserPtr</code> member is a user pointer optionally set per geometry through the <code>rtcSetGeometryUserData</code> function. The <code>context</code> member points to the intersection context passed to the ray query function. The <code>ray</code> parameter points to <code>N</code> rays in SOA layout. The <code>hit</code> parameter points to <code>N</code> hits in SOA layout to test. The <code>N</code> parameter is the number of rays and hits in <code>ray</code> and <code>hit</code>. The hit distance is provided as the <code>tfar</code> value of the ray. If the hit geometry is instanced, the <code>instID</code> member of the ray is valid, and the ray and the potential hit are in object space.</p>
 <p>The filter callback function has the task to check for each valid ray whether it wants to accept or reject the corresponding hit. To reject a hit, the filter callback function just has to write <code>0</code> to the integer valid mask of the corresponding ray. To accept the hit, it just has to leave the valid mask set to <code>-1</code>. The filter function is further allowed to change the hit and decrease the <code>tfar</code> value of the ray but it should not modify other ray data nor any inactive components of the ray or hit.</p>
 <p>When performing ray queries using <code>rtcIntersect1</code>, it is guaranteed that the packet size is 1 when the callback is invoked. When performing ray queries using the <code>rtcIntersect4/8/16</code> functions, it is not generally guaranteed that the ray packet size (and order of rays inside the packet) passed to the callback matches the initial ray packet. However, under some circumstances these properties are guaranteed, and whether this is the case can be queried using <code>rtcGetDeviceProperty</code>. When performing ray queries using the stream API such as <code>rtcIntersect1M</code>, <code>rtcIntersect1Mp</code>, <code>rtcIntersectNM</code>, or <code>rtcIntersectNp</code> the order of rays and ray packet size of the callback function might change to either 1, 4, 8, or 16.</p>
@@ -2219,7 +2219,9 @@ RTCBuffer rtcNewSharedBuffer(
 {
   <span class="kw">enum</span> RTCIntersectContextFlags flags;
   RTCFilterFunctionN filter;
+  <span class="pp">#if RTC_MAX_INSTANCE_LEVEL_COUNT &gt; 1</span>
   <span class="dt">unsigned</span> <span class="dt">int</span> instStackSize;
+  <span class="pp">#endif</span>
   <span class="dt">unsigned</span> <span class="dt">int</span> instID[RTC_MAX_INSTANCE_LEVEL_COUNT];
 };
 
