@@ -75,7 +75,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.6.1!
+      We recently released Intel® Embree v3.7.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -98,7 +98,7 @@ div.sourceCode { overflow-x: initial; }
 <p>A build quality can be specified for a scene to balance between acceleration structure build performance and ray query performance. See Section <a href="#rtcsetscenebuildquality">rtcSetSceneBuildQuality</a> for more details on build quality.</p>
 <h2 id="geometry-object">Geometry Object</h2>
 <p>A new geometry is created using the <code>rtcNewGeometry</code> function. Depending on the geometry type, different buffers must be bound (e.g. using <code>rtcSetSharedGeometryBuffer</code>) to set up the geometry data. In most cases, binding of a vertex and index buffer is required. The number of primitives and vertices of that geometry is typically inferred from the size of these bound buffers.</p>
-<p>Changes to the geometry always must be committed using the <code>rtcCommitGeometry</code> call before using the geometry. After committing, a geometry is not included in any scene. A geometry can be added to a scene by using the <code>rtcAttachGeometry</code> function (to automatically assign a geometry ID) or using the <code>rtcAttachGeometryById</code> function (to specify the geometry ID manually). A geometry can only be attached to a single scene at a time.</p>
+<p>Changes to the geometry always must be committed using the <code>rtcCommitGeometry</code> call before using the geometry. After committing, a geometry is not included in any scene. A geometry can be added to a scene by using the <code>rtcAttachGeometry</code> function (to automatically assign a geometry ID) or using the <code>rtcAttachGeometryById</code> function (to specify the geometry ID manually). A geometry can get attached to multiple scenes.</p>
 <p>All geometry types support multi-segment motion blur with an arbitrary number of equidistant time steps (in the range of 2 to 129) inside a user specified time range. Each geometry can have a different number of time steps and a different time range. The motion blur geometry is defined by linearly interpolating the geometries of neighboring time steps. To construct a motion blur geometry, first the number of time steps of the geometry must be specified using the <code>rtcSetGeometryTimeStepCount</code> function, and then a vertex buffer for each time step must be bound, e.g. using the <code>rtcSetSharedGeometryBuffer</code> function. Optionally, a time range defining the start (and end time) of the first (and last) time step can be set using the <code>rtcSetGeometryTimeRange</code> function. This feature will also allow geometries to appear and disappear during the camera shutter time if the time range is a sub range of [0,1].</p>
 <p>The API supports per-geometry filter callback functions (see <code>rtcSetGeometryIntersectFilterFunction</code> and <code>rtcSetGeometryOccludedFilterFunction</code>) that are invoked for each intersection found during the <code>rtcIntersect</code>-type or <code>rtcOccluded</code>-type calls. The former ones are called geometry intersection filter functions, the latter ones geometry occlusion filter functions. These filter functions are designed to be used to ignore intersections outside of a user-defined silhouette of a primitive, e.g. to model tree leaves using transparency textures.</p>
 <h2 id="ray-queries">Ray Queries</h2>
@@ -108,13 +108,13 @@ div.sourceCode { overflow-x: initial; }
 <p>See Sections <a href="#rtcintersect1">rtcIntersect1</a> and <a href="#rtcoccluded1">rtcOccluded1</a> for a detailed description of how to set up and trace a ray.</p>
 <p>See tutorial <a href="tutorials.html#triangle-geometry">Triangle Geometry</a> for a complete example of how to trace single rays and ray packets. Also have a look at the tutorial <a href="tutorials.html#stream-viewer">Stream Viewer</a> for an example of how to trace ray streams.</p>
 <h2 id="point-queries">Point Queries</h2>
-<p>The API supports traversal of the BVH using a point query object that specifies a location and a query radius. For all primitives intersecting the according domain, a user defined callback function is called which allows queries such as finding the closest point on the surface geometries of the scene (see Tutorial [ClosestPoint]) or nearest neighbour queries (see Tutorial [Voronoi]).</p>
+<p>The API supports traversal of the BVH using a point query object that specifies a location and a query radius. For all primitives intersecting the according domain, a user defined callback function is called which allows queries such as finding the closest point on the surface geometries of the scene (see Tutorial <a href="tutorials.html#closest-point">Closest Point</a>) or nearest neighbour queries (see Tutorial <a href="tutorials.html#voronoi">Voronoi</a>).</p>
 <p>See Section [rtcPointQuery] for a detailed description of how to set up point queries.</p>
 <h2 id="miscellaneous">Miscellaneous</h2>
 <p>A context filter function, which can be set per ray query is supported (see <code>rtcInitIntersectContext</code>). This filter function is designed to change the semantics of the ray query, e.g. to accumulate opacity for transparent shadows, count the number of surfaces along a ray, collect all hits along a ray, etc.</p>
 <p>The internal algorithms to build a BVH are exposed through the <code>RTCBVH</code> object and <code>rtcBuildBVH</code> call. This call makes it possible to build a BVH in a user-specified format over user-specified primitives. See the documentation of the <code>rtcBuildBVH</code> call for more details.</p>
 <p>For getting the most performance out of Embree, see the Section <a href="#performance-recommendations">Performance Recommendations</a>.</p>
-
+<p></p>
 <h1 id="upgrading-from-embree-2-to-embree-3">Upgrading from Embree 2 to Embree 3</h1>
 <p>We decided to introduce an improved API in Embree 3 that is not backward compatible with the Embree 2 API. This step was required to remove various deprecated API functions that accumulated over time, improve extensibility of the API, fix suboptimal design decisions, fix design mistakes (such as incompatible single ray and ray packet layouts), clean up inconsistent naming, and increase flexibility.</p>
 <p>To make porting to the new API easy, we provide a conversion script that can do most of the work, and will annotate the code with remaining changes required. The script can be invoked the following way for CPP files:</p>
@@ -144,7 +144,7 @@ div.sourceCode { overflow-x: initial; }
 <li><p>We introduced an object type <code>RTCGeometry</code> for all geometries. Previously a geometry was not a standalone object and could only exist inside a scene. The new approach comes with more flexibility and more readable code.</p>
 <p>Operations like <code>rtcInterpolate</code> can now be performed on the geometry object directly without the need of a scene. Further, an application can choose to create its geometries independent of a scene, e.g. each time a geometry node is added to its scene graph.</p>
 <p>This modification changed many API functions to get passed one <code>RTCGeometry</code> object instead of a <code>RTCScene</code> and <code>geomID</code>. The script does all required changed automatically. However, in some cases the script may introduce <code>rtcGetGeometry(scene, geomID)</code> calls to retrieve the geometry handle. Best store the geometry handle inside your scene representation (and release it in the destructor) and access the handle directly instead of calling <code>rtcGetGeometry</code>.</p></li>
-<li><p>Geometries are not included inside a scene anymore but can be attached to a single scene using the <code>rtcAttachGeomety</code> or <code>rtcAttachGeometryByID</code> functions.</p></li>
+<li><p>Geometries are not included inside a scene anymore but can be attached to a multiple scenes using the <code>rtcAttachGeomety</code> or <code>rtcAttachGeometryByID</code> functions.</p></li>
 <li><p>As geometries are separate objects, commit semantics got introduced for them too. Thus geometries must be committed through the <code>rtcCommitGeometry</code> call before getting used. This allows for earlier error checking and pre-calculating internal data per geometry object.</p>
 <p>Such commit points were previously not required in the Embree 2 API. The upgrade script attempts to insert the commits automatically, but cannot do so properly under all circumstances. Thus please check if every <code>rtcCommitGeometry</code> call inserted by the script is properly placed, and if a <code>rtcCommitGeometry</code> call is placed after a sequence of changes to a geometry.</p></li>
 <li><p>Only the latest version of the previous displacement function call (<code>RTCDisplacementFunc2</code>) is now supported, and the callback is passed as a structure containing all arguments.</p></li>
@@ -185,15 +185,15 @@ div.sourceCode { overflow-x: initial; }
 <li><p>We no longer export the ISPC tasking system, which means that the application has the responsibility to implement the ISPC tasking system itself. ISPC comes with example code on how to do this. This change is not performed by the script and must be done manually.</p></li>
 <li><p>Fixed many naming inconsistencies, and changed names of further API functions. All these renamings are properly done by the script and need no further attention.</p></li>
 </ul>
-
+<p></p>
 <h1 id="embree-api-reference">Embree API Reference</h1>
 <h2 id="rtcnewdevice">rtcNewDevice</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcNewDevice - creates a <span class="kw">new</span> device</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
-RTCDevice rtcNewDevice(<span class="at">const</span> <span class="dt">char</span>* config);</code></pre></div>
+RTCDevice rtcNewDevice(<span class="dt">const</span> <span class="dt">char</span>* config);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>This function creates a new device and returns a handle to this device. The device object is reference counted with an initial reference count of 1. The handle can be released using the <code>rtcReleaseDevice</code> API call.</p>
 <p>The device object acts as a class factory for all other object types. All objects created from the device (like scenes, geometries, etc.) hold a reference to the device, thus the device will not be destroyed unless these objects are destroyed first.</p>
@@ -226,12 +226,12 @@ RTCDevice rtcNewDevice(<span class="at">const</span> <span class="dt">char</span
 <p>On success returns a handle of the created device. On failure returns <code>NULL</code> as device and sets a per-thread error code that can be queried using <code>rtcGetDeviceError(NULL)</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcretaindevice">rtcRetainDevice</a>, <a href="#rtcreleasedevice">rtcReleaseDevice</a></p>
-
+<p></p>
 <h2 id="rtcretaindevice">rtcRetainDevice</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcRetainDevice - increments the device reference count</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcRetainDevice(RTCDevice device);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -240,12 +240,12 @@ RTCDevice rtcNewDevice(<span class="at">const</span> <span class="dt">char</span
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewdevice">rtcNewDevice</a>, <a href="#rtcreleasedevice">rtcReleaseDevice</a></p>
-
+<p></p>
 <h2 id="rtcreleasedevice">rtcReleaseDevice</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcReleaseDevice - decrements the device reference count</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcReleaseDevice(RTCDevice device);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -255,14 +255,14 @@ RTCDevice rtcNewDevice(<span class="at">const</span> <span class="dt">char</span
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewdevice">rtcNewDevice</a>, <a href="#rtcretaindevice">rtcRetainDevice</a></p>
-
+<p></p>
 <h2 id="rtcgetdeviceproperty">rtcGetDeviceProperty</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetDeviceProperty - queries properties of the device</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
-<span class="dt">ssize_t</span> rtcGetDeviceProperty(
+ssize_t rtcGetDeviceProperty(
   RTCDevice device,
   <span class="kw">enum</span> RTCDeviceProperty prop
 );</code></pre></div>
@@ -295,16 +295,17 @@ RTCDevice rtcNewDevice(<span class="at">const</span> <span class="dt">char</span
 <li>Parallel Patterns Library (PPL)</li>
 </ol></li>
 <li><p><code>RTC_DEVICE_PROPERTY_COMMIT_JOIN_SUPPORTED</code>: Queries whether <code>rtcJoinCommitScene</code> is supported. This is not the case when Embree is compiled with PPL or older versions of TBB.</p></li>
+<li><p><code>RTC_DEVICE_PROPERTY_PARALLEL_COMMIT_SUPPORTED</code>: Queries whether <code>rtcCommitScene</code> can get invoked from multiple TBB worker threads concurrently. This feature is only supported starting with TBB 2019 Update 9.</p></li>
 </ul>
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On success returns the value of the queried property. For properties returning a boolean value, the return value 0 denotes <code>false</code> and 1 denotes <code>true</code>.</p>
 <p>On failure zero is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
-
+<p></p>
 <h2 id="rtcgetdeviceerror">rtcGetDeviceError</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetDeviceError - returns the error code of the device</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCError rtcGetDeviceError(RTCDevice device);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -324,17 +325,17 @@ RTCError rtcGetDeviceError(RTCDevice device);</code></pre></div>
 <p>Returns the error code for the device.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetdeviceerrorfunction">rtcSetDeviceErrorFunction</a></p>
-
+<p></p>
 <h2 id="rtcsetdeviceerrorfunction">rtcSetDeviceErrorFunction</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetDeviceErrorFunction - sets an error callback function <span class="cf">for</span> the device</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetDeviceErrorFunction - sets an error callback function <span class="kw">for</span> the device</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCErrorFunction)(
   <span class="dt">void</span>* userPtr,
   RTCError code,
-  <span class="at">const</span> <span class="dt">char</span>* str
+  <span class="dt">const</span> <span class="dt">char</span>* str
 );
 
 <span class="dt">void</span> rtcSetDeviceErrorFunction(
@@ -351,17 +352,17 @@ RTCError rtcGetDeviceError(RTCDevice device);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetdeviceerror">rtcGetDeviceError</a></p>
-
+<p></p>
 <h2 id="rtcsetdevicememorymonitorfunction">rtcSetDeviceMemoryMonitorFunction</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetDeviceMemoryMonitorFunction - registers a callback function
   to track memory consumption</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">typedef</span> <span class="dt">bool</span> (*RTCMemoryMonitorFunction)(
   <span class="dt">void</span>* userPtr,
-  <span class="dt">ssize_t</span> bytes,
+  ssize_t bytes,
   <span class="dt">bool</span> post
 );
 
@@ -381,12 +382,12 @@ RTCError rtcGetDeviceError(RTCDevice device);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewdevice">rtcNewDevice</a></p>
-
+<p></p>
 <h2 id="rtcnewscene">rtcNewScene</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcNewScene - creates a <span class="kw">new</span> scene</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCScene rtcNewScene(RTCDevice device);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -395,12 +396,12 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre></div>
 <p>On success a scene handle is returned. On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcretainscene">rtcRetainScene</a>, <a href="#rtcreleasescene">rtcReleaseScene</a></p>
-
+<p></p>
 <h2 id="rtcretainscene">rtcRetainScene</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcRetainScene - increments the scene reference count</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcRetainScene(RTCScene scene);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -409,12 +410,12 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewscene">rtcNewScene</a>, <a href="#rtcreleasescene">rtcReleaseScene</a></p>
-
+<p></p>
 <h2 id="rtcreleasescene">rtcReleaseScene</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcReleaseScene - decrements the scene reference count</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcReleaseScene(RTCScene scene);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -424,19 +425,19 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewscene">rtcNewScene</a>, <a href="#rtcretainscene">rtcRetainScene</a></p>
-
+<p></p>
 <h2 id="rtcattachgeometry">rtcAttachGeometry</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcAttachGeometry - attaches a geometry to the scene</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">unsigned</span> <span class="dt">int</span> rtcAttachGeometry(
   RTCScene scene,
   RTCGeometry geometry
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
-<p>The <code>rtcAttachGeometry</code> function attaches a geometry (<code>geometry</code> argument) to a scene (<code>scene</code> argument) and assigns a geometry ID to that geometry. All geometries attached to a scene are defined to be included inside the scene. A geometry can only get attached to a single scene at a given time. However, it is possible to detach and re-attach a geometry to a different scene. The geometry ID is unique for the scene, and is used to identify the geometry when hit by a ray during ray queries.</p>
+<p>The <code>rtcAttachGeometry</code> function attaches a geometry (<code>geometry</code> argument) to a scene (<code>scene</code> argument) and assigns a geometry ID to that geometry. All geometries attached to a scene are defined to be included inside the scene. A geometry can get attached to multiplee scene. The geometry ID is unique for the scene, and is used to identify the geometry when hit by a ray during ray queries.</p>
 <p>This function is thread-safe, thus multiple threads can attach geometries to a scene in parallel.</p>
 <p>The geometry IDs are assigned sequentially, starting from 0, as long as no geometry got detached. If geometries got detached, the implementation will reuse IDs in an implementation dependent way. Consequently sequential assignment is no longer guaranteed, but a compact range of IDs.</p>
 <p>These rules allow the application to manage a dynamic array to efficiently map from geometry IDs to its own geometry representation. Alternatively, the application can also use per-geometry user data to map to its geometry representation. See <code>rtcSetGeometryUserData</code> and <code>rtcGetGeometryUserData</code> for more information.</p>
@@ -444,13 +445,13 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcgetgeometryuserdata">rtcGetGeometryUserData</a></p>
-
+<p></p>
 <h2 id="rtcattachgeometrybyid">rtcAttachGeometryByID</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcAttachGeometryByID - attaches a geometry to the scene
   <span class="kw">using</span> a specified geometry ID</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcAttachGeometryByID(
   RTCScene scene,
@@ -458,19 +459,19 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre></div>
   <span class="dt">unsigned</span> <span class="dt">int</span> geomID
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
-<p>The <code>rtcAttachGeometryByID</code> function attaches a geometry (<code>geometry</code> argument) to a scene (<code>scene</code> argument) and assigns a user provided geometry ID (<code>geomID</code> argument) to that geometry. All geometries attached to a scene are defined to be included inside the scene. A geometry can only get attached to a single scene at a given time. However, it is possible to detach and re-attach a geometry to a different scene. The passed user-defined geometry ID is used to identify the geometry when hit by a ray during ray queries. Using this function, it is possible to share the same IDs to refer to geometries inside the application and Embree.</p>
+<p>The <code>rtcAttachGeometryByID</code> function attaches a geometry (<code>geometry</code> argument) to a scene (<code>scene</code> argument) and assigns a user provided geometry ID (<code>geomID</code> argument) to that geometry. All geometries attached to a scene are defined to be included inside the scene. A geometry can get attached to multiple scenes. The passed user-defined geometry ID is used to identify the geometry when hit by a ray during ray queries. Using this function, it is possible to share the same IDs to refer to geometries inside the application and Embree.</p>
 <p>This function is thread-safe, thus multiple threads can attach geometries to a scene in parallel.</p>
 <p>The user-provided geometry ID must be unused in the scene, otherwise the creation of the geometry will fail. Further, the user-provided geometry IDs should be compact, as Embree internally creates a vector which size is equal to the largest geometry ID used. Creating very large geometry IDs for small scenes would thus cause a memory consumption and performance overhead.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcattachgeometry">rtcAttachGeometry</a></p>
-
+<p></p>
 <h2 id="rtcdetachgeometry">rtcDetachGeometry</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcDetachGeometry - detaches a geometry from the scene</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcDetachGeometry(RTCScene scene, <span class="dt">unsigned</span> <span class="dt">int</span> geomID);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -480,13 +481,13 @@ RTCScene rtcNewScene(RTCDevice device);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcattachgeometry">rtcAttachGeometry</a>, <a href="#rtcattachgeometrybyid">rtcAttachGeometryByID</a></p>
-
+<p></p>
 <h2 id="rtcgetgeometry">rtcGetGeometry</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometry - returns the geometry bound to
   the specified geometry ID</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <span class="dt">int</span> geomID);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -495,16 +496,17 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcattachgeometry">rtcAttachGeometry</a>, <a href="#rtcattachgeometrybyid">rtcAttachGeometryByID</a></p>
-
+<p></p>
 <h2 id="rtccommitscene">rtcCommitScene</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcCommitScene - commits scene changes</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcCommitScene(RTCScene scene);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcCommitScene</code> function commits all changes for the specified scene (<code>scene</code> argument). This internally triggers building of a spatial acceleration structure for the scene using all available worker threads. Ray queries can be performed only after committing all scene changes.</p>
+<p>If the application uses TBB 2019 Update 9 or later for parallelization of rendering, lazy scene construction during rendering is supported by <code>rtcCommitScene</code>. Therefore <code>rtcCommitScene</code> can get called from multiple TBB worker threads concurrently for the same scene. The <code>rtcCommitScene</code> function will then internally isolate the scene construction using a tbb::isolated_task_group. The alternative approach of using <code>rtcJoinCommitScene</code> which uses an tbb:task_arena internally, is not recommended due to it's high runtime overhead.</p>
 <p>If scene geometries get modified or attached or detached, the <code>rtcCommitScene</code> call must be invoked before performing any further ray queries for the scene; otherwise the effect of the ray query is undefined. The modification of a geometry, committing the scene, and tracing of rays must always happen sequentially, and never at the same time. Any API call that sets a property of the scene or geometries contained in the scene count as scene modification, e.g. including setting of intersection filter functions.</p>
 <p>The kind of acceleration structure built can be influenced using scene flags (see <code>rtcSetSceneFlags</code>), and the quality can be specified using the <code>rtcSetSceneBuildQuality</code> function.</p>
 <p>Embree silently ignores primitives during spatial acceleration structure construction that would cause numerical issues, e.g. primitives containing NaNs, INFs, or values greater than 1.844E18f (as no reasonable calculations can be performed with such values without causing overflows).</p>
@@ -512,17 +514,18 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcjoincommitscene">rtcJoinCommitScene</a></p>
-
+<p></p>
 <h2 id="rtcjoincommitscene">rtcJoinCommitScene</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcJoinCommitScene - commits the scene from multiple threads</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcJoinCommitScene(RTCScene scene);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
-<p>The <code>rtcJoinCommitScene</code> function commits all changes for the specified scene (<code>scene</code> argument). In contrast to the <code>rtcCommitScene</code> function, the <code>rtcJoinCommitScene</code> function can be called from multiple threads, which all cooperate in the same scene commit. All threads will return from this function after the scene commit is finished. All threads must consistently call <code>rtcJoinCommitScene</code> and not <code>rtcCommitScene</code>.</p>
-<p>The scene commit internally triggers building of a spatial acceleration structure for the scene. Ray queries can be performed after scene changes got properly committed.</p>
+<p>The <code>rtcJoinCommitScene</code> function commits all changes for the specified scene (<code>scene</code> argument). The scene commit internally triggers building of a spatial acceleration structure for the scene. Ray queries can be performed after scene changes got properly committed.</p>
+<p>The <code>rtcJoinCommitScene</code> function can get called from multiple user threads which will all cooperate in the build operation. All threads calling into this function will return from <code>rtcJoinCommitScene</code> after the scene commit is finished. All threads must consistently call <code>rtcJoinCommitScene</code> and not <code>rtcCommitScene</code>.</p>
+<p>In contrast to the <code>rtcCommitScene</code> function, the <code>rtcJoinCommitScene</code> function can be called from multiple user threads, while the <code>rtcCommitScene</code> can only get called from multiple TBB worker threads when used concurrently. For optimal performance we strongly recommend using TBB inside the application together with the <code>rtcCommitScene</code> function and to avoid using the <code>rtcJoinCommitScene</code> function.</p>
 <p>The <code>rtcJoinCommitScene</code> feature allows a flexible way to lazily create hierarchies during rendering. A thread reaching a not-yet-constructed sub-scene of a two-level scene can generate the sub-scene geometry and call <code>rtcJoinCommitScene</code> on that just generated scene. During construction, further threads reaching the not-yet-built scene can join the build operation by also invoking <code>rtcJoinCommitScene</code>. A thread that calls <code>rtcJoinCommitScene</code> after the build finishes will directly return from the <code>rtcJoinCommitScene</code> call.</p>
 <p>Multiple scene commit operations on different scenes can be running at the same time, hence it is possible to commit many small scenes in parallel, distributing the commits to many threads.</p>
 <p>When using Embree with the Intel® Threading Building Blocks (which is the default), threads that call <code>rtcJoinCommitScene</code> will join the build operation, but other TBB worker threads might also participate in the build. To avoid thread oversubscription, we recommend using TBB also inside the application. Further, the join mode only works properly starting with TBB v4.4 Update 1. For earlier TBB versions, threads that call <code>rtcJoinCommitScene</code> to join a running build will just trigger the build and wait for the build to finish. Further, old TBB versions with <code>TBB_INTERFACE_VERSION_MAJOR &lt; 8</code> do not support <code>rtcJoinCommitScene</code>, and invoking this function will result in an error.</p>
@@ -533,13 +536,13 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtccommitscene">rtcCommitScene</a>, <a href="#rtcgetdeviceproperty">rtcGetDeviceProperty</a></p>
-
+<p></p>
 <h2 id="rtcsetsceneprogressmonitorfunction">rtcSetSceneProgressMonitorFunction</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetSceneProgressMonitorFunction - registers a callback
   to track build progress</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">typedef</span> <span class="dt">bool</span> (*RTCProgressMonitorFunction)(
   <span class="dt">void</span>* ptr,
@@ -561,13 +564,13 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewscene">rtcNewScene</a></p>
-
+<p></p>
 <h2 id="rtcsetscenebuildquality">rtcSetSceneBuildQuality</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetSceneBuildQuality - sets the build quality <span class="cf">for</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetSceneBuildQuality - sets the build quality <span class="kw">for</span>
   the scene</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetSceneBuildQuality(
   RTCScene scene,
@@ -585,12 +588,12 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrybuildquality">rtcSetGeometryBuildQuality</a></p>
-
+<p></p>
 <h2 id="rtcsetsceneflags">rtcSetSceneFlags</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetSceneFlags - sets the flags <span class="cf">for</span> the scene</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetSceneFlags - sets the flags <span class="kw">for</span> the scene</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetSceneFlags(RTCScene scene, <span class="kw">enum</span> RTCSceneFlags flags);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -607,12 +610,12 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetsceneflags">rtcGetSceneFlags</a></p>
-
+<p></p>
 <h2 id="rtcgetsceneflags">rtcGetSceneFlags</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetSceneFlags - returns the flags of the scene</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">enum</span> RTCSceneFlags rtcGetSceneFlags(RTCScene scene);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -623,12 +626,12 @@ rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST | flags);</code></pre></div>
 <p>On failure <code>RTC_SCENE_FLAG_NONE</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetsceneflags">rtcSetSceneFlags</a></p>
-
+<p></p>
 <h2 id="rtcgetscenebounds">rtcGetSceneBounds</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetSceneBounds - returns the axis-aligned bounding box of the scene</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTCORE_ALIGN(<span class="dv">16</span>) RTCBounds
 {
@@ -638,7 +641,7 @@ rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST | flags);</code></pre></div>
 
 <span class="dt">void</span> rtcGetSceneBounds(
   RTCScene scene,
-  <span class="kw">struct</span> RTCBounds* bound<span class="va">s_o</span>
+  <span class="kw">struct</span> RTCBounds* bounds_o
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcGetSceneBounds</code> function queries the axis-aligned bounding box of the specified scene (<code>scene</code> argument) and stores that bounding box to the provided destination pointer (<code>bounds_o</code> argument). The stored bounding box consists of lower and upper bounds for the x, y, and z dimensions as specified by the <code>RTCBounds</code> structure.</p>
@@ -647,12 +650,12 @@ rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST | flags);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetscenelinearbounds">rtcGetSceneLinearBounds</a>, <a href="#rtccommitscene">rtcCommitScene</a>, <a href="#rtcjoincommitscene">rtcJoinCommitScene</a></p>
-
+<p></p>
 <h2 id="rtcgetscenelinearbounds">rtcGetSceneLinearBounds</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetSceneLinearBounds - returns the linear bounds of the scene</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTCORE_ALIGN(<span class="dv">16</span>) RTCLinearBounds
 {
@@ -662,7 +665,7 @@ rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST | flags);</code></pre></div>
 
 <span class="dt">void</span> rtcGetSceneLinearBounds(
   RTCScene scene,
-  <span class="kw">struct</span> RTCLinearBounds* bound<span class="va">s_o</span>
+  <span class="kw">struct</span> RTCLinearBounds* bounds_o
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcGetSceneLinearBounds</code> function queries the linear bounds of the specified scene (<code>scene</code> argument) and stores them to the provided destination pointer (<code>bounds_o</code> argument). The stored linear bounds consist of bounding boxes for time 0 (<code>bounds0</code> member) and time 1 (<code>bounds1</code> member) as specified by the <code>RTCLinearBounds</code> structure. Linearly interpolating these bounds to a specific time <code>t</code> yields bounds for the geometry at that time.</p>
@@ -671,12 +674,12 @@ rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST | flags);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetscenebounds">rtcGetSceneBounds</a>, <a href="#rtccommitscene">rtcCommitScene</a>, <a href="#rtcjoincommitscene">rtcJoinCommitScene</a></p>
-
+<p></p>
 <h2 id="rtcnewgeometry">rtcNewGeometry</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcNewGeometry - creates a <span class="kw">new</span> geometry object</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">enum</span> RTCGeometryType
 {
@@ -684,12 +687,18 @@ rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST | flags);</code></pre></div>
  RTC_GEOMETRY_TYPE_QUAD,
  RTC_GEOMETRY_TYPE_SUBDIVISION,
  RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE,
- RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE,
  RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE,
- RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE,
  RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE,
+ RTC_GEOMETRY_TYPE_FLAT_HERMITE_CURVE,
+ RTC_GEOMETRY_TYPE_FLAT_CATMULL_ROM_CURVE,
  RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BEZIER_CURVE,
  RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BSPLINE_CURVE,
+ RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_HERMITE_CURVE,
+ RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_CATMULL_ROM_CURVE,
+ RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE,
+ RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE,
+ RTC_GEOMETRY_TYPE_ROUND_HERMITE_CURVE,
+ RTC_GEOMETRY_TYPE_ROUND_CATMULL_ROM_CURVE,
  RTC_GEOMETRY_TYPE_GRID,
  RTC_GEOMETRY_TYPE_SPHERE_POINT,
  RTC_GEOMETRY_TYPE_DISC_POINT,
@@ -704,9 +713,11 @@ RTCGeometry rtcNewGeometry(
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>Geometries are objects that represent an array of primitives of the same type. The <code>rtcNewGeometry</code> function creates a new geometry of specified type (<code>type</code> argument) bound to the specified device (<code>device</code> argument) and returns a handle to this geometry. The geometry object is reference counted with an initial reference count of 1. The geometry handle can be released using the <code>rtcReleaseGeometry</code> API call.</p>
-<p>Supported geometry types are triangle meshes (<code>RTC_GEOMETRY_TYPE_TRIANGLE</code> type), quad meshes (triangle pairs) (<code>RTC_GEOMETRY_TYPE_QUAD</code> type), Catmull-Clark subdivision surfaces (<code>RTC_GEOMETRY_TYPE_SUBDIVISION</code> type), curve geometries with different bases (<code>RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_CATMULL_ROM_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_CATMULL_ROM_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_CATMULL_ROM_CURVE</code> types), grid meshes (<code>RTC_GEOMETRY_TYPE_GRID</code>), point geometries (<code>RTC_GEOMETRY_TYPE_SPHERE_POINT</code>, <code>RTC_GEOMETRY_TYPE_DISC_POINT</code>, <code>RTC_TYPE_ORIENTED_DISC_POINT</code>), user-defined geometries (<code>RTC_GEOMETRY_TYPE_USER</code>), and instances (<code>RTC_GEOMETRY_TYPE_INSTANCE</code>).</p>
+<p>Supported geometry types are triangle meshes (<code>RTC_GEOMETRY_TYPE_TRIANGLE</code> type), quad meshes (triangle pairs) (<code>RTC_GEOMETRY_TYPE_QUAD</code> type), Catmull-Clark subdivision surfaces (<code>RTC_GEOMETRY_TYPE_SUBDIVISION</code> type), curve geometries with different bases (<code>RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE</code>,<br />
+<code>RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_HERMITE_CURVE</code>,<br />
+<code>RTC_GEOMETRY_TYPE_FLAT_CATMULL_ROM_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_HERMITE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_CATMULL_ROM_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_HERMITE_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_CATMULL_ROM_CURVE</code> types) grid meshes (<code>RTC_GEOMETRY_TYPE_GRID</code>), point geometries (<code>RTC_GEOMETRY_TYPE_SPHERE_POINT</code>, <code>RTC_GEOMETRY_TYPE_DISC_POINT</code>, <code>RTC_TYPE_ORIENTED_DISC_POINT</code>), user-defined geometries (<code>RTC_GEOMETRY_TYPE_USER</code>), and instances (<code>RTC_GEOMETRY_TYPE_INSTANCE</code>).</p>
 <p>The types <code>RTC_GEOMETRY_TYPE_ROUND_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_ROUND_BSPLINE_CURVE</code>, and <code>RTC_GEOMETRY_TYPE_ROUND_CATMULL_ROM_CURVE</code> will treat the curve as a sweep surface of a varying-radius circle swept tangentially along the curve. The types <code>RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE</code>, <code>RTC_GEOMETRY_TYPE_FLAT_BSPLINE_CURVE</code>, and <code>RTC_GEOMETRY_TYPE_FLAT_CATMULL_ROM_CURVE</code> use ray-facing ribbons as a faster-to-intersect approximation.</p>
-<p>After construction, geometries are enabled by default and not attached to any scene. Geometries can be disabled (<code>rtcDisableGeometry</code> call), and enabled again (<code>rtcEnableGeometry</code> call). A geometry can be attached to a single scene using the <code>rtcAttachGeometry</code> call (or <code>rtcAttachGeometryByID</code> call), and detached using the <code>rtcDetachGeometry</code> call. During attachment, a geometry ID is assigned to the geometry (or assigned by the user when using the <code>rtcAttachGeometryByID</code> call), which uniquely identifies the geometry inside that scene. This identifier is returned when primitives of the geometry are hit in later ray queries for the scene.</p>
+<p>After construction, geometries are enabled by default and not attached to any scene. Geometries can be disabled (<code>rtcDisableGeometry</code> call), and enabled again (<code>rtcEnableGeometry</code> call). A geometry can be attached to multiple scenes using the <code>rtcAttachGeometry</code> call (or <code>rtcAttachGeometryByID</code> call), and detached using the <code>rtcDetachGeometry</code> call. During attachment, a geometry ID is assigned to the geometry (or assigned by the user when using the <code>rtcAttachGeometryByID</code> call), which uniquely identifies the geometry inside that scene. This identifier is returned when primitives of the geometry are hit in later ray queries for the scene.</p>
 <p>Geometries can also be modified, including their vertex and index buffers. After modifying a buffer, <code>rtcUpdateGeometryBuffer</code> must be called to notify that the buffer got modified.</p>
 <p>The application can use the <code>rtcSetGeometryUserData</code> function to set a user data pointer to its own geometry representation, and later read out this pointer using the <code>rtcGetGeometryUserData</code> function.</p>
 <p>After setting up the geometry or modifying it, <code>rtcCommitGeometry</code> must be called to finish the geometry setup. After committing the geometry, vertex data interpolation can be performed using the <code>rtcInterpolate</code> and <code>rtcInterpolateN</code> functions.</p>
@@ -715,19 +726,19 @@ RTCGeometry rtcNewGeometry(
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcenablegeometry">rtcEnableGeometry</a>, <a href="#rtcdisablegeometry">rtcDisableGeometry</a>, <a href="#rtcattachgeometry">rtcAttachGeometry</a>, <a href="#rtcattachgeometrybyid">rtcAttachGeometryByID</a>, <a href="#rtcupdategeometrybuffer">rtcUpdateGeometryBuffer</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcgetgeometryuserdata">rtcGetGeometryUserData</a>, <a href="#rtccommitgeometry">rtcCommitGeometry</a>, <a href="#rtcinterpolate">rtcInterpolate</a>, <a href="#rtcinterpolaten">rtcInterpolateN</a>, <a href="#rtcsetgeometrybuildquality">rtcSetGeometryBuildQuality</a>, <a href="#rtcsetscenebuildquality">rtcSetSceneBuildQuality</a>, <a href="#rtc_geometry_type_triangle">RTC_GEOMETRY_TYPE_TRIANGLE</a>, <a href="#rtc_geometry_type_quad">RTC_GEOMETRY_TYPE_QUAD</a>, <a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a>, <a href="#rtc_geometry_type_curve">RTC_GEOMETRY_TYPE_CURVE</a>, <a href="#rtc_geometry_type_grid">RTC_GEOMETRY_TYPE_GRID</a>, <a href="#rtc_geometry_type_point">RTC_GEOMETRY_TYPE_POINT</a>, <a href="#rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</a>, <a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a></p>
-
+<p></p>
 <h2 id="rtc_geometry_type_triangle">RTC_GEOMETRY_TYPE_TRIANGLE</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTC_GEOMETRY_TYPE_TRIANGLE - triangle geometry type</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCGeometry geometry =
   rtcNewGeometry(device, RTC_GEOMETRY_TYPE_TRIANGLE);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>Triangle meshes are created by passing <code>RTC_GEOMETRY_TYPE_TRIANGLE</code> to the <code>rtcNewGeometry</code> function call. The triangle indices can be specified by setting an index buffer (<code>RTC_BUFFER_TYPE_INDEX</code> type) and the triangle vertices by setting a vertex buffer (<code>RTC_BUFFER_TYPE_VERTEX</code> type). See <code>rtcSetGeometryBuffer</code> and <code>rtcSetSharedGeometryBuffer</code> for more details on how to set buffers. The index buffer must contain an array of three 32-bit indices per triangle (<code>RTC_FORMAT_UINT3</code> format) and the number of primitives is inferred from the size of that buffer. The vertex buffer must contain an array of single precision <code>x</code>, <code>y</code>, <code>z</code> floating point coordinates (<code>RTC_FORMAT_FLOAT3</code> format), and the number of vertices are inferred from the size of that buffer. The vertex buffer can be at most 16 GB large.</p>
 <p>The parametrization of a triangle uses the first vertex <code>p0</code> as base point, the vector <code>p1 - p0</code> as u-direction and the vector <code>p2 - p0</code> as v-direction. Thus vertex attributes <code>t0,t1,t2</code> can be linearly interpolated over the triangle the following way:</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-u-v)*t0 + u*t1 + v*t<span class="dv">2</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">t_uv = (<span class="dv">1</span>-u-v)*t0 + u*t1 + v*t2
      = t0 + u*(t1-t0) + v*(t2-t0)</code></pre></div>
 <p>A triangle whose vertices are laid out counter-clockwise has its geometry normal pointing upwards outside the front face, like illustrated in the following picture:</p>
 <div class="figure">
@@ -740,12 +751,12 @@ RTCGeometry geometry =
 <p>On failure <code>NULL</code> is returned and an error code is set that be get queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
-
+<p></p>
 <h2 id="rtc_geometry_type_quad">RTC_GEOMETRY_TYPE_QUAD</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTC_GEOMETRY_TYPE_QUAD - quad geometry type</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCGeometry geometry =
   rtcNewGeometry(device, RTC_GEOMETRY_TYPE_QUAD);</code></pre></div>
@@ -764,12 +775,12 @@ RTCGeometry geometry =
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
-
+<p></p>
 <h2 id="rtc_geometry_type_grid">RTC_GEOMETRY_TYPE_GRID</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTC_GEOMETRY_TYPE_GRID - grid geometry type</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCGeometry geometry =
   rtcNewGeometry(device, RTC_GEOMETRY_TYPE_GRID);</code></pre></div>
@@ -790,12 +801,12 @@ RTCGeometry geometry =
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
-
+<p></p>
 <h2 id="rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTC_GEOMETRY_TYPE_SUBDIVISION - subdivision geometry type</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCGeometry geometry =
   rtcNewGeometry(device, RTC_GEOMETRY_TYPE_SUBDIVISION);</code></pre></div>
@@ -817,8 +828,8 @@ RTCGeometry geometry =
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">unsigned</span> <span class="dt">int</span> l = floorf(<span class="fl">0.5f</span>*U);
 <span class="dt">unsigned</span> <span class="dt">int</span> h = floorf(<span class="fl">0.5f</span>*V);
 <span class="dt">unsigned</span> <span class="dt">int</span> i = <span class="dv">4</span>*h+l;
-<span class="dt">float</span> u = <span class="fl">2.0f</span>*fracf(<span class="fl">0.5f</span>*U)<span class="dv">-0</span><span class="fl">.5f</span>;
-<span class="dt">float</span> v = <span class="fl">2.0f</span>*fracf(<span class="fl">0.5f</span>*V)<span class="dv">-0</span><span class="fl">.5f</span>;</code></pre></div>
+<span class="dt">float</span> u = <span class="fl">2.0f</span>*fracf(<span class="fl">0.5f</span>*U)<span class="fl">-0.5f</span>;
+<span class="dt">float</span> v = <span class="fl">2.0f</span>*fracf(<span class="fl">0.5f</span>*V)<span class="fl">-0.5f</span>;</code></pre></div>
 <p>This encoding allows local subpatch UVs to be in the range <code>[-0.5,1.5[</code> thus negative subpatch UVs can be passed to <code>rtcInterpolate</code> to sample subpatches slightly out of bounds. This can be useful to calculate derivatives using finite differences if required. The encoding further has the property that one can just move the value <code>u</code> (or <code>v</code>) on a subpatch by adding <code>du</code> (or <code>dv</code>) to the special UV encoding as long as it does not fall out of the <code>[-0.5,1.5[</code> range.</p>
 <p>To smoothly interpolate vertex attributes over the subdivision surface we recommend using the <code>rtcInterpolate</code> function, which will apply the standard subdivision rules for interpolation and automatically takes care of the special UV encoding for non-quadrilaterals.</p>
 <h4 id="face-varying-data">Face-Varying Data</h4>
@@ -829,7 +840,7 @@ RTCGeometry geometry =
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
-
+<p></p>
 <h2 id="rtc_geometry_type_curve">RTC_GEOMETRY_TYPE_CURVE</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE -
@@ -871,7 +882,7 @@ RTC_GEOMETRY_TYPE_ROUND_HERMITE_CURVE -
 RTC_GEOMETRY_TYPE_ROUND_CATMULL_ROM_CURVE -
   sweep surface curve geometry with Catmull-Rom basis</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_LINEAR_CURVE);
 rtcNewGeometry(device, RTC_GEOMETRY_TYPE_FLAT_BEZIER_CURVE);
@@ -894,7 +905,7 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ROUND_CATMULL_ROM_CURVE);</code></pre><
 <p>For the cubic Bézier basis the indices point to the first of 4 consecutive control points in the vertex buffer. These control points use the cubic Bézier basis, where the first control point represents the start point of the curve, and the 4th control point the end point of the curve. The Bézier basis is interpolating, thus the curve does go exactly through the first and fourth control vertex.</p>
 <p>For the cubic B-spline basis the indices point to the first of 4 consecutive control points in the vertex buffer. These control points make up a cardinal cubic B-spline (implicit equidistant knot vector). This basis is not interpolating, thus the curve does in general not go through any of the control points directly. A big advantage of this basis is that 3 control points can be shared for two continuous neighboring curve segments, e.g. the curves (p0,p1,p2,p3) and (p1,p2,p3,p4) are C1 continuous. This feature make this basis a good choise to construct continuous multi-segment curves, as memory consumption can be kept minimal.</p>
 <p>For the cubic Hermite basis the indices point to the first of 2 consecutive points in the vertex buffer, and the first of 2 consecutive tangents in the tangent buffer. These two points and two tangents make up a cubic Hermite curve. This basis is interpolating, thus does exactly go through the first and second control point, and the first order derivative at the begin and end matches exactly the value specified in the tangent buffer. When connecting two segments continuously, the end point and tangent of the previous segment can be shared. Different versions of Catmull-Rom splines can be easily constructed usig the Hermite basis, by calculating a proper tangent buffer from the control points.</p>
-<p>For the Catmull-Rom basis the indices point to the first of 4 consecutive control points in the vertex buffer. This basis goes through p0 and p3, with p0-p1 and p2-p3 tangents.</p>
+<p>For the Catmull-Rom basis the indices point to the first of 4 consecutive control points in the vertex buffer. This basis goes through p1 and p2, with tangents (p2-p0)/2 and (p3-p2)/2.</p>
 <p>The <code>RTC_GEOMETRY_TYPE_FLAT_*</code> flat mode is a fast mode designed to render distant hair. In this mode the curve is rendered as a connected sequence of ray facing quads. Individual quads are considered to have subpixel size, and zooming onto the curve might show geometric artifacts. The number of quads to subdivide into can be specified through the <code>rtcSetGeometryTessellationRate</code> function. By default the tessellation rate is 4.</p>
 <p>The <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_*</code> mode is a mode designed to render blades of grass. In this mode a vertex spline has to get specified as for the previous modes, but additionally a normal spline is required. If the Hermite basis is used, the <code>RTC_BUFFER_TYPE_NORMAL</code> and <code>RTC_BUFFER_TYPE_NORMAL_DERIVATIVE</code> buffers have both to be set.</p>
 <p>The curve is rendered as a flat band whose center approximately follows the provided vertex spline, whose half width approximately follows the provided radius spline, and whose normal orientation approximately follows the provided normal spline.</p>
@@ -909,7 +920,7 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ROUND_CATMULL_ROM_CURVE);</code></pre><
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
-
+<p></p>
 <h2 id="rtc_geometry_type_point">RTC_GEOMETRY_TYPE_POINT</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTC_GEOMETRY_TYPE_SPHERE_POINT -
@@ -921,7 +932,7 @@ RTC_GEOMETRY_TYPE_DISC_POINT -
 RTC_GEOMETRY_TYPE_ORIENTED_DISC_POINT -
   point geometry with normal-oriented discs</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 rtcNewGeometry(device, RTC_GEOMETRY_TYPE_SPHERE_POINT);
 rtcNewGeometry(device, RTC_GEOMETRY_TYPE_DISC_POINT);
@@ -939,12 +950,12 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ORIENTED_DISC_POINT);</code></pre></div
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a></p>
-
+<p></p>
 <h2 id="rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTC_GEOMETRY_TYPE_USER - user geometry type</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCGeometry geometry =
   rtcNewGeometry(device, RTC_GEOMETRY_TYPE_USER);</code></pre></div>
@@ -964,12 +975,12 @@ rtcSetGeometryOccludedFunction(geometry, occludedFunction);</code></pre></div>
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcsetgeometryuserprimitivecount">rtcSetGeometryUserPrimitiveCount</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcsetgeometryboundsfunction">rtcSetGeometryBoundsFunction</a>, <a href="#rtcsetgeometryintersectfunction">rtcSetGeometryIntersectFunction</a>, <a href="#rtcsetgeometryoccludedfunction">rtcSetGeometryOccludedFunction</a></p>
-
+<p></p>
 <h2 id="rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTC_GEOMETRY_TYPE_INSTANCE - instance geometry type</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCGeometry geometry =
    rtcNewGeometry(device, RTC_GEOMETRY_TYPE_INSTANCE);</code></pre></div>
@@ -986,12 +997,12 @@ RTCGeometry geometry =
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcsetgeometryinstancedscene">rtcSetGeometryInstancedScene</a>, <a href="#rtcsetgeometrytransform">rtcSetGeometryTransform</a></p>
-
+<p></p>
 <h2 id="rtcretaingeometry">rtcRetainGeometry</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcRetainGeometry - increments the geometry reference count</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcRetainGeometry(RTCGeometry geometry);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -1000,12 +1011,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcreleasegeometry">rtcReleaseGeometry</a></p>
-
+<p></p>
 <h2 id="rtcreleasegeometry">rtcReleaseGeometry</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcReleaseGeometry - decrements the geometry reference count</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcReleaseGeometry(RTCGeometry geometry);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -1014,12 +1025,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcretaingeometry">rtcRetainGeometry</a></p>
-
+<p></p>
 <h2 id="rtccommitgeometry">rtcCommitGeometry</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcCommitGeometry - commits geometry changes</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcCommitGeometry(RTCGeometry geometry);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -1028,12 +1039,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcinterpolate">rtcInterpolate</a>, <a href="#rtccommitscene">rtcCommitScene</a></p>
-
+<p></p>
 <h2 id="rtcenablegeometry">rtcEnableGeometry</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcEnableGeometry - enables the geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcEnableGeometry(RTCGeometry geometry);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -1043,12 +1054,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcdisablegeometry">rtcDisableGeometry</a>, <a href="#rtccommitscene">rtcCommitScene</a></p>
-
+<p></p>
 <h2 id="rtcdisablegeometry">rtcDisableGeometry</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcDisableGeometry - disables the geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcDisableGeometry(RTCGeometry geometry);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -1058,13 +1069,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcenablegeometry">rtcEnableGeometry</a>, <a href="#rtccommitscene">rtcCommitScene</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometrytimestepcount">rtcSetGeometryTimeStepCount</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryTimeStepCount - sets the number of time steps of the
   geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryTimeStepCount(
   RTCGeometry geometry,
@@ -1079,12 +1090,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcsetgeometrytimerange">rtcSetGeometryTimeRange</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometrytimerange">rtcSetGeometryTimeRange</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryTimeRange - sets the time range <span class="cf">for</span> a motion blur geometry</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryTimeRange - sets the time range <span class="kw">for</span> a motion blur geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryTimeRange(
   RTCGeometry geometry,
@@ -1100,13 +1111,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrytimestepcount">rtcSetGeometryTimeStepCount</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometryvertexattributecount">rtcSetGeometryVertexAttributeCount</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryVertexAttributeCount - sets the number of vertex
   attributes of the geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryVertexAttributeCount(
   RTCGeometry geometry,
@@ -1119,12 +1130,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, [RTCBufferType]</p>
-
+<p></p>
 <h2 id="rtcsetgeometrymask">rtcSetGeometryMask</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryMask - sets the geometry mask</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryMask(
   RTCGeometry geometry,
@@ -1138,12 +1149,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcray">RTCRay</a>, <a href="#rtcgetdeviceproperty">rtcGetDeviceProperty</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometrybuildquality">rtcSetGeometryBuildQuality</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryBuildQuality - sets the build quality <span class="cf">for</span> the geometry</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryBuildQuality - sets the build quality <span class="kw">for</span> the geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryBuildQuality(
   RTCGeometry geometry,
@@ -1161,12 +1172,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetscenebuildquality">rtcSetSceneBuildQuality</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometrybuffer">rtcSetGeometryBuffer</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryBuffer - assigns a view of a buffer to the geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryBuffer(
   RTCGeometry geometry,
@@ -1174,9 +1185,9 @@ RTCGeometry geometry =
   <span class="dt">unsigned</span> <span class="dt">int</span> slot,
   <span class="kw">enum</span> RTCFormat format,
   RTCBuffer buffer,
-  <span class="dt">size_t</span> byteOffset,
-  <span class="dt">size_t</span> byteStride,
-  <span class="dt">size_t</span> itemCount
+  size_t byteOffset,
+  size_t byteStride,
+  size_t itemCount
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetGeometryBuffer</code> function binds a view of a buffer object (<code>buffer</code> argument) to a geometry buffer type and slot (<code>type</code> and <code>slot</code> argument) of the specified geometry (<code>geometry</code> argument).</p>
@@ -1187,23 +1198,23 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</a>, <a href="#rtcsetnewgeometrybuffer">rtcSetNewGeometryBuffer</a></p>
-
+<p></p>
 <h2 id="rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetSharedGeometryBuffer - assigns a view of a shared data buffer
   to a geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetSharedGeometryBuffer(
   RTCGeometry geometry,
   <span class="kw">enum</span> RTCBufferType type,
   <span class="dt">unsigned</span> <span class="dt">int</span> slot,
   <span class="kw">enum</span> RTCFormat format,
-  <span class="at">const</span> <span class="dt">void</span>* ptr,
-  <span class="dt">size_t</span> byteOffset,
-  <span class="dt">size_t</span> byteStride,
-  <span class="dt">size_t</span> itemCount
+  <span class="dt">const</span> <span class="dt">void</span>* ptr,
+  size_t byteOffset,
+  size_t byteStride,
+  size_t itemCount
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetSharedGeometryBuffer</code> function binds a view of a shared user-managed data buffer (<code>ptr</code> argument) to a geometry buffer type and slot (<code>type</code> and <code>slot</code> argument) of the specified geometry (<code>geometry</code> argument).</p>
@@ -1216,21 +1227,21 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrybuffer">rtcSetGeometryBuffer</a>, <a href="#rtcsetnewgeometrybuffer">rtcSetNewGeometryBuffer</a></p>
-
+<p></p>
 <h2 id="rtcsetnewgeometrybuffer">rtcSetNewGeometryBuffer</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetNewGeometryBuffer - creates <span class="kw">and</span> assigns a <span class="kw">new</span> data buffer to
   the geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span>* rtcSetNewGeometryBuffer(
   RTCGeometry geometry,
   <span class="kw">enum</span> RTCBufferType type,
   <span class="dt">unsigned</span> <span class="dt">int</span> slot,
   <span class="kw">enum</span> RTCFormat format,
-  <span class="dt">size_t</span> byteStride,
-  <span class="dt">size_t</span> itemCount
+  size_t byteStride,
+  size_t itemCount
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetNewGeometryBuffer</code> function creates a new data buffer of specified format (<code>format</code> argument), byte stride (<code>byteStride</code> argument), and number of items (<code>itemCount</code> argument), and assigns it to a geometry buffer slot (<code>type</code> and <code>slot</code> argument) of the specified geometry (<code>geometry</code> argument). The buffer data is managed internally and automatically freed when the geometry is destroyed.</p>
@@ -1240,13 +1251,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrybuffer">rtcSetGeometryBuffer</a>, <a href="#rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</a></p>
-
+<p></p>
 <h2 id="rtcgetgeometrybufferdata">rtcGetGeometryBufferData</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryBufferData - gets pointer to
   the first buffer view element</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span>* rtcGetGeometryBufferData(
   RTCGeometry geometry,
@@ -1259,13 +1270,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrybuffer">rtcSetGeometryBuffer</a>, <a href="#rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</a>, <a href="#rtcsetnewgeometrybuffer">rtcSetNewGeometryBuffer</a></p>
-
+<p></p>
 <h2 id="rtcupdategeometrybuffer">rtcUpdateGeometryBuffer</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcUpdateGeometryBuffer - marks a buffer view bound to the geometry
   as modified</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcUpdateGeometryBuffer(
   RTCGeometry geometry,
@@ -1279,26 +1290,26 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtccommitscene">rtcCommitScene</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometryintersectfilterfunction">rtcSetGeometryIntersectFilterFunction</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryIntersectFilterFunction - sets the intersection filter
-  <span class="cf">for</span> the geometry</code></pre></div>
+  <span class="kw">for</span> the geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTCFilterFunctionNArguments
 {
   <span class="dt">int</span>* valid;
   <span class="dt">void</span>* geometryUserPtr;
-  <span class="at">const</span> <span class="kw">struct</span> RTCIntersectContext* context;
+  <span class="dt">const</span> <span class="kw">struct</span> RTCIntersectContext* context;
   <span class="kw">struct</span> RTCRayN* ray;
   <span class="kw">struct</span> RTCHitN* hit;
   <span class="dt">unsigned</span> <span class="dt">int</span> N;
 };
 
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCFilterFunctionN)(
-  <span class="at">const</span> <span class="kw">struct</span> RTCFilterFunctionNArguments* args
+  <span class="dt">const</span> <span class="kw">struct</span> RTCFilterFunctionNArguments* args
 );
 
 <span class="dt">void</span> rtcSetGeometryIntersectFilterFunction(
@@ -1319,13 +1330,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryoccludedfilterfunction">rtcSetGeometryOccludedFilterFunction</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometryoccludedfilterfunction">rtcSetGeometryOccludedFilterFunction</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryOccludedFilterFunction - sets the occlusion filter
-  <span class="cf">for</span> the geometry</code></pre></div>
+  <span class="kw">for</span> the geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryOccludedFilterFunction(
   RTCGeometry geometry,
@@ -1340,16 +1351,16 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryintersectfilterfunction">rtcSetGeometryIntersectFilterFunction</a></p>
-
+<p></p>
 <h2 id="rtcfilterintersection">rtcFilterIntersection</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcFilterIntersection - invokes the intersection filter function</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcFilterIntersection(
-  <span class="at">const</span> <span class="kw">struct</span> RTCIntersectFunctionNArguments* args,
-  <span class="at">const</span> <span class="kw">struct</span> RTCFilterFunctionNArguments* filterArgs
+  <span class="dt">const</span> <span class="kw">struct</span> RTCIntersectFunctionNArguments* args,
+  <span class="dt">const</span> <span class="kw">struct</span> RTCFilterFunctionNArguments* filterArgs
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcFilterIntersection</code> function can be called inside an <code>RTCIntersectFunctionN</code> callback function to invoke the intersection filter registered to the geometry and stored inside the context. For this an <code>RTCFilterFunctionNArguments</code> structure must be created (see <code>rtcSetGeometryIntersectFilterFunction</code>) which basically consists of a valid mask, a hit packet to filter, the corresponding ray packet, and the packet size. After the invocation of <code>rtcFilterIntersection</code>, only rays that are still valid (valid mask set to -1) should update a hit.</p>
@@ -1357,16 +1368,16 @@ RTCGeometry geometry =
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcfilterocclusion">rtcFilterOcclusion</a>, <a href="#rtcsetgeometryintersectfunction">rtcSetGeometryIntersectFunction</a></p>
-
+<p></p>
 <h2 id="rtcfilterocclusion">rtcFilterOcclusion</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcFilterOcclusion - invokes the occlusion filter function</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcFilterOcclusion(
-  <span class="at">const</span> <span class="kw">struct</span> RTCOccludedFunctionNArguments* args,
-  <span class="at">const</span> <span class="kw">struct</span> RTCFilterFunctionNArguments* filterArgs
+  <span class="dt">const</span> <span class="kw">struct</span> RTCOccludedFunctionNArguments* args,
+  <span class="dt">const</span> <span class="kw">struct</span> RTCFilterFunctionNArguments* filterArgs
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcFilterOcclusion</code> function can be called inside an <code>RTCOccludedFunctionN</code> callback function to invoke the occlusion filter registered to the geometry and stored inside the context. For this an <code>RTCFilterFunctionNArguments</code> structure must be created (see <code>rtcSetGeometryIntersectFilterFunction</code>) which basically consists of a valid mask, a hit packet to filter, the corresponding ray packet, and the packet size. After the invocation of <code>rtcFilterOcclusion</code> only rays that are still valid (valid mask set to -1) should signal an occlusion.</p>
@@ -1374,13 +1385,13 @@ RTCGeometry geometry =
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcfilterintersection">rtcFilterIntersection</a>, <a href="#rtcsetgeometryoccludedfunction">rtcSetGeometryOccludedFunction</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometryuserdata">rtcSetGeometryUserData</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryUserData - sets the user-defined data pointer of the
   geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryUserData(RTCGeometry geometry, <span class="dt">void</span>* userPtr);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -1390,13 +1401,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryuserdata">rtcGetGeometryUserData</a></p>
-
+<p></p>
 <h2 id="rtcgetgeometryuserdata">rtcGetGeometryUserData</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryUserData - returns the user data pointer
   of the geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span>* rtcGetGeometryUserData(RTCGeometry geometry);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -1405,13 +1416,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometryuserprimitivecount">rtcSetGeometryUserPrimitiveCount</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryUserPrimitiveCount - sets the number of primitives
   of a user-defined geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryUserPrimitiveCount(
   RTCGeometry geometry,
@@ -1423,13 +1434,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometryboundsfunction">rtcSetGeometryBoundsFunction</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryBoundsFunction - sets a callback to query the
   bounding box of user-defined primitives</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTCBoundsFunctionArguments
 {
@@ -1440,7 +1451,7 @@ RTCGeometry geometry =
 };
 
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCBoundsFunction)(
-  <span class="at">const</span> <span class="kw">struct</span> RTCBoundsFunctionArguments* args
+  <span class="dt">const</span> <span class="kw">struct</span> RTCBoundsFunctionArguments* args
 );
 
 <span class="dt">void</span> rtcSetGeometryBoundsFunction(
@@ -1457,13 +1468,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometryintersectfunction">rtcSetGeometryIntersectFunction</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryIntersectFunction - sets the callback function to
   intersect a user geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTCIntersectFunctionNArguments
 {
@@ -1476,7 +1487,7 @@ RTCGeometry geometry =
 };
 
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFunctionN)(
-  <span class="at">const</span> <span class="kw">struct</span> RTCIntersectFunctionNArguments* args
+  <span class="dt">const</span> <span class="kw">struct</span> RTCIntersectFunctionNArguments* args
 );
 
 <span class="dt">void</span> rtcSetGeometryIntersectFunction(
@@ -1497,13 +1508,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryoccludedfunction">rtcSetGeometryOccludedFunction</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcfilterintersection">rtcFilterIntersection</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometryoccludedfunction">rtcSetGeometryOccludedFunction</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryOccludedFunction - sets the callback function to
-  test a user geometry <span class="cf">for</span> occlusion</code></pre></div>
+  test a user geometry <span class="kw">for</span> occlusion</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTCOccludedFunctionNArguments
 {
@@ -1516,7 +1527,7 @@ RTCGeometry geometry =
 };
 
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCOccludedFunctionN)(
-  <span class="at">const</span> <span class="kw">struct</span> RTCOccludedFunctionNArguments* args
+  <span class="dt">const</span> <span class="kw">struct</span> RTCOccludedFunctionNArguments* args
 );
 
 <span class="dt">void</span> rtcSetGeometryOccludedFunction(
@@ -1536,13 +1547,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometryintersectfunction">rtcSetGeometryIntersectFunction</a>, <a href="#rtcsetgeometryuserdata">rtcSetGeometryUserData</a>, <a href="#rtcfilterocclusion">rtcFilterOcclusion</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometrypointqueryfunction">rtcSetGeometryPointQueryFunction</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryPointQueryFunction - sets the point query callback function
-  <span class="cf">for</span> a geometry</code></pre></div>
+  <span class="kw">for</span> a geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTCPointQueryFunctionArguments
 {
@@ -1584,13 +1595,13 @@ RTCGeometry geometry =
 <p>For a reference implementation of a closest point traversal of triangle meshes using instancing and user defined instancing see the tutorial [ClosestPoint].</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p>[rtcPointQuery], <a href="#rtcinitpointquerycontext">rtcInitPointQueryContext</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometryinstancedscene">rtcSetGeometryInstancedScene</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryInstancedScene - sets the instanced scene of
   an instance geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryInstancedScene(
   RTCGeometry geometry,
@@ -1602,19 +1613,19 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a>, <a href="#rtcsetgeometrytransform">rtcSetGeometryTransform</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometrytransform">rtcSetGeometryTransform</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryTransform - sets the transformation <span class="cf">for</span> a particular
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryTransform - sets the transformation <span class="kw">for</span> a particular
   time step of an instance geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryTransform(
   RTCGeometry geometry,
   <span class="dt">unsigned</span> <span class="dt">int</span> timeStep,
   <span class="kw">enum</span> RTCFormat format,
-  <span class="at">const</span> <span class="dt">float</span>* xfm
+  <span class="dt">const</span> <span class="dt">float</span>* xfm
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetGeometryTransform</code> function sets the local-to-world affine transformation (<code>xfm</code> parameter) of an instance geometry (<code>geometry</code> parameter) for a particular time step (<code>timeStep</code> parameter). The transformation is specified as a 3×4 matrix (3×3 linear transformation plus translation), for which the following formats (<code>format</code> parameter) are supported:</p>
@@ -1627,13 +1638,36 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a></p>
+<p></p>
+<h2 id="rtcsetgeometrytransformquaternion">rtcSetGeometryTransformQuaternion</h2>
+<h4 id="name">NAME</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryTransformQuaternion - sets the transformation <span class="kw">for</span> a particular
+  time step of an instance geometry as a decomposition of the
+  transformation matrix <span class="kw">using</span> quaternions to represent the rotation.</code></pre></div>
+<h4 id="synopsis">SYNOPSIS</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
+<span class="dt">void</span> rtcSetGeometryTransformQuaternion(
+  RTCGeometry geometry,
+  <span class="dt">unsigned</span> <span class="dt">int</span> timeStep,
+  <span class="dt">const</span> <span class="kw">struct</span> RTCQuaternionDecomposition* qd
+);</code></pre></div>
+<h4 id="description">DESCRIPTION</h4>
+<p>The <code>rtcSetGeometryTransformQuaternion</code> function sets the local-to-world affine transformation (<code>qd</code> parameter) of an instance geometry (<code>geometry</code> parameter) for a particular time step (<code>timeStep</code> parameter). The transformation is specified as a <a href="#rtcquaterniondecomposition">RTCQuaternionDecomposition</a>, which is a decomposition of an affine transformation which represents the rotational component of an affine transformation as a quaternion. This allows interpolating rotational transformations exactly using spherical linear interpolation (such as a turning wheel).</p>
+<p>For more information about the decomposition see <a href="#rtcquaterniondecomposition">RTCQuaternionDecomposition</a>.</p>
+<p>Before commiting an instance geometry, the transformation matrices must be set either using <code>rtcSetGeometryTransform</code> or <code>rtcSetGeometryTransformQuaternion</code> for all time steps. Mixing both representations is not allowed.</p>
+<p>For an example of this feature see the tutorial <a href="tutorials.html#quaternion-motion-blur">Quaternion Motion Blur</a>.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcinitquaterniondecomposition">rtcInitQuaternionDecomposition</a>, <a href="#rtcsetgeometrytransform">rtcSetGeometryTransform</a></p>
+<p></p>
 <h2 id="rtcgetgeometrytransform">rtcGetGeometryTransform</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryTransform - returns the interpolated instance
-  transformation <span class="cf">for</span> the specified time</code></pre></div>
+  transformation <span class="kw">for</span> the specified time</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcGetGeometryTransform(
   RTCGeometry geometry,
@@ -1653,13 +1687,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_instance">RTC_GEOMETRY_TYPE_INSTANCE</a>, <a href="#rtcsetgeometrytransform">rtcSetGeometryTransform</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometrytessellationrate">rtcSetGeometryTessellationRate</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryTessellationRate - sets the tessellation rate of the
   geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryTessellationRate(
   RTCGeometry geometry,
@@ -1671,13 +1705,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_curve">RTC_GEOMETRY_TYPE_CURVE</a>, <a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometrytopologycount">rtcSetGeometryTopologyCount</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryTopologyCount - sets the number of topologies of
   a subdivision geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryTopologyCount(
   RTCGeometry geometry,
@@ -1690,13 +1724,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a>, <a href="#rtcsetgeometrysubdivisionmode">rtcSetGeometrySubdivisionMode</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometrysubdivisionmode">rtcSetGeometrySubdivisionMode</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometrySubdivisionMode - sets the subdivision mode
   of a subdivision geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometrySubdivisionMode(
   RTCGeometry geometry,
@@ -1717,13 +1751,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometryvertexattributetopology">rtcSetGeometryVertexAttributeTopology</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryVertexAttributeTopology - binds a vertex
   attribute to a topology of the geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcSetGeometryVertexAttributeTopology(
   RTCGeometry geometry,
@@ -1737,13 +1771,13 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrysubdivisionmode">rtcSetGeometrySubdivisionMode</a>, <a href="#rtcinterpolate">rtcInterpolate</a>, <a href="#rtcinterpolaten">rtcInterpolateN</a></p>
-
+<p></p>
 <h2 id="rtcsetgeometrydisplacementfunction">rtcSetGeometryDisplacementFunction</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcSetGeometryDisplacementFunction - sets the displacement function
-  <span class="cf">for</span> a subdivision geometry</code></pre></div>
+  <span class="kw">for</span> a subdivision geometry</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTCDisplacementFunctionNArguments
 {
@@ -1751,11 +1785,11 @@ RTCGeometry geometry =
   RTCGeometry geometry;
   <span class="dt">unsigned</span> <span class="dt">int</span> primID;
   <span class="dt">unsigned</span> <span class="dt">int</span> timeStep;
-  <span class="at">const</span> <span class="dt">float</span>* u;
-  <span class="at">const</span> <span class="dt">float</span>* v;
-  <span class="at">const</span> <span class="dt">float</span>* Ng_x;
-  <span class="at">const</span> <span class="dt">float</span>* Ng_y;
-  <span class="at">const</span> <span class="dt">float</span>* Ng_z;
+  <span class="dt">const</span> <span class="dt">float</span>* u;
+  <span class="dt">const</span> <span class="dt">float</span>* v;
+  <span class="dt">const</span> <span class="dt">float</span>* Ng_x;
+  <span class="dt">const</span> <span class="dt">float</span>* Ng_y;
+  <span class="dt">const</span> <span class="dt">float</span>* Ng_z;
   <span class="dt">float</span>* P_x;
   <span class="dt">float</span>* P_y;
   <span class="dt">float</span>* P_z;
@@ -1763,7 +1797,7 @@ RTCGeometry geometry =
 };
 
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCDisplacementFunctionN)(
-   <span class="at">const</span> <span class="kw">struct</span> RTCDisplacementFunctionNArguments* args
+   <span class="dt">const</span> <span class="kw">struct</span> RTCDisplacementFunctionNArguments* args
 );
 
 <span class="dt">void</span> rtcSetGeometryDisplacementFunction(
@@ -1782,12 +1816,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a></p>
-
+<p></p>
 <h2 id="rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryFirstHalfEdge - returns the first half edge of a face</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">unsigned</span> <span class="dt">int</span> rtcGetGeometryFirstHalfEdge(
   RTCGeometry geometry,
@@ -1805,12 +1839,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
-
+<p></p>
 <h2 id="rtcgetgeometryface">rtcGetGeometryFace</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryFace - returns the face of some half edge</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">unsigned</span> <span class="dt">int</span> rtcGetGeometryFace(
   RTCGeometry geometry,
@@ -1827,12 +1861,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
-
+<p></p>
 <h2 id="rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryNextHalfEdge - returns the next half edge</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">unsigned</span> <span class="dt">int</span> rtcGetGeometryNextHalfEdge(
   RTCGeometry geometry,
@@ -1849,12 +1883,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
-
+<p></p>
 <h2 id="rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryPreviousHalfEdge - returns the previous half edge</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">unsigned</span> <span class="dt">int</span> rtcGetGeometryPreviousHalfEdge(
   RTCGeometry geometry,
@@ -1871,12 +1905,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
-
+<p></p>
 <h2 id="rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetGeometryOppositeHalfEdge - returns the opposite half edge</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">unsigned</span> <span class="dt">int</span> rtcGetGeometryOppositeHalfEdge(
   RTCGeometry geometry,
@@ -1895,12 +1929,12 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcgetgeometryfirsthalfedge">rtcGetGeometryFirstHalfEdge</a>, <a href="#rtcgetgeometryface">rtcGetGeometryFace</a>, <a href="#rtcgetgeometryoppositehalfedge">rtcGetGeometryOppositeHalfEdge</a>, <a href="#rtcgetgeometrynexthalfedge">rtcGetGeometryNextHalfEdge</a>, <a href="#rtcgetgeometryprevioushalfedge">rtcGetGeometryPreviousHalfEdge</a></p>
-
+<p></p>
 <h2 id="rtcinterpolate">rtcInterpolate</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcInterpolate - interpolates vertex attributes</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTCInterpolateArguments
 {
@@ -1920,7 +1954,7 @@ RTCGeometry geometry =
 };
 
 <span class="dt">void</span> rtcInterpolate(
-  <span class="at">const</span> <span class="kw">struct</span> RTCInterpolateArguments* args
+  <span class="dt">const</span> <span class="kw">struct</span> RTCInterpolateArguments* args
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcInterpolate</code> function smoothly interpolates per-vertex data over the geometry. This interpolation is supported for triangle meshes, quad meshes, curve geometries, and subdivision geometries. Apart from interpolating the vertex attribute itself, it is also possible to get the first and second order derivatives of that value. This interpolation ignores displacements of subdivision surfaces and always interpolates the underlying base surface.</p>
@@ -1935,20 +1969,20 @@ RTCGeometry geometry =
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcinterpolaten">rtcInterpolateN</a></p>
-
+<p></p>
 <h2 id="rtcinterpolaten">rtcInterpolateN</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcInterpolateN - performs N interpolations of vertex attribute data</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTCInterpolateNArguments
 {
   RTCGeometry geometry;
-  <span class="at">const</span> <span class="dt">void</span>* valid;
-  <span class="at">const</span> <span class="dt">unsigned</span> <span class="dt">int</span>* primIDs;
-  <span class="at">const</span> <span class="dt">float</span>* u;
-  <span class="at">const</span> <span class="dt">float</span>* v;
+  <span class="dt">const</span> <span class="dt">void</span>* valid;
+  <span class="dt">const</span> <span class="dt">unsigned</span> <span class="dt">int</span>* primIDs;
+  <span class="dt">const</span> <span class="dt">float</span>* u;
+  <span class="dt">const</span> <span class="dt">float</span>* v;
   <span class="dt">unsigned</span> <span class="dt">int</span> N;
   <span class="kw">enum</span> RTCBufferType bufferType;
   <span class="dt">unsigned</span> <span class="dt">int</span> bufferSlot;
@@ -1962,7 +1996,7 @@ RTCGeometry geometry =
 };
 
 <span class="dt">void</span> rtcInterpolateN(
-  <span class="at">const</span> <span class="kw">struct</span> RTCInterpolateNArguments* args
+  <span class="dt">const</span> <span class="kw">struct</span> RTCInterpolateNArguments* args
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcInterpolateN</code> is similar to <code>rtcInterpolate</code>, but performs <code>N</code> many interpolations at once. It additionally gets an array of u/v coordinates and a valid mask (<code>valid</code> parameter) that specifies which of these coordinates are valid. The valid mask points to <code>N</code> integers, and a value of -1 denotes valid and 0 invalid. If the valid pointer is <code>NULL</code> all elements are considers valid. The destination arrays are filled in structure of array (SOA) layout. The value <code>N</code> must be divisible by 4.</p>
@@ -1971,16 +2005,16 @@ RTCGeometry geometry =
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcinterpolate">rtcInterpolate</a></p>
-
+<p></p>
 <h2 id="rtcnewbuffer">rtcNewBuffer</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcNewBuffer - creates a <span class="kw">new</span> data buffer</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCBuffer rtcNewBuffer(
   RTCDevice device,
-  <span class="dt">size_t</span> byteSize
+  size_t byteSize
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcNewBuffer</code> function creates a new data buffer object of specified size in bytes (<code>byteSize</code> argument) that is bound to the specified device (<code>device</code> argument). The buffer object is reference counted with an initial reference count of 1. The returned buffer object can be released using the <code>rtcReleaseBuffer</code> API call. The specified number of bytes are allocated at buffer construction time and deallocated when the buffer is destroyed.</p>
@@ -1989,17 +2023,17 @@ RTCBuffer rtcNewBuffer(
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcretainbuffer">rtcRetainBuffer</a>, <a href="#rtcreleasebuffer">rtcReleaseBuffer</a></p>
-
+<p></p>
 <h2 id="rtcnewsharedbuffer">rtcNewSharedBuffer</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcNewSharedBuffer - creates a <span class="kw">new</span> shared data buffer</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCBuffer rtcNewSharedBuffer(
   RTCDevice device,
   <span class="dt">void</span>* ptr,
-  <span class="dt">size_t</span> byteSize
+  size_t byteSize
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcNewSharedBuffer</code> function creates a new shared data buffer object bound to the specified device (<code>device</code> argument). The buffer object is reference counted with an initial reference count of 1. The buffer can be released using the <code>rtcReleaseBuffer</code> function.</p>
@@ -2010,12 +2044,12 @@ RTCBuffer rtcNewSharedBuffer(
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcretainbuffer">rtcRetainBuffer</a>, <a href="#rtcreleasebuffer">rtcReleaseBuffer</a></p>
-
+<p></p>
 <h2 id="rtcretainbuffer">rtcRetainBuffer</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcRetainBuffer - increments the buffer reference count</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcRetainBuffer(RTCBuffer buffer);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -2024,12 +2058,12 @@ RTCBuffer rtcNewSharedBuffer(
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbuffer">rtcNewBuffer</a>, <a href="#rtcreleasebuffer">rtcReleaseBuffer</a></p>
-
+<p></p>
 <h2 id="rtcreleasebuffer">rtcReleaseBuffer</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcReleaseBuffer - decrements the buffer reference count</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcReleaseBuffer(RTCBuffer buffer);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -2038,12 +2072,12 @@ RTCBuffer rtcNewSharedBuffer(
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbuffer">rtcNewBuffer</a>, <a href="#rtcretainbuffer">rtcRetainBuffer</a></p>
-
+<p></p>
 <h2 id="rtcgetbufferdata">rtcGetBufferData</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcGetBufferData - gets a pointer to the buffer data</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span>* rtcGetBufferData(RTCBuffer buffer);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -2052,12 +2086,12 @@ RTCBuffer rtcNewSharedBuffer(
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbuffer">rtcNewBuffer</a></p>
-
+<p></p>
 <h2 id="rtcray">RTCRay</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCRay - single ray structure</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore_ray.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore_ray.h&gt;</span>
 
 <span class="kw">struct</span> RTC_ALIGN(<span class="dv">16</span>) RTCRay
 {
@@ -2084,12 +2118,12 @@ RTCBuffer rtcNewSharedBuffer(
 <h4 id="exit-status">EXIT STATUS</h4>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtchit">RTCHit</a></p>
-
+<p></p>
 <h2 id="rtchit">RTCHit</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCHit - single hit structure</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTCHit
 {
@@ -2110,12 +2144,12 @@ RTCBuffer rtcNewSharedBuffer(
 <h4 id="exit-status">EXIT STATUS</h4>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcray">RTCRay</a>, [Multi-Level Instancing]</p>
-
+<p></p>
 <h2 id="rtcrayhit">RTCRayHit</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCRayHit - combined single ray/hit structure</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore_ray.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore_ray.h&gt;</span>
 
 <span class="kw">struct</span> RTCORE_ALIGN(<span class="dv">16</span>) RTCRayHit
 {
@@ -2128,12 +2162,12 @@ RTCBuffer rtcNewSharedBuffer(
 <h4 id="exit-status">EXIT STATUS</h4>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcray">RTCRay</a>, <a href="#rtchit">RTCHit</a></p>
-
+<p></p>
 <h2 id="rtcrayn">RTCRayN</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCRayN - ray packet of runtime size</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore_ray.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore_ray.h&gt;</span>
 
 <span class="kw">struct</span> RTCRayN;
 
@@ -2158,12 +2192,12 @@ RTCBuffer rtcNewSharedBuffer(
 <h4 id="exit-status">EXIT STATUS</h4>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtchitn">RTCHitN</a></p>
-
+<p></p>
 <h2 id="rtchitn">RTCHitN</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCHitN - hit packet of runtime size</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> HitN;
 
@@ -2184,12 +2218,12 @@ RTCBuffer rtcNewSharedBuffer(
 <h4 id="exit-status">EXIT STATUS</h4>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcrayn">RTCRayN</a></p>
-
+<p></p>
 <h2 id="rtcrayhitn">RTCRayHitN</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCRayHitN - combined ray/hit packet of runtime size</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore_ray.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore_ray.h&gt;</span>
 
 <span class="kw">struct</span> RTCRayHitN;
 
@@ -2201,12 +2235,12 @@ RTCBuffer rtcNewSharedBuffer(
 <h4 id="exit-status">EXIT STATUS</h4>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtchitn">RTCHitN</a></p>
-
+<p></p>
 <h2 id="rtcinitintersectcontext">rtcInitIntersectContext</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcInitIntersectContext - initializes the intersection context</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">enum</span> RTCIntersectContextFlags
 {
@@ -2219,9 +2253,9 @@ RTCBuffer rtcNewSharedBuffer(
 {
   <span class="kw">enum</span> RTCIntersectContextFlags flags;
   RTCFilterFunctionN filter;
-  <span class="pp">#if RTC_MAX_INSTANCE_LEVEL_COUNT &gt; 1</span>
+  <span class="ot">#if RTC_MAX_INSTANCE_LEVEL_COUNT &gt; 1</span>
   <span class="dt">unsigned</span> <span class="dt">int</span> instStackSize;
-  <span class="pp">#endif</span>
+  <span class="ot">#endif</span>
   <span class="dt">unsigned</span> <span class="dt">int</span> instID[RTC_MAX_INSTANCE_LEVEL_COUNT];
 };
 
@@ -2240,12 +2274,12 @@ RTCBuffer rtcNewSharedBuffer(
 <p>No error code is set by this function.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcintersect1">rtcIntersect1</a>, <a href="#rtcoccluded1">rtcOccluded1</a></p>
-
+<p></p>
 <h2 id="rtcintersect1">rtcIntersect1</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersect1 - finds the closest hit <span class="cf">for</span> a single ray</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersect1 - finds the closest hit <span class="kw">for</span> a single ray</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcIntersect1(
   RTCScene scene,
@@ -2268,12 +2302,12 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcoccluded1">rtcOccluded1</a>, <a href="#rtcrayhit">RTCRayHit</a>, <a href="#rtcray">RTCRay</a>, <a href="#rtchit">RTCHit</a></p>
-
+<p></p>
 <h2 id="rtcoccluded1">rtcOccluded1</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccluded1 - finds any hit <span class="cf">for</span> a single ray</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccluded1 - finds any hit <span class="kw">for</span> a single ray</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcOccluded1(
   RTCScene scene,
@@ -2292,29 +2326,29 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcoccluded1">rtcOccluded1</a>, <a href="#rtcray">RTCRay</a></p>
-
+<p></p>
 <h2 id="rtcintersect4816">rtcIntersect4/8/16</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersect4/<span class="dv">8</span>/<span class="dv">16</span> - finds the closest hits <span class="cf">for</span> a ray packet</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersect4/<span class="dv">8</span>/<span class="dv">16</span> - finds the closest hits <span class="kw">for</span> a ray packet</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcIntersect4(
-  <span class="at">const</span> <span class="dt">int</span>* valid,
+  <span class="dt">const</span> <span class="dt">int</span>* valid,
   RTCScene scene,
   <span class="kw">struct</span> RTCIntersectContext* context,
   <span class="kw">struct</span> RTCRayHit4* rayhit
 );
 
 <span class="dt">void</span> rtcIntersect8(
-  <span class="at">const</span> <span class="dt">int</span>* valid,
+  <span class="dt">const</span> <span class="dt">int</span>* valid,
   RTCScene scene,
   <span class="kw">struct</span> RTCIntersectContext* context,
   <span class="kw">struct</span> RTCRayHit8* rayhit
 );
 
 <span class="dt">void</span> rtcIntersect16(
-  <span class="at">const</span> <span class="dt">int</span>* valid,
+  <span class="dt">const</span> <span class="dt">int</span>* valid,
   RTCScene scene,
   <span class="kw">struct</span> RTCIntersectContext* context,
   <span class="kw">struct</span> RTCRayHit16* rayhit
@@ -2331,29 +2365,29 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcoccluded4816">rtcOccluded4/8/16</a></p>
-
+<p></p>
 <h2 id="rtcoccluded4816">rtcOccluded4/8/16</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccluded4/<span class="dv">8</span>/<span class="dv">16</span> - finds any hits <span class="cf">for</span> a ray packet</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccluded4/<span class="dv">8</span>/<span class="dv">16</span> - finds any hits <span class="kw">for</span> a ray packet</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcOccluded4(
-  <span class="at">const</span> <span class="dt">int</span>* valid,
+  <span class="dt">const</span> <span class="dt">int</span>* valid,
   RTCScene scene,
   <span class="kw">struct</span> RTCIntersectContext* context,
   <span class="kw">struct</span> RTCRay4* ray
 );
 
 <span class="dt">void</span> rtcOccluded8(
-  <span class="at">const</span> <span class="dt">int</span>* valid,
+  <span class="dt">const</span> <span class="dt">int</span>* valid,
   RTCScene scene,
   <span class="kw">struct</span> RTCIntersectContext* context,
   <span class="kw">struct</span> RTCRay8* ray
 );
 
 <span class="dt">void</span> rtcOccluded16(
-  <span class="at">const</span> <span class="dt">int</span>* valid,
+  <span class="dt">const</span> <span class="dt">int</span>* valid,
   RTCScene scene,
   <span class="kw">struct</span> RTCIntersectContext* context,
   <span class="kw">struct</span> RTCRay16* ray
@@ -2370,20 +2404,20 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcoccluded4816">rtcOccluded4/8/16</a></p>
-
+<p></p>
 <h2 id="rtcintersect1m">rtcIntersect1M</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersect1M - finds the closest hits <span class="cf">for</span> a stream of M single
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersect1M - finds the closest hits <span class="kw">for</span> a stream of M single
   rays</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcIntersect1M(
   RTCScene scene,
   <span class="kw">struct</span> RTCIntersectContext* context,
   <span class="kw">struct</span> RTCRayHit* rayhit,
   <span class="dt">unsigned</span> <span class="dt">int</span> M,
-  <span class="dt">size_t</span> byteStride
+  size_t byteStride
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcIntersect1M</code> function finds the closest hits for a stream of <code>M</code> single rays (<code>rayhit</code> argument) with the scene (<code>scene</code> argument). The <code>rayhit</code> argument points to an array of ray and hit data with specified byte stride (<code>byteStride</code> argument) between the ray/hit structures. See Section <a href="#rtcintersect1">rtcIntersect1</a> for a description of how to set up and trace rays.</p>
@@ -2395,19 +2429,19 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcoccluded1m">rtcOccluded1M</a></p>
-
+<p></p>
 <h2 id="rtcoccluded1m">rtcOccluded1M</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccluded1M - finds any hits <span class="cf">for</span> a stream of M single rays</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccluded1M - finds any hits <span class="kw">for</span> a stream of M single rays</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcOccluded1M(
   RTCScene scene,
   <span class="kw">struct</span> RTCIntersectContext* context,
   <span class="kw">struct</span> RTCRay* ray,
   <span class="dt">unsigned</span> <span class="dt">int</span> M,
-  <span class="dt">size_t</span> byteStride
+  size_t byteStride
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcOccluded1M</code> function checks whether there are any hits for a stream of <code>M</code> single rays (<code>ray</code> argument) with the scene (<code>scene</code> argument). The <code>ray</code> argument points to an array of rays with specified byte stride (<code>byteStride</code> argument) between the rays. See Section <a href="#rtcoccluded1">rtcOccluded1</a> for a description of how to set up and trace occlusion rays.</p>
@@ -2419,13 +2453,13 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcintersect1m">rtcIntersect1M</a></p>
-
+<p></p>
 <h2 id="rtcintersect1mp">rtcIntersect1Mp</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersect1Mp - finds the closest hits <span class="cf">for</span> a stream of M pointers
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersect1Mp - finds the closest hits <span class="kw">for</span> a stream of M pointers
   to single rays</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcIntersect1Mp(
   RTCScene scene,
@@ -2443,13 +2477,13 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcoccluded1mp">rtcOccluded1Mp</a></p>
-
+<p></p>
 <h2 id="rtcoccluded1mp">rtcOccluded1Mp</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccluded1Mp - find any hits <span class="cf">for</span> a stream of M pointers to
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccluded1Mp - find any hits <span class="kw">for</span> a stream of M pointers to
   single rays</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcOccluded1M(
   RTCScene scene,
@@ -2467,13 +2501,13 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcintersect1mp">rtcIntersect1Mp</a></p>
-
+<p></p>
 <h2 id="rtcintersectnm">rtcIntersectNM</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersectNM - finds the closest hits <span class="cf">for</span> a stream of M
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersectNM - finds the closest hits <span class="kw">for</span> a stream of M
   ray packets of size N</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcIntersectNM(
   RTCScene scene,
@@ -2481,7 +2515,7 @@ RTCBuffer rtcNewSharedBuffer(
   <span class="kw">struct</span> RTCRayHitN* rayhit,
   <span class="dt">unsigned</span> <span class="dt">int</span> N,
   <span class="dt">unsigned</span> <span class="dt">int</span> M,
-  <span class="dt">size_t</span> byteStride
+  size_t byteStride
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcIntersectNM</code> function finds the closest hits for a stream of <code>M</code> ray packets (<code>rayhit</code> argument) of size <code>N</code> with the scene (<code>scene</code> argument). The <code>rays</code> argument points to an array of ray and hit packets with specified byte stride (<code>byteStride</code> argument) between the ray/hit packets. See Section <a href="#rtcintersect1">rtcIntersect1</a> for a description of how to set up and trace rays.</p>
@@ -2493,13 +2527,13 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcoccludednm">rtcOccludedNM</a></p>
-
+<p></p>
 <h2 id="rtcoccludednm">rtcOccludedNM</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccludedNM - finds any hits <span class="cf">for</span> a stream of M ray packets of
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccludedNM - finds any hits <span class="kw">for</span> a stream of M ray packets of
   size N</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcOccludedNM(
   RTCScene scene,
@@ -2507,7 +2541,7 @@ RTCBuffer rtcNewSharedBuffer(
   <span class="kw">struct</span> RTCRayN* ray,
   <span class="dt">unsigned</span> <span class="dt">int</span> N,
   <span class="dt">unsigned</span> <span class="dt">int</span> M,
-  <span class="dt">size_t</span> byteStride
+  size_t byteStride
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcOccludedNM</code> function checks whether there are any hits for a stream of <code>M</code> ray packets (<code>ray</code> argument) of size <code>N</code> with the scene (<code>scene</code> argument). The <code>ray</code> argument points to an array of ray packets with specified byte stride (<code>byteStride</code> argument) between the ray packets. See Section <a href="#rtcoccluded1">rtcOccluded1</a> for a description of how to set up and trace occlusion rays.</p>
@@ -2519,13 +2553,13 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcintersectnm">rtcIntersectNM</a></p>
-
+<p></p>
 <h2 id="rtcintersectnp">rtcIntersectNp</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersectNp - finds the closest hits <span class="cf">for</span> a SOA ray stream of
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcIntersectNp - finds the closest hits <span class="kw">for</span> a SOA ray stream of
   size N</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcIntersectNp(
   RTCScene scene,
@@ -2543,12 +2577,12 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcoccludednp">rtcOccludedNp</a></p>
-
+<p></p>
 <h2 id="rtcoccludednp">rtcOccludedNp</h2>
 <h4 id="name">NAME</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccludedNp - finds any hits <span class="cf">for</span> a SOA ray stream of size N</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcOccludedNp - finds any hits <span class="kw">for</span> a SOA ray stream of size N</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcOccludedNp(
   RTCScene scene,
@@ -2566,13 +2600,13 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcintersectnp">rtcIntersectNp</a></p>
-
+<p></p>
 <h2 id="rtcinitpointquerycontext">rtcInitPointQueryContext</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcInitPointQueryContext - initializes the context information (e.g.
-  stack of (multilevel-)instance transformations) <span class="cf">for</span> point queries</code></pre></div>
+  stack of (multilevel-)instance transformations) <span class="kw">for</span> point queries</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTC_ALIGN(<span class="dv">16</span>) RTCPointQueryContext
 {
@@ -2605,7 +2639,7 @@ RTCBuffer rtcNewSharedBuffer(
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcPointQuery - traverses the BVH with a point query object</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTC_ALIGN(<span class="dv">16</span>) RTCPointQuery
 {
@@ -2642,12 +2676,12 @@ RTCBuffer rtcNewSharedBuffer(
 <p>For performance reasons this function does not do any error checks, thus will not set any error flags on failure.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrypointqueryfunction">rtcSetGeometryPointQueryFunction</a>, <a href="#rtcinitpointquerycontext">rtcInitPointQueryContext</a></p>
-
+<p></p>
 <h2 id="rtcnewbvh">rtcNewBVH</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcNewBVH - creates a <span class="kw">new</span> BVH object</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 RTCBVH rtcNewBVH(RTCDevice device);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -2657,12 +2691,12 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcretainbvh">rtcRetainBVH</a>, <a href="#rtcreleasebvh">rtcReleaseBVH</a>, <a href="#rtcbuildbvh">rtcBuildBVH</a></p>
-
+<p></p>
 <h2 id="rtcretainbvh">rtcRetainBVH</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcRetainBVH - increments the BVH reference count</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcRetainBVH(RTCBVH bvh);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -2671,12 +2705,12 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbvh">rtcNewBVH</a>, <a href="#rtcreleasebvh">rtcReleaseBVH</a></p>
-
+<p></p>
 <h2 id="rtcreleasebvh">rtcReleaseBVH</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcReleaseBVH - decrements the BVH reference count</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="dt">void</span> rtcReleaseBVH(RTCBVH bvh);</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
@@ -2685,12 +2719,12 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbvh">rtcNewBVH</a>, <a href="#rtcretainbvh">rtcRetainBVH</a></p>
-
+<p></p>
 <h2 id="rtcbuildbvh">rtcBuildBVH</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcBuildBVH - builds a BVH</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;embree3/rtcore.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
 
 <span class="kw">struct</span> RTC_ALIGN(<span class="dv">32</span>) RTCBuildPrimitive
 {
@@ -2715,20 +2749,20 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre></div>
 
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCSetNodeBoundsFunction) (
   <span class="dt">void</span>* nodePtr,
-  <span class="at">const</span> <span class="kw">struct</span> RTCBounds** bounds,
+  <span class="dt">const</span> <span class="kw">struct</span> RTCBounds** bounds,
   <span class="dt">unsigned</span> <span class="dt">int</span> childCount,
   <span class="dt">void</span>* userPtr
 );
 
 <span class="kw">typedef</span> <span class="dt">void</span>* (*RTCCreateLeafFunction) (
   RTCThreadLocalAllocator allocator,
-  <span class="at">const</span> <span class="kw">struct</span> RTCBuildPrimitive* primitives,
-  <span class="dt">size_t</span> primitiveCount,
+  <span class="dt">const</span> <span class="kw">struct</span> RTCBuildPrimitive* primitives,
+  size_t primitiveCount,
   <span class="dt">void</span>* userPtr
 );
 
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCSplitPrimitiveFunction) (
-  <span class="at">const</span> <span class="kw">struct</span> RTCBuildPrimitive* primitive,
+  <span class="dt">const</span> <span class="kw">struct</span> RTCBuildPrimitive* primitive,
   <span class="dt">unsigned</span> <span class="dt">int</span> dimension,
   <span class="dt">float</span> position,
   <span class="kw">struct</span> RTCBounds* leftBounds,
@@ -2748,7 +2782,7 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre></div>
 
 <span class="kw">struct</span> RTCBuildArguments
 {
-  <span class="dt">size_t</span> byteSize;
+  size_t byteSize;
 
   <span class="kw">enum</span> RTCBuildQuality buildQuality;
   <span class="kw">enum</span> RTCBuildFlags buildFlags;
@@ -2762,8 +2796,8 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre></div>
 
   RTCBVH bvh;
   <span class="kw">struct</span> RTCBuildPrimitive* primitives;
-  <span class="dt">size_t</span> primitiveCount;
-  <span class="dt">size_t</span> primitiveArrayCapacity;
+  size_t primitiveCount;
+  size_t primitiveArrayCapacity;
   
   RTCCreateNodeFunction createNode;
   RTCSetNodeChildrenFunction setNodeChildren;
@@ -2777,7 +2811,7 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre></div>
 <span class="kw">struct</span> RTCBuildArguments rtcDefaultBuildArguments();
 
 <span class="dt">void</span>* rtcBuildBVH(
-  <span class="at">const</span> <span class="kw">struct</span> RTCBuildArguments* args
+  <span class="dt">const</span> <span class="kw">struct</span> RTCBuildArguments* args
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcBuildBVH</code> function can be used to build a BVH in a user-defined format over arbitrary primitives. All arguments to the function are provided through the <code>RTCBuildArguments</code> structure. The first member of that structure must be set to the size of the structure in bytes (<code>bytesSize</code> member) which allows future extensions of the structure. It is recommended to initialize the build arguments structure using the <code>rtcDefaultBuildArguments</code> function.</p>
@@ -2797,12 +2831,68 @@ RTCBVH rtcNewBVH(RTCDevice device);</code></pre></div>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcnewbvh">rtcNewBVH</a></p>
-
+<p></p>
+<h2 id="rtcquaterniondecomposition">RTCQuaternionDecomposition</h2>
+<h4 id="name">NAME</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCQuaternionDecomposition - structure that represents a quaternion
+  decomposition of an affine transformation</code></pre></div>
+<h4 id="synopsis">SYNOPSIS</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">struct</span> RTCQuaternionDecomposition
+{
+  <span class="dt">float</span> scale_x, scale_y, scale_z;
+  <span class="dt">float</span> skew_xy, skew_xz, skew_yz;
+  <span class="dt">float</span> shift_x, shift_y, shift_z;
+  <span class="dt">float</span> quaternion_r, quaternion_i, quaternion_j, quaternion_k;
+  <span class="dt">float</span> translation_x, translation_y, translation_z;
+};</code></pre></div>
+<h4 id="description">DESCRIPTION</h4>
+<p>The struct <code>RTCQuaternionDecomposition</code> represents an affine transformation decomposed into three parts. An upper triangular scaling/skew/shift matrix</p>
+<p><br /><span class="math display">$$
+S = \left( \begin{array}{cccc}
+scale_x &amp; skew_{xy} &amp; skew_{xz} &amp; shift_x \\ 
+0 &amp; scale_y &amp; skew_{yz} &amp; shift_y \\ 
+0 &amp; 0 &amp; scale_z &amp; shift_z \\ 
+0 &amp; 0 &amp; 0 &amp; 1 \\ 
+\end{array} \right),
+$$</span><br /></p>
+<p>a translation matrix</p>
+<p><br /><span class="math display">$$
+T = \left( \begin{array}{cccc}
+1 &amp; 0 &amp; 0 &amp; translation_x \\ 
+0 &amp; 1 &amp; 0 &amp; translation_y \\ 
+0 &amp; 0 &amp; 1 &amp; translation_z \\ 
+0 &amp; 0 &amp; 0 &amp; 1 \\ 
+\end{array} \right),
+$$</span><br /></p>
+<p>and a rotation matrix <span class="math inline"><em>R</em></span>, represented as a quaternion</p>
+<p><span class="math inline"><em>q</em><em>u</em><em>a</em><em>t</em><em>e</em><em>r</em><em>n</em><em>i</em><em>o</em><em>n</em><sub><em>r</em></sub> + <em>q</em><em>u</em><em>a</em><em>t</em><em>e</em><em>r</em><em>n</em><em>i</em><em>o</em><em>n</em><sub><em>i</em></sub> <strong>i</strong> + <em>q</em><em>u</em><em>a</em><em>t</em><em>e</em><em>r</em><em>n</em><em>i</em><em>o</em><em>n</em><sub><em>j</em></sub> <strong>i</strong> + <em>q</em><em>u</em><em>a</em><em>t</em><em>e</em><em>r</em><em>n</em><em>i</em><em>o</em><em>n</em><sub><em>k</em></sub> <strong>k</strong></span></p>
+<p>where <span class="math inline"><strong>i</strong></span>, <span class="math inline"><strong>j</strong></span> <span class="math inline"><strong>k</strong></span> are the imaginary quaternion units. The passed quaternion has to be a properly normalized unit quaternion, as only these represent rotations.</p>
+<p>The affine transformation matrix corresponding to a <code>RTCQuaternionDecomposition</code> is <span class="math inline"><em>T</em><em>R</em><em>S</em></span> and a point <span class="math inline"><em>p</em> = (<em>p</em><sub><em>x</em></sub>, <em>p</em><sub><em>y</em></sub>, <em>p</em><sub><em>z</em></sub>, 1)<sup><em>T</em></sup></span> will be transformed as <br /><span class="math display"><em>p</em>′=<em>T</em> <em>R</em> <em>S</em> <em>p</em>.</span><br /></p>
+<p>The functions <code>rtcInitQuaternionDecomposition</code>, <code>rtcQuaternionDecompositionSetQuaternion</code>, <code>rtcQuaternionDecompositionSetScale</code>, <code>rtcQuaternionDecompositionSetSkew</code>, <code>rtcQuaternionDecompositionSetShift</code>, and <code>rtcQuaternionDecompositionSetTranslation</code> allow to set the fields of the structure more conveniently.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>No error code is set by this function.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcsetgeometrytransformquaternion">rtcSetGeometryTransformQuaternion</a>, <a href="#rtcinitquaterniondecomposition">rtcInitQuaternionDecomposition</a></p>
+<p></p>
+<h2 id="rtcinitquaterniondecomposition">rtcInitQuaternionDecomposition</h2>
+<h4 id="name">NAME</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcInitQuaternionDecomposition - initializes quaternion decomposition</code></pre></div>
+<h4 id="synopsis">SYNOPSIS</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> rtcInitQuaternionDecomposition(
+  <span class="kw">struct</span> RTCQuaternionDecomposition* qd
+);</code></pre></div>
+<h4 id="description">DESCRIPTION</h4>
+<p>The <code>rtcInitQuaternionDecomposition</code> function initializes a <code>RTCQuaternionDecomposition</code> structure to represent an identity transformation.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>No error code is set by this function.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcsetgeometrytransformquaternion">rtcSetGeometryTransformQuaternion</a>, <a href="#rtcquaterniondecomposition">RTCQuaternionDecomposition</a></p>
+<p></p>
 <h1 id="performance-recommendations">Performance Recommendations</h1>
 <h2 id="mxcsr-control-and-status-register">MXCSR control and status register</h2>
 <p>It is strongly recommended to have the <code>Flush to Zero</code> and <code>Denormals are Zero</code> mode of the MXCSR control and status register enabled for each thread before calling the <code>rtcIntersect</code>-type and <code>rtcOccluded</code>-type functions. Otherwise, under some circumstances special handling of denormalized floating point numbers can significantly reduce application and Embree performance. When using Embree together with the Intel® Threading Building Blocks, it is sufficient to execute the following code at the beginning of the application main thread (before the creation of the <code>tbb::task_scheduler_init</code> object):</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;xmmintrin.h&gt;</span>
-<span class="pp">#include </span><span class="im">&lt;pmmintrin.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;xmmintrin.h&gt;</span>
+<span class="ot">#include &lt;pmmintrin.h&gt;</span>
 ...
 _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
 _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre></div>
@@ -2835,7 +2925,7 @@ _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre></div>
       </div>
 
       <div id="footer">
-        © 2009–2018 Intel Corporation <a href="legal.html">Disclaimer and Legal Information</a>
+        © 2009–2020 Intel Corporation <a href="legal.html">Disclaimer and Legal Information</a>
         <a href="https://www.intel.com/privacy">Privacy</a>
       </div>
     </div>

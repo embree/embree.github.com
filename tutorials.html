@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.6.1!
+      We recently released Intel® Embree v3.7.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -112,6 +112,12 @@
 
 </div>
 <p>This tutorial demonstrates the creation of a dynamic scene, consisting of several deforming spheres. Half of the spheres use the <code>RTC_BUILD_QUALITY_REFIT</code> geometry build quality, which allows Embree to use a refitting strategy for these spheres, the other half uses the <code>RTC_BUILD_QUALITY_LOW</code> geometry build quality, causing a high performance rebuild of their spatial data structure each frame. The spheres are colored based on the ID of the hit sphere geometry.</p>
+<h2 id="multi-scene-geometry">Multi Scene Geometry</h2>
+<div class="figure">
+<img src="images/dynamic_scene.jpg" />
+
+</div>
+<p>This tutorial demonstrates the creation of multiple scenes sharing the same geometry objects. Here, three scenes are built. One with all the dynamic spheres of the Dynamic Scene test and two others each with half. The ground plane is shared by all three scenes. The space bar is used to cycle the scene chosen for rendering.</p>
 <h2 id="user-geometry">User Geometry</h2>
 <div class="figure">
 <img src="images/user_geometry.jpg" />
@@ -209,6 +215,12 @@
 </div>
 <p>This tutorial demonstrates rendering of motion blur using the multi-segment motion blur feature. Shown is motion blur of a triangle mesh, quad mesh, subdivision surface, line segments, hair geometry, Bézier curves, instantiated triangle mesh where the instance moves, instantiated quad mesh where the instance and the quads move, and user geometry.</p>
 <p>The number of time steps used can be configured using the <code>--time-steps &lt;int&gt;</code> and <code>--time-steps2 &lt;int&gt;</code> command line parameters, and the geometry can be rendered at a specific time using the the <code>--time &lt;float&gt;</code> command line parameter.</p>
+<h2 id="quaternion-motion-blur">Quaternion Motion Blur</h2>
+<div class="figure">
+<img src="images/quaternion_motion_blur.jpg" />
+
+</div>
+<p>This tutorial demonstrates rendering of motion blur using quaternion interpolation. Shown is motion blur using spherical linear interpolation of the rotational component of the instance transformation on the left and simple linear interpolation of the instance transformation on the right. The number of time steps can be modified as well.</p>
 <h2 id="interpolation">Interpolation</h2>
 <div class="figure">
 <img src="images/interpolation.jpg" />
@@ -233,10 +245,12 @@
 <p>This tutorial demonstrates how to access the internal triangle acceleration structure build by Embree. Please be aware that the internal Embree data structures might change between Embree updates.</p>
 <h2 id="find-embree">Find Embree</h2>
 <p>This tutorial demonstrates how to use the <code>FIND_PACKAGE</code> CMake feature to use an installed Embree. Under Linux and macOS the tutorial finds the Embree installation automatically, under Windows the <code>embree_DIR</code> CMake variable must be set to the following folder of the Embree installation: <code>C:\Program Files\Intel\Embree3</code>.</p>
+<h2 id="next-hit">Next Hit</h2>
+<p>This tutorial demonstrates how to robustly enumerate all hits along the ray using multiple ray queries and an intersection filter function. To improve performance, the tutorial also supports collecting the next N hits in a single ray query.</p>
       </div>
 
       <div id="footer">
-        © 2009–2018 Intel Corporation <a href="legal.html">Disclaimer and Legal Information</a>
+        © 2009–2020 Intel Corporation <a href="legal.html">Disclaimer and Legal Information</a>
         <a href="https://www.intel.com/privacy">Privacy</a>
       </div>
     </div>
