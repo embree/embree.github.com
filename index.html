@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.7.0!
+      We recently released Intel® Embree v3.8.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -101,14 +101,29 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="embree-3.8.0">Embree 3.8.0</h3>
+<h4 id="new-features">New Features:</h4>
+<ul>
+<li>Added collision detection support for user geometries (see rtcCollide API function)</li>
+<li>Passing geomID to user geometry callbacks.</li>
+</ul>
+<h4 id="fixed-issues">Fixed Issues:</h4>
+<ul>
+<li>Bugfix in AVX512VL codepath for rtcIntersect1</li>
+<li>For sphere geometries the intersection filter gets now invoked for front and back hit.</li>
+<li>Fixed some bugs for quaternion motion blur.</li>
+<li>RTCIntersectContext always non-const in Embree API</li>
+<li>Made RTCHit aligned to 16 bytes in Embree API</li>
+</ul>
 <h3 id="new-features-in-embree-3.7.0">New Features in Embree 3.7.0</h3>
 <ul>
 <li>Added quaternion motion blur for correct interpolation of rotational transformations.</li>
-<li>Fixed wrong bounding calculations when a motion blurred instance di instantiate a motion blurred scene.</li>
+<li>Fixed wrong bounding calculations when a motion blurred instance did instantiate a motion blurred scene.</li>
 <li>In robust mode the depth test consistently uses tnear &lt;= t &lt;= tfar now in order to robustly continue traversal at a previous hit point in a way that guarentees reaching all hits, even hits at the same place.</li>
 <li>Fixed depth test in robust mode to be precise at tnear and tfar.</li>
 <li>Added next_hit tutorial to demonstrate robustly collecting all hits along a ray using multiple ray queries.</li>
 <li>Implemented robust mode for curves. This has a small performance impact but fixes bounding problems with flat curves.</li>
+<li>Improved quality of motion blur BVH by using linear bounds during binning.</li>
 <li>Implemented issue with motion blur builder where number of time segments for SAH heuristic were counted wrong due to some numerical issues.</li>
 <li>Fixed an accuracy issue with rendering very short fat curves.</li>
 <li>rtcCommitScene can now get called during rendering from multiple threads to lazily build geometry. When TBB is used this causes a much lower overhead than using rtcJoinCommitScene.</li>

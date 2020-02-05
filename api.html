@@ -75,7 +75,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.7.0!
+      We recently released Intel® Embree v3.8.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -110,6 +110,10 @@ div.sourceCode { overflow-x: initial; }
 <h2 id="point-queries">Point Queries</h2>
 <p>The API supports traversal of the BVH using a point query object that specifies a location and a query radius. For all primitives intersecting the according domain, a user defined callback function is called which allows queries such as finding the closest point on the surface geometries of the scene (see Tutorial <a href="tutorials.html#closest-point">Closest Point</a>) or nearest neighbour queries (see Tutorial <a href="tutorials.html#voronoi">Voronoi</a>).</p>
 <p>See Section [rtcPointQuery] for a detailed description of how to set up point queries.</p>
+<h2 id="collision-detection">Collision Detection</h2>
+<p>The Embree API also supports collision detection queries between two scenes consisting only of user geometries. Embree only performs broadphase collision detection, the narrow phase detection can be performed through a callback function.</p>
+<p>See Section <a href="#rtccollide">rtcCollide</a> for a detailed description of how to set up collision detection.</p>
+<p>Seen tutorial <a href="#collision-detection">Collision Detection</a> for a complete example of collsion detection being used on a simple cloth solver.</p>
 <h2 id="miscellaneous">Miscellaneous</h2>
 <p>A context filter function, which can be set per ray query is supported (see <code>rtcInitIntersectContext</code>). This filter function is designed to change the semantics of the ray query, e.g. to accumulate opacity for transparent shadows, count the number of surfaces along a ray, collect all hits along a ray, etc.</p>
 <p>The internal algorithms to build a BVH are exposed through the <code>RTCBVH</code> object and <code>rtcBuildBVH</code> call. This call makes it possible to build a BVH in a user-specified format over user-specified primitives. See the documentation of the <code>rtcBuildBVH</code> call for more details.</p>
@@ -905,7 +909,7 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ROUND_CATMULL_ROM_CURVE);</code></pre><
 <p>For the cubic Bézier basis the indices point to the first of 4 consecutive control points in the vertex buffer. These control points use the cubic Bézier basis, where the first control point represents the start point of the curve, and the 4th control point the end point of the curve. The Bézier basis is interpolating, thus the curve does go exactly through the first and fourth control vertex.</p>
 <p>For the cubic B-spline basis the indices point to the first of 4 consecutive control points in the vertex buffer. These control points make up a cardinal cubic B-spline (implicit equidistant knot vector). This basis is not interpolating, thus the curve does in general not go through any of the control points directly. A big advantage of this basis is that 3 control points can be shared for two continuous neighboring curve segments, e.g. the curves (p0,p1,p2,p3) and (p1,p2,p3,p4) are C1 continuous. This feature make this basis a good choise to construct continuous multi-segment curves, as memory consumption can be kept minimal.</p>
 <p>For the cubic Hermite basis the indices point to the first of 2 consecutive points in the vertex buffer, and the first of 2 consecutive tangents in the tangent buffer. These two points and two tangents make up a cubic Hermite curve. This basis is interpolating, thus does exactly go through the first and second control point, and the first order derivative at the begin and end matches exactly the value specified in the tangent buffer. When connecting two segments continuously, the end point and tangent of the previous segment can be shared. Different versions of Catmull-Rom splines can be easily constructed usig the Hermite basis, by calculating a proper tangent buffer from the control points.</p>
-<p>For the Catmull-Rom basis the indices point to the first of 4 consecutive control points in the vertex buffer. This basis goes through p1 and p2, with tangents (p2-p0)/2 and (p3-p2)/2.</p>
+<p>For the Catmull-Rom basis the indices point to the first of 4 consecutive control points in the vertex buffer. This basis goes through p1 and p2, with tangents (p2-p0)/2 and (p3-p1)/2.</p>
 <p>The <code>RTC_GEOMETRY_TYPE_FLAT_*</code> flat mode is a fast mode designed to render distant hair. In this mode the curve is rendered as a connected sequence of ray facing quads. Individual quads are considered to have subpixel size, and zooming onto the curve might show geometric artifacts. The number of quads to subdivide into can be specified through the <code>rtcSetGeometryTessellationRate</code> function. By default the tessellation rate is 4.</p>
 <p>The <code>RTC_GEOMETRY_TYPE_NORMAL_ORIENTED_*</code> mode is a mode designed to render blades of grass. In this mode a vertex spline has to get specified as for the previous modes, but additionally a normal spline is required. If the Hermite basis is used, the <code>RTC_BUFFER_TYPE_NORMAL</code> and <code>RTC_BUFFER_TYPE_NORMAL_DERIVATIVE</code> buffers have both to be set.</p>
 <p>The curve is rendered as a flat band whose center approximately follows the provided vertex spline, whose half width approximately follows the provided radius spline, and whose normal orientation approximately follows the provided normal spline.</p>
@@ -1484,6 +1488,7 @@ RTCGeometry geometry =
   <span class="kw">struct</span> RTCIntersectContext* context;
   <span class="kw">struct</span> RTCRayHitN* rayhit;
   <span class="dt">unsigned</span> <span class="dt">int</span> N;
+  <span class="dt">unsigned</span> <span class="dt">int</span> geomID;
 };
 
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCIntersectFunctionN)(
@@ -1497,7 +1502,7 @@ RTCGeometry geometry =
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetGeometryIntersectFunction</code> function registers a ray/primitive intersection callback function (<code>intersect</code> argument) for the specified user geometry (<code>geometry</code> argument).</p>
 <p>Only a single callback function can be registered per geometry and further invocations overwrite the previously set callback function. Passing <code>NULL</code> as function pointer disables the registered callback function.</p>
-<p>The registered callback function is invoked by <code>rtcIntersect</code>-type ray queries to calculate the intersection of a ray packet of variable size with one user-defined primitive. The callback function of type <code>RTCIntersectFunctionN</code> gets passed a number of arguments through the <code>RTCIntersectFunctionNArguments</code> structure. The value <code>N</code> specifies the ray packet size, <code>valid</code> points to an array of integers that specify whether the corresponding ray is valid (-1) or invalid (0), the <code>geometryUserPtr</code> member points to the geometry user data previously set through <code>rtcSetGeometryUserData</code>, the <code>context</code> member points to the intersection context passed to the ray query, the <code>rayhit</code> member points to a ray and hit packet of variable size <code>N</code>, and the <code>primID</code> member identifies the primitive ID of the primitive to intersect.</p>
+<p>The registered callback function is invoked by <code>rtcIntersect</code>-type ray queries to calculate the intersection of a ray packet of variable size with one user-defined primitive. The callback function of type <code>RTCIntersectFunctionN</code> gets passed a number of arguments through the <code>RTCIntersectFunctionNArguments</code> structure. The value <code>N</code> specifies the ray packet size, <code>valid</code> points to an array of integers that specify whether the corresponding ray is valid (-1) or invalid (0), the <code>geometryUserPtr</code> member points to the geometry user data previously set through <code>rtcSetGeometryUserData</code>, the <code>context</code> member points to the intersection context passed to the ray query, the <code>rayhit</code> member points to a ray and hit packet of variable size <code>N</code>, and the <code>geomID</code> and <code>primID</code> member identifies the geometry ID and primitive ID of the primitive to intersect.</p>
 <p>The <code>ray</code> component of the <code>rayhit</code> structure contains valid data, in particular the <code>tfar</code> value is the current closest hit distance found. All data inside the <code>hit</code> component of the <code>rayhit</code> structure are undefined and should not be read by the function.</p>
 <p>The task of the callback function is to intersect each active ray from the ray packet with the specified user primitive. If the user-defined primitive is missed by a ray of the ray packet, the function should return without modifying the ray or hit. If an intersection of the user-defined primitive with the ray was found in the valid range (from <code>tnear</code> to <code>tfar</code>), it should update the hit distance of the ray (<code>tfar</code> member) and the hit (<code>u</code>, <code>v</code>, <code>Ng</code>, <code>instID</code>, <code>geomID</code>, <code>primID</code> members). In particular, the currently intersected instance is stored in the <code>instID</code> field of the intersection context, which must be deep copied into the <code>instID</code> member of the hit.</p>
 <p>As a primitive might have multiple intersections with a ray, the intersection filter function needs to be invoked by the user geometry intersection callback for each encountered intersection, if filtering of intersections is desired. This can be achieved through the <code>rtcFilterIntersection</code> call.</p>
@@ -1524,6 +1529,7 @@ RTCGeometry geometry =
   <span class="kw">struct</span> RTCIntersectContext* context;
   <span class="kw">struct</span> RTCRayN* ray;
   <span class="dt">unsigned</span> <span class="dt">int</span> N;
+  <span class="dt">unsigned</span> <span class="dt">int</span> geomID;
 };
 
 <span class="kw">typedef</span> <span class="dt">void</span> (*RTCOccludedFunctionN)(
@@ -1537,7 +1543,7 @@ RTCGeometry geometry =
 <h4 id="description">DESCRIPTION</h4>
 <p>The <code>rtcSetGeometryOccludedFunction</code> function registers a ray/primitive occlusion callback function (<code>filter</code> argument) for the specified user geometry (<code>geometry</code> argument).</p>
 <p>Only a single callback function can be registered per geometry, and further invocations overwrite the previously set callback function. Passing <code>NULL</code> as function pointer disables the registered callback function.</p>
-<p>The registered callback function is invoked by <code>rtcOccluded</code>-type ray queries to test whether the rays of a packet of variable size are occluded by a user-defined primitive. The callback function of type <code>RTCOccludedFunctionN</code> gets passed a number of arguments through the <code>RTCOccludedFunctionNArguments</code> structure. The value <code>N</code> specifies the ray packet size, <code>valid</code> points to an array of integers which specify whether the corresponding ray is valid (-1) or invalid (0), the <code>geometryUserPtr</code> member points to the geometry user data previously set through <code>rtcSetGeometryUserData</code>, the <code>context</code> member points to the intersection context passed to the ray query, the <code>ray</code> member points to a ray packet of variable size <code>N</code>, and the <code>primID</code> member identifies the primitive ID of the primitive to test for occlusion.</p>
+<p>The registered callback function is invoked by <code>rtcOccluded</code>-type ray queries to test whether the rays of a packet of variable size are occluded by a user-defined primitive. The callback function of type <code>RTCOccludedFunctionN</code> gets passed a number of arguments through the <code>RTCOccludedFunctionNArguments</code> structure. The value <code>N</code> specifies the ray packet size, <code>valid</code> points to an array of integers which specify whether the corresponding ray is valid (-1) or invalid (0), the <code>geometryUserPtr</code> member points to the geometry user data previously set through <code>rtcSetGeometryUserData</code>, the <code>context</code> member points to the intersection context passed to the ray query, the <code>ray</code> member points to a ray packet of variable size <code>N</code>, and the <code>geomID</code> and <code>primID</code> member identifies the geometry ID and primitive ID of the primitive to intersect.</p>
 <p>The task of the callback function is to intersect each active ray from the ray packet with the specified user primitive. If the user-defined primitive is missed by a ray of the ray packet, the function should return without modifying the ray. If an intersection of the user-defined primitive with the ray was found in the valid range (from <code>tnear</code> to <code>tfar</code>), it should set the <code>tfar</code> member of the ray to <code>-inf</code>.</p>
 <p>As a primitive might have multiple intersections with a ray, the occlusion filter function needs to be invoked by the user geometry occlusion callback for each encountered intersection, if filtering of intersections is desired. This can be achieved through the <code>rtcFilterOcclusion</code> call.</p>
 <p>Within the user geometry occlusion function, it is safe to trace new rays and create new scenes and geometries.</p>
@@ -1653,9 +1659,9 @@ RTCGeometry geometry =
   <span class="dt">const</span> <span class="kw">struct</span> RTCQuaternionDecomposition* qd
 );</code></pre></div>
 <h4 id="description">DESCRIPTION</h4>
-<p>The <code>rtcSetGeometryTransformQuaternion</code> function sets the local-to-world affine transformation (<code>qd</code> parameter) of an instance geometry (<code>geometry</code> parameter) for a particular time step (<code>timeStep</code> parameter). The transformation is specified as a <a href="#rtcquaterniondecomposition">RTCQuaternionDecomposition</a>, which is a decomposition of an affine transformation which represents the rotational component of an affine transformation as a quaternion. This allows interpolating rotational transformations exactly using spherical linear interpolation (such as a turning wheel).</p>
-<p>For more information about the decomposition see <a href="#rtcquaterniondecomposition">RTCQuaternionDecomposition</a>.</p>
-<p>Before commiting an instance geometry, the transformation matrices must be set either using <code>rtcSetGeometryTransform</code> or <code>rtcSetGeometryTransformQuaternion</code> for all time steps. Mixing both representations is not allowed.</p>
+<p>The <code>rtcSetGeometryTransformQuaternion</code> function sets the local-to-world affine transformation (<code>qd</code> parameter) of an instance geometry (<code>geometry</code> parameter) for a particular time step (<code>timeStep</code> parameter). The transformation is specified as a <a href="#rtcquaterniondecomposition">RTCQuaternionDecomposition</a>, which is a decomposition of an affine transformation that represents the rotational component of an affine transformation as a quaternion. This allows interpolating rotational transformations exactly using spherical linear interpolation (such as a turning wheel).</p>
+<p>For more information about the decomposition see <a href="#rtcquaterniondecomposition">RTCQuaternionDecomposition</a>. The quaternion given in the <code>RTCQuaternionDecomposition</code> struct will be normalized internally.</p>
+<p>For correct results, the transformation matrices for all time steps must be set either using <code>rtcSetGeometryTransform</code> or <code>rtcSetGeometryTransformQuaternion</code>. Mixing both representations is not allowed. Spherical linear interpolation will be used, iff the transformation matizes are set with <code>rtcSetGeometryTransformQuaternion</code>.</p>
 <p>For an example of this feature see the tutorial <a href="tutorials.html#quaternion-motion-blur">Quaternion Motion Blur</a>.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
@@ -2677,6 +2683,37 @@ RTCBuffer rtcNewSharedBuffer(
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrypointqueryfunction">rtcSetGeometryPointQueryFunction</a>, <a href="#rtcinitpointquerycontext">rtcInitPointQueryContext</a></p>
 <p></p>
+<h2 id="rtccollide">rtcCollide</h2>
+<h4 id="name">NAME</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcCollide - intersects one BVH with another</code></pre></div>
+<h4 id="synopsis">SYNOPSIS</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span>
+
+<span class="kw">struct</span> RTCCollision {
+  <span class="dt">unsigned</span> <span class="dt">int</span> geomID0, primID0;
+  <span class="dt">unsigned</span> <span class="dt">int</span> geomID1, primID1;
+};
+
+<span class="kw">typedef</span> <span class="dt">void</span> (*RTCCollideFunc) (
+  <span class="dt">void</span>* userPtr,
+  RTCCollision* collisions,
+  size_t num_collisions);
+
+<span class="dt">void</span> rtcCollide (
+    RTCScene hscene0, 
+    RTCScene hscene1, 
+    RTCCollideFunc callback, 
+    <span class="dt">void</span>* userPtr
+);</code></pre></div>
+<h4 id="description">DESCRIPTION</h4>
+<p>The <code>rtcCollide</code> function intersects the BVH of <code>hscene0</code> with the BVH of scene <code>hscene1</code> and calls a user defined callback function (e.g <code>callback</code> argument) for each pair of intersecting primitives between the two scenes. A user defined data pointer (<code>userPtr</code> argument) can also be passed in.</p>
+<p>For every pair of primitives that may intersect each other, the callback function (<code>callback</code> argument) is called. The user will be provided with the primID's and geomID's of multiple potentially intersecting primitive pairs. Currently, only scene entirely composed of user geometries are supported, thus the user is expected to implement a primitive/primitive intersection to filter out false positives in the callback function. The <code>userPtr</code> argument can be used to input geometry data of the scene or output results of the intersection query.</p>
+<h4 id="supported-primitives">SUPPORTED PRIMITIVES</h4>
+<p>Currently, the only supported type is the user geometry type (see <a href="#rtc_geometry_type_user">RTC_GEOMETRY_TYPE_USER</a>).</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
+<h4 id="see-also">SEE ALSO</h4>
+<p></p>
 <h2 id="rtcnewbvh">rtcNewBVH</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcNewBVH - creates a <span class="kw">new</span> BVH object</code></pre></div>
@@ -2866,7 +2903,7 @@ T = \left( \begin{array}{cccc}
 $$</span><br /></p>
 <p>and a rotation matrix <span class="math inline"><em>R</em></span>, represented as a quaternion</p>
 <p><span class="math inline"><em>q</em><em>u</em><em>a</em><em>t</em><em>e</em><em>r</em><em>n</em><em>i</em><em>o</em><em>n</em><sub><em>r</em></sub> + <em>q</em><em>u</em><em>a</em><em>t</em><em>e</em><em>r</em><em>n</em><em>i</em><em>o</em><em>n</em><sub><em>i</em></sub> <strong>i</strong> + <em>q</em><em>u</em><em>a</em><em>t</em><em>e</em><em>r</em><em>n</em><em>i</em><em>o</em><em>n</em><sub><em>j</em></sub> <strong>i</strong> + <em>q</em><em>u</em><em>a</em><em>t</em><em>e</em><em>r</em><em>n</em><em>i</em><em>o</em><em>n</em><sub><em>k</em></sub> <strong>k</strong></span></p>
-<p>where <span class="math inline"><strong>i</strong></span>, <span class="math inline"><strong>j</strong></span> <span class="math inline"><strong>k</strong></span> are the imaginary quaternion units. The passed quaternion has to be a properly normalized unit quaternion, as only these represent rotations.</p>
+<p>where <span class="math inline"><strong>i</strong></span>, <span class="math inline"><strong>j</strong></span> <span class="math inline"><strong>k</strong></span> are the imaginary quaternion units. The passed quaternion will be normalized internally.</p>
 <p>The affine transformation matrix corresponding to a <code>RTCQuaternionDecomposition</code> is <span class="math inline"><em>T</em><em>R</em><em>S</em></span> and a point <span class="math inline"><em>p</em> = (<em>p</em><sub><em>x</em></sub>, <em>p</em><sub><em>y</em></sub>, <em>p</em><sub><em>z</em></sub>, 1)<sup><em>T</em></sup></span> will be transformed as <br /><span class="math display"><em>p</em>′=<em>T</em> <em>R</em> <em>S</em> <em>p</em>.</span><br /></p>
 <p>The functions <code>rtcInitQuaternionDecomposition</code>, <code>rtcQuaternionDecompositionSetQuaternion</code>, <code>rtcQuaternionDecompositionSetScale</code>, <code>rtcQuaternionDecompositionSetSkew</code>, <code>rtcQuaternionDecompositionSetShift</code>, and <code>rtcQuaternionDecompositionSetTranslation</code> allow to set the fields of the structure more conveniently.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
