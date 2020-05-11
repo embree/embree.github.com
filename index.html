@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.9.0!
+      We recently released Intel® Embree v3.10.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -101,6 +101,16 @@ Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-real
 <p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="embree-3.10.0">Embree 3.10.0</h3>
+<ul>
+<li>Added EMBREE_COMPACT_POLYS CMake option which enables double indexed triangle and quad leaves to reduce memory consumption in compact mode by an additional 40% at about 15% performance impact. This new mode is disabled by default.</li>
+<li>Compile fix for oneTBB 2021.1-beta05</li>
+<li>Releases upgrade to TBB 2020.2</li>
+<li>Compile fix for ISPC v1.13.0</li>
+<li>Adding RPATH to libembree.so in releases</li>
+<li>Increased required CMake version to 3.1.0</li>
+<li>Made instID member for array of pointers ray stream layout optional again.</li>
+</ul>
 <h3 id="embree-3.9.0">Embree 3.9.0</h3>
 <ul>
 <li>Added round linear curve geometry support. In this mode a real geometric surface for curves with linear basis is rendered using capped cones with spherical filling between the curve segments.</li>

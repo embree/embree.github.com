@@ -75,7 +75,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.9.0!
+      We recently released Intel® Embree v3.10.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -284,6 +284,7 @@ ssize_t rtcGetDeviceProperty(
 <li><p><code>RTC_DEVICE_PROPERTY_RAY_STREAM_SUPPORTED</code>: Queries whether <code>rtcIntersect1M</code>, <code>rtcIntersect1Mp</code>, <code>rtcIntersectNM</code>, <code>rtcIntersectNp</code>, <code>rtcOccluded1M</code>, <code>rtcOccluded1Mp</code>, <code>rtcOccludedNM</code>, and <code>rtcOccludedNp</code> are supported. This is only the case if Embree is compiled with <code>EMBREE_RAY_PACKETS</code> enabled.</p></li>
 <li><p><code>RTC_DEVICE_PROPERTY_RAY_MASK_SUPPORTED</code>: Queries whether ray masks are supported. This is only the case if Embree is compiled with <code>EMBREE_RAY_MASK</code> enabled.</p></li>
 <li><p><code>RTC_DEVICE_PROPERTY_BACKFACE_CULLING_ENABLED</code>: Queries whether back face culling is enabled. This is only the case if Embree is compiled with <code>EMBREE_BACKFACE_CULLING</code> enabled.</p></li>
+<li><p><code>RTC_DEVICE_PROPERTY_COMPACT_POLYS_ENABLED</code>: Queries whether compact polys is enabled. This is only the case if Embree is compiled with <code>EMBREE_COMPACT_POLYS</code> enabled.</p></li>
 <li><p><code>RTC_DEVICE_PROPERTY_FILTER_FUNCTION_SUPPORTED</code>: Queries whether filter functions are supported, which is the case if Embree is compiled with <code>EMBREE_FILTER_FUNCTION</code> enabled.</p></li>
 <li><p><code>RTC_DEVICE_PROPERTY_IGNORE_INVALID_RAYS_ENABLED</code>: Queries whether invalid rays are ignored, which is the case if Embree is compiled with <code>EMBREE_IGNORE_INVALID_RAYS</code> enabled.</p></li>
 <li><p><code>RTC_DEVICE_PROPERTY_TRIANGLE_GEOMETRY_SUPPORTED</code>: Queries whether triangles are supported, which is the case if Embree is compiled with <code>EMBREE_GEOMETRY_TRIANGLE</code> enabled.</p></li>
@@ -3006,6 +3007,7 @@ _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);</code></pre></div>
 <p>When the system has been running for a while, physical memory gets quickly fragmented, and causes huge page allocations to fail. For this reason, huge pages are not very useful under macOS in practice.</p>
 <h2 id="avoid-store-to-load-forwarding-issues-with-single-rays">Avoid store-to-load forwarding issues with single rays</h2>
 <p>We recommend to use a single SSE store to set up the <code>org</code> and <code>tnear</code> components, and a single SSE store to set up the <code>dir</code> and <code>time</code> components of a single ray (<code>RTCRay</code> type). Storing these values using scalar stores causes a store-to-load forwarding penalty because Embree is reading these components using SSE loads later on.</p>
+<p></p>
       </div>
 
       <div id="footer">
