@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.10.0!
+      We recently released Intel® Embree v3.11.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -87,20 +87,26 @@ Presentations
 <a href="data/embree-siggraph-2012-final.pdf">Embree 1.1 Presentation</a> at SIGGRAPH 2012
 </p>
 <h3>
-Blogs / Forum
+Forum
 </h3>
 <p>
-Read the <a
-href="http://software.intel.com/en-us/blogs/2014/01/24/introduction-to-embree-21-part-1">Embree Blog</a> for more details about Embree.
-</p>
-<p>
-Participate in <a href="http://software.intel.com/en-us/forums/embree-photo-realistic-ray-tracing-kernels">Embree Forum</a> Discussion.
+Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-Kernels/bd-p/embree">Embree Forum</a> discussions.
 </p>
 <h2 id="embree-support-and-contact">Embree Support and Contact</h2>
 <p>If you encounter bugs please report them via <a href="https://github.com/embree/embree/issues">Embree's GitHub Issue Tracker</a>.</p>
 <p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="embree-3.11.0">Embree 3.11.0</h3>
+<ul>
+<li>Round linear curves now automatically check for the existence of left and right connected segments if the flags buffer is empty. Left segments exist if the segment(id-1) + 1 == segment(id) and similarly for right segments.</li>
+<li>Implemented the min-width feature for curves and points, which allows to increase the radius in a distance dependent way, such that the curve or points thickness is n pixels wide.</li>
+<li>Round linear curves are closed now also at their start.</li>
+<li>Embree no longer supports Visual Studio 2013 starting with this release.</li>
+<li>Bugfix in subdivision tessellation level assignment for non-quad base primitives</li>
+<li>Small meshes are directly added to top level build phase of two-level builder to reduce memory consumption.</li>
+<li>Enabled fast two level builder for user geometries when low quality build is requested.</li>
+</ul>
 <h3 id="embree-3.10.0">Embree 3.10.0</h3>
 <ul>
 <li>Added EMBREE_COMPACT_POLYS CMake option which enables double indexed triangle and quad leaves to reduce memory consumption in compact mode by an additional 40% at about 15% performance impact. This new mode is disabled by default.</li>

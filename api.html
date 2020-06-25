@@ -75,7 +75,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.10.0!
+      We recently released Intel® Embree v3.11.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -622,7 +622,7 @@ RTCGeometry rtcGetGeometry(RTCScene scene, <span class="dt">unsigned</span> <spa
 <li><p><code>RTC_SCENE_FLAG_DYNAMIC</code>: Provides better build performance for dynamic scenes (but also higher memory consumption).</p></li>
 <li><p><code>RTC_SCENE_FLAG_COMPACT</code>: Uses compact acceleration structures and avoids algorithms that consume much memory.</p></li>
 <li><p><code>RTC_SCENE_FLAG_ROBUST</code>: Uses acceleration structures that allow for robust traversal, and avoids optimizations that reduce arithmetic accuracy. This mode is typically used for avoiding artifacts caused by rays shooting through edges of neighboring primitives.</p></li>
-<li><p><code>RTC_SCENE_FLAG_CONTEXT_FILTER_FUNCTION</code>: Enables support for a filter function inside the intersection context. See Section <a href="#rtcinitintersectcontext">rtcInitIntersectContext</a> for more details.</p></li>
+<li><p><code>RTC_SCENE_FLAG_CONTEXT_FILTER_FUNCTION</code>: Enables support for a filter function inside the intersection context for this scene. See Section <a href="#rtcinitintersectcontext">rtcInitIntersectContext</a> for more details.</p></li>
 </ul>
 <p>Multiple flags can be enabled using an <code>or</code> operation, e.g. <code>RTC_SCENE_FLAG_COMPACT | RTC_SCENE_FLAG_ROBUST</code>.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
@@ -927,7 +927,7 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ROUND_CATMULL_ROM_CURVE);</code></pre><
 <p>The vertex buffer stores each control vertex in the form of a single precision position and radius stored in (<code>x</code>, <code>y</code>, <code>z</code>, <code>r</code>) order in memory (<code>RTC_FORMAT_FLOAT4</code> format). The number of vertices is inferred from the size of this buffer. The radii may be smaller than zero but the interpolated radii should always be greater or equal to zero. Similarly, the tangent buffer stores the derivative of each control vertex (<code>x</code>, <code>y</code>, <code>z</code>, <code>r</code> order and <code>RTC_FORMAT_FLOAT4</code> format) and the normal buffer stores a single precision normal per control vertex (<code>x</code>, <code>y</code>, <code>z</code> order and <code>RTC_FORMAT_FLOAT3</code> format).</p>
 <h5 id="linear-basis">Linear Basis</h5>
 <p>For the linear basis the indices point to the first of 2 consecutive control points in the vertex buffer. The first control point is the start and the second control point the end of the line segment. When constructing hair strands in this basis, the end-point can be shared with the start of the next line segment.</p>
-<p>For the linear basis the user has to additionally provide a flags buffer of type <code>RTC_BUFFER_TYPE_FLAGS</code> which contains bytes that encode if the left neighbor segment (<code>RTC_CURVE_FLAG_NEIGHBOR_LEFT</code> flag) and/or right neighbor segment (<code>RTC_CURVE_FLAG_NEIGHBOR_RIGHT</code> flags) exist (see <a href="#rtccurveflags">RTCCurveFlags</a>).</p>
+<p>For the linear basis the user optionally can provide a flags buffer of type <code>RTC_BUFFER_TYPE_FLAGS</code> which contains bytes that encode if the left neighbor segment (<code>RTC_CURVE_FLAG_NEIGHBOR_LEFT</code> flag) and/or right neighbor segment (<code>RTC_CURVE_FLAG_NEIGHBOR_RIGHT</code> flags) exist (see <a href="#rtccurveflags">RTCCurveFlags</a>). If this buffer is not set, than the left/right neighbor bits are automatically calculated base on the index buffer (left segment exists if segment(id-1)+1 == segment(id) and right segment exists if segment(id+1)-1 == segment(id)).</p>
 <p>A left neighbor segment is assumed to end at the start vertex of the current segement, and to start at the previous vertex in the vertex buffer. Similarly, the right neighbor segment is assumed to start at the end vertex of the current segment, and to end at the next vertex in the vertex buffer.</p>
 <p>Only when the left and right bits are properly specified the current segment can properly attach to the left and/or right neighbor, otherwise the touching area may not get rendererd properly.</p>
 <h5 id="bézier-basis">Bézier Basis</h5>
@@ -946,7 +946,7 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ROUND_CATMULL_ROM_CURVE);</code></pre><
 <p>To intersect the normal oriented curve, we perform a newton-raphson style intersection of a ray with a tensor product surface of a linear basis (perpendicular to the curve) and cubic Bézier basis (along the curve). We use a guide curve and its derivatives to construct the control points of that surface. The guide curve is defined by a sweep surface defined by sweeping a line centered at the vertex spline location along the curve. At each parameter value the half width of the line matches the radius spline, and the direction matches the cross product of the normal from the normal spline and tangent of the vertex spline. Note that this construction does not work when the provided normals are parallel to the curve direction. For this reason the provided normals should best be kept as perpendicular to the curve direction as possible.</p>
 <h5 id="round-curves">Round Curves</h5>
 <p>In the <code>RTC_GEOMETRY_TYPE_ROUND_*</code> round mode, a real geometric surface is rendered for the curve, which is more expensive but allows closeup views.</p>
-<p>For the linear basis the round mode renders an end sphere for a segment and a cone that tangentially touches that ending sphere (and an imaginary start sphere). The geometry clips away parts of the end spheres that lies inside the neighboring segments, thus the curve interiour will also render properly as long as only neighboring segments penetrate into a segment. For this to work properly it is important that the flags buffer is properly populated with neighbor information.</p>
+<p>For the linear basis the round mode renders a cone that tangentially touches a start-sphere and end-sphere. The start sphere is rendered when no previous segments is indicated by the neighbor bits. The end sphere is always rendered but parts that lie inside the next segment are clipped away (if that next segment exists). This way a curve is closed on both ends and the interiour will render properly as long as only neighboring segments penetrate into a segment. For this to work properly it is important that the flags buffer is properly populated with neighbor information.</p>
 <p>For the cubic polynomial bases, the round mode renders a sweep surface by sweeping a varying radius circle tangential along the curve. As a limitation, the radius of the curve has to be smaller than the curvature radius of the curve at each location on the curve.</p>
 <p>The intersection with the curve segment stores the parametric hit location along the curve segment as u-coordinate (range 0 to +1).</p>
 <p>For flat curves, the v-coordinate is set to the normalized distance in the range -1 to +1. For normal oriented curves the v-coordinate is in the range 0 to 1. For the linear basis and in round mode the v-coordinate is set to zero.</p>
@@ -956,7 +956,7 @@ rtcNewGeometry(device, RTC_GEOMETRY_TYPE_ROUND_CATMULL_ROM_CURVE);</code></pre><
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure <code>NULL</code> is returned and an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
-<p>[rtcNewGeometry, RTCCurveFlags]</p>
+<p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtccurveflags">RTCCurveFlags</a></p>
 <p></p>
 <h2 id="rtc_geometry_type_point">RTC_GEOMETRY_TYPE_POINT</h2>
 <h4 id="name">NAME</h4>
@@ -1042,7 +1042,7 @@ RTCGeometry geometry =
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore.h&gt;</span></code></pre></div>
 <p>enum RTCCurveFlags { RTC_CURVE_FLAG_NEIGHBOR_LEFT = (1 &lt;&lt; 0), RTC_CURVE_FLAG_NEIGHBOR_RIGHT = (1 &lt;&lt; 1) };</p>
 <h4 id="description">DESCRIPTION</h4>
-<p>The RTCCurveFlags type is used for linear curves to determine if the left and/or right neighbor segment exist. Therefore one attached a buffer of type RTC_BUFFER_TYPE_FLAGS to the curve geometry which stores an individual byte per curve segment.</p>
+<p>The RTCCurveFlags type is used for linear curves to determine if the left and/or right neighbor segment exist. Therefore one attaches a buffer of type RTC_BUFFER_TYPE_FLAGS to the curve geometry which stores an individual byte per curve segment.</p>
 <p>If the RTC_CURVE_FLAG_NEIGHBOR_LEFT flag in that byte is enabled for a curve segment, then the left segment exists (which starts one vertex before the start vertex of the current curve) and the current segment is rendered to properly attach to that segment.</p>
 <p>If the RTC_CURVE_FLAG_NEIGHBOR_RIGHT flag in that byte is enabled for a curve segment, then the right segment exists (which ends one vertex after the end vertex of the current curve) and the current segment is rendered to properly attach to that segment.</p>
 <p>When not properly specifying left and right flags for linear curves, the rendering at the ending of these curves may not look correct, in particular when round linear curves are viewed from the inside.</p>
@@ -1181,7 +1181,7 @@ RTCGeometry geometry =
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
-<p><a href="#rtcnewgeometry">rtcNewGeometry</a>, [RTCBufferType]</p>
+<p><a href="#rtcnewgeometry">rtcNewGeometry</a>, <a href="#rtcbuffertype">RTCBufferType</a></p>
 <p></p>
 <h2 id="rtcsetgeometrymask">rtcSetGeometryMask</h2>
 <h4 id="name">NAME</h4>
@@ -1303,6 +1303,93 @@ RTCGeometry geometry =
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p><a href="#rtcsetgeometrybuffer">rtcSetGeometryBuffer</a>, <a href="#rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</a></p>
+<p></p>
+<h2 id="rtcformat">RTCFormat</h2>
+<h4 id="name">NAME</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCFormat - specifies format of data in buffers</code></pre></div>
+<h4 id="synopsis">SYNOPSIS</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore_ray.h&gt;</span>
+
+<span class="kw">enum</span> RTCFormat
+{
+  RTC_FORMAT_UINT,
+  RTC_FORMAT_UINT2,
+  RTC_FORMAT_UINT3,
+  RTC_FORMAT_UINT4,
+
+  RTC_FORMAT_FLOAT,
+  RTC_FORMAT_FLOAT2,
+  RTC_FORMAT_FLOAT3,
+  RTC_FORMAT_FLOAT4,
+  RTC_FORMAT_FLOAT5,
+  RTC_FORMAT_FLOAT6,
+  RTC_FORMAT_FLOAT7,
+  RTC_FORMAT_FLOAT8,
+  RTC_FORMAT_FLOAT9,
+  RTC_FORMAT_FLOAT10,
+  RTC_FORMAT_FLOAT11,
+  RTC_FORMAT_FLOAT12,
+  RTC_FORMAT_FLOAT13,
+  RTC_FORMAT_FLOAT14,
+  RTC_FORMAT_FLOAT15,
+  RTC_FORMAT_FLOAT16,
+
+  RTC_FORMAT_FLOAT3X4_ROW_MAJOR,
+  RTC_FORMAT_FLOAT4X4_ROW_MAJOR,
+
+  RTC_FORMAT_FLOAT3X4_COLUMN_MAJOR,
+  RTC_FORMAT_FLOAT4X4_COLUMN_MAJOR,
+
+  RTC_FORMAT_GRID,</code></pre></div>
+<p>};</p>
+<h4 id="description">DESCRIPTION</h4>
+<p>The <code>RTFormat</code> structure defines the data format stored in data buffers provided to Embree using the <a href="#rtcsetgeometrybuffer">rtcSetGeometryBuffer</a>, <a href="#rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</a>, and <a href="#rtcsetnewgeometrybuffer">rtcSetNewGeometryBuffer</a> API calls.</p>
+<p>The <code>RTC_FORMAT_UINT/2/3/4</code> format are used to specify that data buffers store unsigned integers, or unsigned integer vectors of size 2,3 or 4. This format has typically to get used when specifying index buffers, e.g. <code>RTC_FORMAT_UINT3</code> for triangle meshes.</p>
+<p>The <code>RTC_FORMAT_FLOAT/2/3/4...</code> format are used to specify that data buffers store single precision floating point values, or vectors there of (size 2,3,4, etc.). This format is typcally used to specify to format of vertex buffers, e.g. the <code>RTC_FORMAT_FLOAT3</code> type for vertex buffers of triangle meshes.</p>
+<p>The <code>RTC_FORMAT_FLOAT3X4_ROW_MAJOR</code> and <code>RTC_FORMAT_FLOAT3X4_COLUMN_MAJOR</code> formats, specify a 3x4 floating point matrix layed out either row major or column major. The <code>RTC_FORMAT_FLOAT4X4_ROW_MAJOR</code> and <code>RTC_FORMAT_FLOAT4X4_COLUMN_MAJOR</code> formats, specify a 4x4 floating point matrix layed out either row major or column major. These matrix formats are used in the <a href="#rtcsetgeometrytransform">rtcSetGeometryTransform</a> function in order to set a transformation matrix for geometries.</p>
+<p>The <code>RTC_FORMAT_GRID</code> is a special data format used to specify grid primitives of layout RTCGrid when creating grid geometries (see <a href="#rtc_geometry_type_grid">RTC_GEOMETRY_TYPE_GRID</a>).</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcsetgeometrybuffer">rtcSetGeometryBuffer</a>, <a href="#rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</a>, <a href="#rtcsetnewgeometrybuffer">rtcSetNewGeometryBuffer</a>, <a href="#rtcsetgeometrytransform">rtcSetGeometryTransform</a></p>
+<p></p>
+<h2 id="rtcbuffertype">RTCBufferType</h2>
+<h4 id="name">NAME</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">RTCFormat - specifies format of data in buffers</code></pre></div>
+<h4 id="synopsis">SYNOPSIS</h4>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;embree3/rtcore_ray.h&gt;</span>
+
+<span class="kw">enum</span> RTCBufferType
+{
+  RTC_BUFFER_TYPE_INDEX            = <span class="dv">0</span>,
+  RTC_BUFFER_TYPE_VERTEX           = <span class="dv">1</span>,
+  RTC_BUFFER_TYPE_VERTEX_ATTRIBUTE = <span class="dv">2</span>,
+  RTC_BUFFER_TYPE_NORMAL           = <span class="dv">3</span>,
+  RTC_BUFFER_TYPE_TANGENT          = <span class="dv">4</span>,
+  RTC_BUFFER_TYPE_NORMAL_DERIVATIVE = <span class="dv">5</span>,
+
+  RTC_BUFFER_TYPE_GRID                 = <span class="dv">8</span>,
+
+  RTC_BUFFER_TYPE_FACE                 = <span class="dv">16</span>,
+  RTC_BUFFER_TYPE_LEVEL                = <span class="dv">17</span>,
+  RTC_BUFFER_TYPE_EDGE_CREASE_INDEX    = <span class="dv">18</span>,
+  RTC_BUFFER_TYPE_EDGE_CREASE_WEIGHT   = <span class="dv">19</span>,
+  RTC_BUFFER_TYPE_VERTEX_CREASE_INDEX  = <span class="dv">20</span>,
+  RTC_BUFFER_TYPE_VERTEX_CREASE_WEIGHT = <span class="dv">21</span>,
+  RTC_BUFFER_TYPE_HOLE                 = <span class="dv">22</span>,
+
+  RTC_BUFFER_TYPE_FLAGS = <span class="dv">32</span>
+};</code></pre></div>
+<h4 id="description">DESCRIPTION</h4>
+<p>The <code>RTBufferType</code> structure defines slots to assign data buffers to using the <a href="#rtcsetgeometrybuffer">rtcSetGeometryBuffer</a>, <a href="#rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</a>, and <a href="#rtcsetnewgeometrybuffer">rtcSetNewGeometryBuffer</a> API calls.</p>
+<p>For most geometry types the <code>RTC_BUFFER_TYPE_INDEX</code> slot is used to assign an index buffer, while the <code>RTC_BUFFER_TYPE_VERTEX</code> is used to assign the corresponding vertex buffer.</p>
+<p>The <code>RTC_BUFFER_TYPE_VERTEX_ATTRIBUTE</code> slot can get used to assign arbitrary additional vertex data which can get interpolated using the <a href="#rtcinterpolate">rtcInterpolate</a> API call.</p>
+<p>The <code>RTC_BUFFER_TYPE_NORMAL</code>, <code>RTC_BUFFER_TYPE_TANGENT</code>, and <code>RTC_BUFFER_TYPE_NORMAL_DERIVATIVE</code> are special buffers required to assign per vertex normals, tangents, and normal derivatives for some curve types.</p>
+<p>The <code>RTC_BUFFER_TYPE_GRID</code> buffer is used to assign the grid primitive buffer for grid geometries (see <a href="#rtc_geometry_type_grid">RTC_GEOMETRY_TYPE_GRID</a>).</p>
+<p>The <code>RTC_BUFFER_TYPE_FACE</code>, <code>RTC_BUFFER_TYPE_LEVEL</code>, <code>RTC_BUFFER_TYPE_EDGE_CREASE_INDEX</code>, <code>RTC_BUFFER_TYPE_EDGE_CREASE_WEIGHT</code>, <code>RTC_BUFFER_TYPE_VERTEX_CREASE_INDEX</code>, <code>RTC_BUFFER_TYPE_VERTEX_CREASE_WEIGHT</code>, and <code>RTC_BUFFER_TYPE_HOLE</code> are special buffers required to create subdivision meshes (see <a href="#rtc_geometry_type_subdivision">RTC_GEOMETRY_TYPE_SUBDIVISION</a>).</p>
+<p>The <code>RTC_BUFFER_TYPE_FLAGS</code> can get used to add additional flag per primitive of a geometry, and is currently only used for linear curves.</p>
+<h4 id="exit-status">EXIT STATUS</h4>
+<h4 id="see-also">SEE ALSO</h4>
+<p><a href="#rtcsetgeometrybuffer">rtcSetGeometryBuffer</a>, <a href="#rtcsetsharedgeometrybuffer">rtcSetSharedGeometryBuffer</a>, <a href="#rtcsetnewgeometrybuffer">rtcSetNewGeometryBuffer</a></p>
 <p></p>
 <h2 id="rtcgetgeometrybufferdata">rtcGetGeometryBufferData</h2>
 <h4 id="name">NAME</h4>
@@ -2307,10 +2394,16 @@ RTCBuffer rtcNewSharedBuffer(
 {
   <span class="kw">enum</span> RTCIntersectContextFlags flags;
   RTCFilterFunctionN filter;
+  
   <span class="ot">#if RTC_MAX_INSTANCE_LEVEL_COUNT &gt; 1</span>
-  <span class="dt">unsigned</span> <span class="dt">int</span> instStackSize;
+    <span class="dt">unsigned</span> <span class="dt">int</span> instStackSize;
   <span class="ot">#endif</span>
+  
   <span class="dt">unsigned</span> <span class="dt">int</span> instID[RTC_MAX_INSTANCE_LEVEL_COUNT];
+
+  <span class="ot">#if RTC_MIN_WIDTH</span>
+    <span class="dt">float</span> minWidthDistanceFactor;
+  <span class="ot">#endif</span>
 };
 
 <span class="dt">void</span> rtcInitIntersectContext(
@@ -2321,7 +2414,8 @@ RTCBuffer rtcNewSharedBuffer(
 <p>The <code>rtcInitIntersectContext</code> function initializes the context to default values and should be called to initialize every intersection context. This function gets inlined, which minimizes overhead and allows for compiler optimizations.</p>
 <p>The intersection context flag can be used to tune the behavior of the traversal algorithm. Using the <code>RTC_INTERSECT_CONTEXT_FLAG_INCOHERENT</code> flags uses an optimized traversal algorithm for incoherent rays (default), while <code>RTC_INTERSECT_CONTEXT_FLAG_COHERENT</code> uses an optimized traversal algorithm for coherent rays (e.g. primary camera rays).</p>
 <p>Best primary ray performance can be obtained by using the ray stream API and setting the intersect context flag to <code>RTC_INTERSECT_CONTEXT_FLAG_COHERENT</code>. For secondary rays, it is typically better to use the <code>RTC_INTERSECT_CONTEXT_FLAG_INCOHERENT</code> flag, unless the rays are known to be very coherent too (e.g. for primary transparency rays).</p>
-<p>A filter function can be specified inside the context. This filter function is invoked as a second filter stage after the per-geometry intersect or occluded filter function is invoked. Only rays that passed the first filter stage are valid in this second filter stage. Having such a per ray-query filter function can be useful to implement modifications of the behavior of the query, such as collecting all hits or accumulating transparencies. The support for the context filter function must be enabled for a scene by using the <code>RTC_SCENE_FLAG_CONTEXT_FILTER_FUNCTION</code> scene flag.</p>
+<p>A filter function can be specified inside the context. This filter function is invoked as a second filter stage after the per-geometry intersect or occluded filter function is invoked. Only rays that passed the first filter stage are valid in this second filter stage. Having such a per ray-query filter function can be useful to implement modifications of the behavior of the query, such as collecting all hits or accumulating transparencies. The support for the context filter function must be enabled for a scene by using the <code>RTC_SCENE_FLAG_CONTEXT_FILTER_FUNCTION</code> scene flag. In case of instancing this feature has to get enabled also for each instantiated scene.</p>
+<p>The minWidthDistanceFactor value controls the target size of the curve radii when the min-width feature is enabled. Please see the [rtcSetGeometryMaxRadiusScale] function for more details on the min-width feature.</p>
 <p>It is guaranteed that the pointer to the intersection context passed to a ray query is directly passed to the registered callback functions. This way it is possible to attach arbitrary data to the end of the intersection context, such as a per-ray payload.</p>
 <p>Please note that the ray pointer is not guaranteed to be passed to the callback functions, thus reading additional data from the ray pointer passed to callbacks is not possible.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
