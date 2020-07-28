@@ -180,7 +180,9 @@ div.sourceCode { overflow-x: initial; }
 <p>Required code changes cannot be done by the upgrade script and need to be done manually.</p></li>
 <li><p>The ray layout for single rays and packets of rays had certain incompatibilities (alignment of <code>org</code> and <code>dir</code> for single rays caused gaps in the single ray layout that were not in the ray packet layout). This issue never showed up because single rays and ray packets were separate in the system initially. This layout issue is now fixed, and a single ray has the same layout as a ray packet of size 1.</p></li>
 <li><p>Previously Embree supported placing additional data at the end of the ray structure, and accessing that data inside user geometry callbacks and filter callback functions.</p>
-<p>With Embree 3 this is no longer supported, and the ray passed to a callback function may be copied to a different memory location. To attach additional data to your ray, simply extend the intersection context with a pointer to that data.</p>
+<p>With Embree 3 this is no longer supported, and the ray passed to a callback function may be copied to a different memory location. To attach additional data to your ray, simply extend the intersection context 
+  
+  er to that data.</p>
 <p>This change cannot be done by the script. Further, code will still work if you extend the ray as the implementation did not change yet.</p></li>
 <li><p>The ray structure now contains an additional <code>id</code> and <code>flags</code> field. The <code>id</code> can be used to store the index of the ray with respect to a ray packet or ray stream. The <code>flags</code> is reserved for future use, and currently must be set to 0.</p></li>
 <li><p>All previous intersection filter callback variants have been removed, except for the <code>RTCFilterFuncN</code> which gets a varying size ray packet as input. The semantics of this filter function type have changed from copying the hit on acceptance to clearing the ray's valid argument in case of non-acceptance. This way, chaining multiple filters is more efficient.</p>
@@ -2783,7 +2785,7 @@ RTCBuffer rtcNewSharedBuffer(
 <p>No error code is set by this function.</p>
 <h4 id="see-also">SEE ALSO</h4>
 <p>[rtcPointQuery], <a href="#rtcsetgeometrypointqueryfunction">rtcSetGeometryPointQueryFunction</a></p>
-<p>## rtcPointQuery</p>
+<h2 id="rtcpointquery">rtcPointQuery</h2>
 <h4 id="name">NAME</h4>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcPointQuery - traverses the BVH with a point query object</code></pre></div>
 <h4 id="synopsis">SYNOPSIS</h4>
