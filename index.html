@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.11.0!
+      We recently released Intel® Embree v3.12.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -97,6 +97,19 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="embree-3.12.0">Embree 3.12.0</h3>
+<ul>
+<li>Added linear cone curve geometry support. In this mode a real geometric surface for curves with linear basis is rendered using capped cones. They are discontinuous at edge boundaries.</li>
+<li>Enabled fast two level builder for instances when low quality build is requested.</li>
+<li>Bugfix for BVH build when geometries got disabled.</li>
+<li>Added EMBREE_BACKFACE_CULLING_CURVES cmake option. This allows for a cheaper round linear curve intersection when correct internal tracking and back hits are not required. The new cmake option defaults to OFF.</li>
+<li>User geometries with invalid bounds with lower&gt;upper in some dimension will be ignored.</li>
+<li>Increased robustness for grid interpolation code and fixed returned out of range u/v coordinates for grid primitive.</li>
+<li>Fixed handling of motion blur time range for sphere, discs, and oriented disc geometries.</li>
+<li>Fixed missing model data in releases.</li>
+<li>Ensure compatibility to newer versions of oneTBB.</li>
+<li>Motion blur BVH nodes no longer store NaN values.</li>
+</ul>
 <h3 id="embree-3.11.0">Embree 3.11.0</h3>
 <ul>
 <li>Round linear curves now automatically check for the existence of left and right connected segments if the flags buffer is empty. Left segments exist if the segment(id-1) + 1 == segment(id) and similarly for right segments.</li>
