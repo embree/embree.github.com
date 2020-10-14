@@ -75,7 +75,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.12.0!
+      We recently released Intel® Embree v3.12.1!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -222,8 +222,13 @@ RTCDevice rtcNewDevice(<span class="dt">const</span> <span class="dt">char</span
 <li><p><code>enable_selockmemoryprivilege=[0/1]</code>: When set to 1, this enables the <code>SeLockMemoryPrivilege</code> privilege with is required to use huge pages on Windows. This option has an effect only under Windows and is ignored on other platforms. See Section <a href="#huge-page-support">Huge Page Support</a> for more details.</p></li>
 <li><p><code>ignore_config_files=[0/1]</code>: When set to 1, configuration files are ignored. Default is 0.</p></li>
 <li><p><code>verbose=[0,1,2,3]</code>: Sets the verbosity of the output. When set to 0, no output is printed by Embree, when set to a higher level more output is printed. By default Embree does not print anything on the console.</p></li>
-<li><p><code>frequency_level=[simd128,simd256,simd512]</code>: Specifies the frequency level the application want to run on, which can be either: a) simd128 for apps that do not use AVX instructions, b) simd256 for apps that use heavy AVX instruction, c) simd512 for apps that use heavy AVX-512 instructions. When some frequency level is specified, Embree will avoid doing optimizations that may reduce the frequency level below the level specified. E.g. if your app does not use AVX instructions setting &quot;frequency_level=simd128&quot; will cause some CPUs to run at highest frequency, which may result in higher application performance. However, this will prevent Embree from using AVX optimizations to achieve higher ray tracing performance, thus applications that trace many rays may still perform better with the default setting of simd256, even though this reduces frequency on some CPUs.</p></li>
+<li><p><code>frequency_level=[simd128,simd256,simd512]</code>: Specifies the frequency level the application want to run on, which can be either:</p></li>
 </ul>
+<ol style="list-style-type: lower-alpha">
+<li>simd128 to run at highest frequency</li>
+<li>simd256 to run at AVX2-heavy frequency level</li>
+<li>simd512 to run at heavy AVX512 frequency level. When some frequency level is specified, Embree will avoid doing optimizations that may reduce the frequency level below the level specified. E.g. if your app does not use AVX instructions setting &quot;frequency_level=simd128&quot; will cause some CPUs to run at highest frequency, which may result in higher application performance if you do much shading. If you application heavily uses AVX code, you should best set the frequency level to simd256. Per default Embree tries to avoid reducing the frequency of the CPU by setting the simd256 level only when the CPU has no significant down clocking.</li>
+</ol>
 <p>Different configuration options should be separated by commas, e.g.:</p>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">rtcNewDevice(<span class="st">&quot;threads=1,isa=avx&quot;</span>);</code></pre></div>
 <h4 id="exit-status">EXIT STATUS</h4>
@@ -299,7 +304,7 @@ ssize_t rtcGetDeviceProperty(
 <li>Intel Threading Building Blocks (TBB)</li>
 <li>Parallel Patterns Library (PPL)</li>
 </ol></li>
-<li><p><code>RTC_DEVICE_PROPERTY_COMMIT_JOIN_SUPPORTED</code>: Queries whether <code>rtcJoinCommitScene</code> is supported. This is not the case when Embree is compiled with PPL or older versions of TBB.</p></li>
+<li><p><code>RTC_DEVICE_PROPERTY_JOIN_COMMIT_SUPPORTED</code>: Queries whether <code>rtcJoinCommitScene</code> is supported. This is not the case when Embree is compiled with PPL or older versions of TBB.</p></li>
 <li><p><code>RTC_DEVICE_PROPERTY_PARALLEL_COMMIT_SUPPORTED</code>: Queries whether <code>rtcCommitScene</code> can get invoked from multiple TBB worker threads concurrently. This feature is only supported starting with TBB 2019 Update 9.</p></li>
 </ul>
 <h4 id="exit-status">EXIT STATUS</h4>
