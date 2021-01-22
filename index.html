@@ -37,16 +37,16 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.12.1!
+      We recently released Intel® Embree v3.12.2!
     </a>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <div id="main_content" class="inner">
 <h1 id="embree-overview">Embree Overview</h1>
-<p>Intel® Embree is a collection of high-performance ray tracing kernels, developed at Intel. The target users of Intel® Embree are graphics application engineers who want to improve the performance of their photo-realistic rendering application by leveraging Embree's performance-optimized ray tracing kernels. The kernels are optimized for the latest Intel® processors with support for SSE, AVX, AVX2, and AVX-512 instructions. Intel® Embree supports runtime code selection to choose the traversal and build algorithms that best matches the instruction set of your CPU. We recommend using Intel® Embree through its API to get the highest benefit from future improvements. Intel® Embree is released as Open Source under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.</p>
+<p>Intel® Embree is a collection of high-performance ray tracing kernels, developed at Intel. The target users of Intel® Embree are graphics application engineers who want to improve the performance of their photo-realistic rendering application by leveraging Embree’s performance-optimized ray tracing kernels. The kernels are optimized for the latest Intel® processors with support for SSE, AVX, AVX2, and AVX-512 instructions. Intel® Embree supports runtime code selection to choose the traversal and build algorithms that best matches the instruction set of your CPU. We recommend using Intel® Embree through its API to get the highest benefit from future improvements. Intel® Embree is released as Open Source under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.</p>
 <p>Intel® Embree supports applications written with the Intel® SPMD Program Compiler (ISPC, <a href="https://ispc.github.io/" class="uri">https://ispc.github.io/</a>) by also providing an ISPC interface to the core ray tracing algorithms. This makes it possible to write a renderer in ISPC that automatically vectorizes and leverages SSE, AVX, AVX2, and AVX-512 instructions. ISPC also supports runtime code selection, thus ISPC will select the best code path for your application.</p>
-<p>Intel® Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays).</p>
+<p>Intel® Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays).</p>
 <p>The single-ray traversal kernels of Intel® Embree provide high performance for incoherent workloads and are very easy to integrate into existing rendering applications. Using the stream kernels, even higher performance for incoherent rays is possible, but integration might require significant code changes to the application to use the stream paradigm. In general for coherent workloads, the stream mode with coherent flag set gives the best performance.</p>
 <p>Intel® Embree also supports dynamic scenes by implementing high-performance two-level spatial index structure construction algorithms.</p>
 <p>In addition to the ray tracing kernels, Intel® Embree provides some <a href="tutorials.html">Embree Tutorials</a> to demonstrate how to use the <a href="api.html">Embree API</a>.</p>
@@ -93,10 +93,16 @@ Forum
 Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-Kernels/bd-p/embree">Embree Forum</a> discussions.
 </p>
 <h2 id="embree-support-and-contact">Embree Support and Contact</h2>
-<p>If you encounter bugs please report them via <a href="https://github.com/embree/embree/issues">Embree's GitHub Issue Tracker</a>.</p>
-<p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com">embree_support@intel.com</a>.</p>
+<p>If you encounter bugs please report them via <a href="https://github.com/embree/embree/issues">Embree’s GitHub Issue Tracker</a>.</p>
+<p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com" class="email">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="embree-3.12.2">Embree 3.12.2</h3>
+<ul>
+<li>Fixed wrong uv and Ng for grid intersector in robust mode for AVX.</li>
+<li>Removed optimizations for Knights Landing.</li>
+<li>Upgrading release builds to use oneTBB 2021.1.1</li>
+</ul>
 <h3 id="embree-3.12.1">Embree 3.12.1</h3>
 <ul>
 <li>Changed default frequency level to SIMD128 for Skylake, Cannon Lake, Comet Lake and Tiger Lake CPUs. This change typically improves performance for renderers that just use SSE by maintaining higher CPU frequencies. In case your renderer is AVX optimized you can get higher ray tracing performance by configuring the frequency level to simd256 through passing frequency_level=simd256 to rtcNewDevice.</li>
@@ -185,7 +191,7 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <li>Added support for point queries.</li>
 <li>Fixed a bug preventing normal oriented curves being used unless timesteps were specified.</li>
 <li>Fixed bug in external BVH builder when configured for dynamic build.</li>
-<li>Added support for new config flag &quot;user_threads=N&quot; to device initialization which sets the number of threads used by TBB but created by the user.</li>
+<li>Added support for new config flag “user_threads=N” to device initialization which sets the number of threads used by TBB but created by the user.</li>
 <li>Fixed automatic vertex buffer padding when using rtcSetNewGeometry API function.</li>
 </ul>
 <h3 id="new-features-in-embree-3.5.2">New Features in Embree 3.5.2</h3>
@@ -193,7 +199,7 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <li>Added EMBREE_API_NAMESPACE cmake option that allows to put all Embree API functions inside a user defined namespace.</li>
 <li>Added EMBREE_LIBRARY_NAME cmake option that allows to rename the Embree library.</li>
 <li>When Embree is compiled as static library, EMBREE_STATIC_LIB has no longer to get defined before including the Embree API headers.</li>
-<li>Added CPU frequency_level device configuration to allow an application to specify the frequency level it wants to run on. This forces Embree to not use optimizations that may reduce the CPU frequency below that level. By default Embree is configured to the the AVX-heavy frequency level, thus if the application uses solely non-AVX code, configuring the Embree device with &quot;frequency_level=simd128&quot; may give better performance.</li>
+<li>Added CPU frequency_level device configuration to allow an application to specify the frequency level it wants to run on. This forces Embree to not use optimizations that may reduce the CPU frequency below that level. By default Embree is configured to the the AVX-heavy frequency level, thus if the application uses solely non-AVX code, configuring the Embree device with “frequency_level=simd128” may give better performance.</li>
 <li>Fixed a bug in the spatial split builder which caused it to fail for scenes with more than 2^24 geometries.</li>
 </ul>
 <h3 id="new-features-in-embree-3.5.1">New Features in Embree 3.5.1</h3>
@@ -219,8 +225,8 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <h3 id="new-features-in-embree-3.3.0">New Features in Embree 3.3.0</h3>
 <ul>
 <li>Added support for motion blur time range per geometry. This way geometries can appear and disappear during the camera shutter and time steps do not have to start and end at camera shutter interval boundaries.</li>
-<li>Fixed crash with pathtracer when using --triangle-sphere command line.</li>
-<li>Fixed crash with pathtracer when using --shader ao command line.</li>
+<li>Fixed crash with pathtracer when using –triangle-sphere command line.</li>
+<li>Fixed crash with pathtracer when using –shader ao command line.</li>
 <li>Fixed tutorials showing a black window on macOS 10.14 until moved.</li>
 </ul>
 <h3 id="new-features-in-embree-3.2.4">New Features in Embree 3.2.4</h3>
@@ -283,7 +289,7 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 </ul>
 <h3 id="new-features-in-embree-3.0.0">New Features in Embree 3.0.0</h3>
 <ul>
-<li>Switched to a new version of the API which provides improved flexibility but is not backward compatible. Please see &quot;Upgrading from Embree 2 to Embree 3&quot; section of the documentation for upgrade instructions. In particular, we provide a Python script that performs most of the transition work.</li>
+<li>Switched to a new version of the API which provides improved flexibility but is not backward compatible. Please see “Upgrading from Embree 2 to Embree 3” section of the documentation for upgrade instructions. In particular, we provide a Python script that performs most of the transition work.</li>
 <li>User geometries inside an instanced scene and a top-level scene no longer need to handle the instID field of the ray differently. They both just need to copy the context.instID into the ray.instID field.</li>
 <li>Support for context filter functions that can be assigned to a ray query.</li>
 <li>User geometries can now invoke filter functions using the rtcFilterIntersection and rtcFilterOcclusion calls.</li>
@@ -369,7 +375,7 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <h3 id="new-features-in-embree-2.16.2">New Features in Embree 2.16.2</h3>
 <ul>
 <li>Fixed bug that caused NULL intersection context in intersection filter when instancing was used.</li>
-<li>Fixed an issue where uv's where outside the triangle (or quad) for very small triangles (or quads). In robust mode we improved the uv calculation to avoid that issue, in fast mode we accept that inconsistency for better performance.</li>
+<li>Fixed an issue where uv’s where outside the triangle (or quad) for very small triangles (or quads). In robust mode we improved the uv calculation to avoid that issue, in fast mode we accept that inconsistency for better performance.</li>
 <li>Changed UV encoding for non-quad subdivision patches to allow a subpatch UV range of <code>[-0.5,1.5[</code>. Using this new encoding one can use finite differences to calculate derivatives if required. Please adjust your code in case you rely on the old encoding.</li>
 </ul>
 <h3 id="new-features-in-embree-2.16.1">New Features in Embree 2.16.1</h3>
@@ -434,7 +440,7 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <li>Fixed bug for subdivision surfaces using low tessellation rates.</li>
 <li>Hair geometry now uses a new ribbon intersector that intersects with ray-facing quads. The new intersector also returns the v-coordinate of the hair intersection, and fixes artefacts at junction points between segments, at the cost of a small performance hit.</li>
 <li>Added <code>rtcSetBuffer2</code> function, that additionally gets the number of elements of a buffer. In dynamic scenes, this function allows to quickly change buffer sizes, making it possible to change the number of primitives of a mesh or the number of crease features for subdivision surfaces.</li>
-<li>Added simple 'viewer_anim' tutorial for rendering key frame animations and 'buildbench' for measuring BVH (re-)build performance for static and dynamic scenes.</li>
+<li>Added simple ‘viewer_anim’ tutorial for rendering key frame animations and ‘buildbench’ for measuring BVH (re-)build performance for static and dynamic scenes.</li>
 <li>Added more AVX-512 optimizations for future architectures.</li>
 </ul>
 <h3 id="new-features-in-embree-2.13.0">New Features in Embree 2.13.0</h3>
@@ -444,7 +450,7 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <li>Added fast dynamic mode for user geometries.</li>
 <li>Up to 20% faster BVH build performance on the second generation Intel® Xeon Phi™ processor codenamed Knights Landing.</li>
 <li>Improved quality of the spatial split builder.</li>
-<li>Improved performance for coherent streams of ray packets (SOA layout), e.g. for fast primary visibility.</li>
+<li>Improved performance for coherent streams of ray packets (SOA layout), e.g. for fast primary visibility.</li>
 <li>Various bug fixes in tessellation cache, quad-based spatial split builder, etc.</li>
 </ul>
 <h3 id="new-features-in-embree-2.12.0">New Features in Embree 2.12.0</h3>
@@ -457,9 +463,9 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <li>Performance and correctness bugfix in optimization for streams of coherent (single) rays.</li>
 <li>Fixed large memory consumption (issue introduced in Embree v2.11.0). If you use Embree v2.11.0 please upgrade to Embree v2.12.0.</li>
 <li>Reduced memory consumption for dynamic scenes containing small meshes.</li>
-<li>Added support to start and affinitize TBB worker threads by passing &quot;<code>start_threads=1,set_affinity=1</code>&quot; to <code>rtcNewDevice</code>. These settings are recommended on systems with a high thread count.</li>
+<li>Added support to start and affinitize TBB worker threads by passing “<code>start_threads=1,set_affinity=1</code>” to <code>rtcNewDevice</code>. These settings are recommended on systems with a high thread count.</li>
 <li><code>rtcInterpolate2</code> can now be called within a displacement shader.</li>
-<li>Added initial support for Microsoft's Parallel Pattern Library (PPL) as tasking system alternative (for optimal performance TBB is highly recommended).</li>
+<li>Added initial support for Microsoft’s Parallel Pattern Library (PPL) as tasking system alternative (for optimal performance TBB is highly recommended).</li>
 <li>Updated to TBB 2017 which is released under the Apache v2.0 license.</li>
 <li>Dropped support for Visual Studio 2012 Win32 compiler. Visual Studio 2012 x64 is still supported.</li>
 </ul>
@@ -543,10 +549,10 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 </ul>
 <h3 id="new-features-in-embree-2.6.1">New Features in Embree 2.6.1</h3>
 <ul>
-<li>Major performance improvements for ray tracing subdivision surfaces, e.g. up to 2× faster for scenes where only the tessellation levels are changing per frame, and up to 3× faster for scenes with lots of crease features</li>
+<li>Major performance improvements for ray tracing subdivision surfaces, e.g. up to 2× faster for scenes where only the tessellation levels are changing per frame, and up to 3× faster for scenes with lots of crease features</li>
 <li>Initial support for architectures supporting the new 16-wide AVX-512 ISA</li>
 <li>Implemented intersection filter callback support for subdivision surfaces</li>
-<li>Added <code>RTC_IGNORE_INVALID_RAYS</code> CMake option which makes the ray intersectors more robust against full tree traversal caused by invalid ray inputs (e.g. INF, NaN, etc)</li>
+<li>Added <code>RTC_IGNORE_INVALID_RAYS</code> CMake option which makes the ray intersectors more robust against full tree traversal caused by invalid ray inputs (e.g. INF, NaN, etc)</li>
 </ul>
 <h3 id="new-features-in-embree-2.6.0">New Features in Embree 2.6.0</h3>
 <ul>
@@ -560,7 +566,7 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <ul>
 <li>On dual socket workstations, the initial BVH build performance almost doubled through a better memory allocation scheme</li>
 <li>Reduced memory usage for subdivision surface objects with crease features</li>
-<li><code>rtcCommit</code> performance is robust against unset &quot;flush to zero&quot; and &quot;denormals are zero&quot; flags. However, enabling these flags in your application is still recommended</li>
+<li><code>rtcCommit</code> performance is robust against unset “flush to zero” and “denormals are zero” flags. However, enabling these flags in your application is still recommended</li>
 <li>Reduced memory usage for subdivision surfaces with borders and infinitely sharp creases</li>
 <li>Lots of internal cleanups and bug fixes for both Intel® Xeon® and Intel® Xeon Phi™</li>
 </ul>
@@ -579,7 +585,7 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <ul>
 <li>Support for Catmull Clark subdivision surfaces (triangle/quad base primitives)</li>
 <li>Support for vector displacements on Catmull Clark subdivision surfaces</li>
-<li>Various bug fixes (e.g. 4-byte alignment of vertex buffers works)</li>
+<li>Various bug fixes (e.g. 4-byte alignment of vertex buffers works)</li>
 </ul>
 <h3 id="new-features-in-embree-2.3.3">New Features in Embree 2.3.3</h3>
 <ul>
@@ -621,7 +627,7 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <li>Support for motion blur on Xeon Phi</li>
 <li>Support for intersection filter callback functions</li>
 <li>Support for buffer sharing with the application</li>
-<li>Lots of AVX2 optimizations, e.g. ~20% faster 8-wide hybrid traversal</li>
+<li>Lots of AVX2 optimizations, e.g. ~20% faster 8-wide hybrid traversal</li>
 <li>Experimental support for 8-wide (AVX/AVX2) and 16-wide BVHs (Xeon Phi)</li>
 </ul>
 <h3 id="new-features-in-embree-2.1">New Features in Embree 2.1</h3>
@@ -640,7 +646,7 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <h3 id="new-features-in-embree-2.0">New Features in Embree 2.0</h3>
 <ul>
 <li>Support for the Intel® Xeon Phi™ coprocessor platform</li>
-<li>Support for high-performance &quot;packet&quot; kernels on SSE, AVX, and Xeon Phi</li>
+<li>Support for high-performance “packet” kernels on SSE, AVX, and Xeon Phi</li>
 <li>Integration with the Intel® SPMD Program Compiler (ISPC)</li>
 <li>Instantiation and fast BVH reconstruction</li>
 <li>Example photo-realistic rendering engine for both C++ and ISPC</li>

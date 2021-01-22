@@ -37,14 +37,14 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.12.1!
+      We recently released Intel® Embree v3.12.2!
     </a>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <div id="main_content" class="inner">
 <h1 id="embree-example-renderer">Embree Example Renderer</h1>
-<p>The Embree Example Renderer is a photo-realistic path tracer that builds on the Embree high performance ray tracing kernels. The renderer is used to demonstrate how Embree is used in practice and to measure Embree's performance in a realistic application scenario. The Embree Example Renderer is not a full featured renderer and not designed to be used for production rendering. The Embree Example Renderer is released as Open Source under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.</p>
+<p>The Embree Example Renderer is a photo-realistic path tracer that builds on the Embree high performance ray tracing kernels. The renderer is used to demonstrate how Embree is used in practice and to measure Embree’s performance in a realistic application scenario. The Embree Example Renderer is not a full featured renderer and not designed to be used for production rendering. The Embree Example Renderer is released as Open Source under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.</p>
 <p>We provide binaries for the Embree Example Renderer for Linux (64-bit), macOS (64-bit), and Windows (64-bit):</p>
 <p><a href="http://github.com/embree/embree-renderer-bin/archive/v2.3.2_linux.zip">embree-renderer-2.3.2-linux.zip</a><br />
 <a href="http://github.com/embree/embree-renderer-bin/archive/v2.3.2_macos.zip">embree-renderer-2.3.2-macos.zip</a><br />
@@ -71,42 +71,42 @@ ccmake ..</code></pre>
 <table style="width:97%;">
 <caption>CMake build options for Embree Example Renderer.</caption>
 <colgroup>
-<col width="48%" />
-<col width="48%" />
+<col style="width: 47%" />
+<col style="width: 49%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">Option</th>
-<th align="left">Description</th>
+<th style="text-align: left;">Option</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">BUILD_SINGLE_RAY_DEVICE</td>
-<td align="left">Single ray rendering device for CPUs.</td>
+<td style="text-align: left;">BUILD_SINGLE_RAY_DEVICE</td>
+<td style="text-align: left;">Single ray rendering device for CPUs.</td>
 </tr>
 <tr class="even">
-<td align="left">BUILD_SINGLE_RAY_DEVICE_XEON_PHI</td>
-<td align="left">Single ray rendering device for the Intel® Xeon Phi™ coprocessor.</td>
+<td style="text-align: left;">BUILD_SINGLE_RAY_DEVICE_XEON_PHI</td>
+<td style="text-align: left;">Single ray rendering device for the Intel® Xeon Phi™ coprocessor.</td>
 </tr>
 <tr class="odd">
-<td align="left">BUILD_ISPC_DEVICE</td>
-<td align="left">ISPC CPU rendering device operating on ray packets of size 4 (SSE) or 8 (AVX).</td>
+<td style="text-align: left;">BUILD_ISPC_DEVICE</td>
+<td style="text-align: left;">ISPC CPU rendering device operating on ray packets of size 4 (SSE) or 8 (AVX).</td>
 </tr>
 <tr class="even">
-<td align="left">BUILD_ISPC_DEVICE_XEON_PHI</td>
-<td align="left">ISPC Xeon Phi rendering device operating on ray packets of size 16.</td>
+<td style="text-align: left;">BUILD_ISPC_DEVICE_XEON_PHI</td>
+<td style="text-align: left;">ISPC Xeon Phi rendering device operating on ray packets of size 16.</td>
 </tr>
 <tr class="odd">
-<td align="left">BUILD_NETWORK_DEVICE</td>
-<td align="left">Network device to render on render server.</td>
+<td style="text-align: left;">BUILD_NETWORK_DEVICE</td>
+<td style="text-align: left;">Network device to render on render server.</td>
 </tr>
 </tbody>
 </table>
 <p>When enabling any ISPC renderer, you also have to install ISPC. If you select <code>BUILD_ISPC_DEVICE</code>, you should select which instructions sets to enable for ISPC (<code>TARGET_SSE2</code>, <code>TARGET_SSE41</code>, <code>TARGET_AVX</code>, and <code>TARGET_AVX2</code>).</p>
 <p>All target ISAs you select when compiling the Embree Example Render, have also to be enabled when compiling Embree. Due to some limitation of ISPC you have to enable more than one target ISA if you also enabled more than one target ISA when compiling Embree, otherwise you will get link errors.</p>
 <p>If you installed Embree, CMake will find it automatically and set the <code>EMBREE_INCLUDE_PATH</code> and <code>EMBREE_LIBRARY</code> variables.</p>
-<p>If you cannot install Embree on your system (e.g. when you don't have administrator rights) some additional configurations are required to use Embree from its build folder. Set the <code>EMBREE_INCLUDE_PATH</code> to the embree_root_directory/include folder and the <code>EMBREE_LIBRARY</code> to embree_root_directory/build/libembree.2.3.2.dylib for macOS or embree_root_directory/build/libembree.so.2.3.2 for Linux. Under Linux you have to additionally add embree_root_directory/build to your <code>LD_LIBRARY_PATH</code> (and <code>SINK_LD_LIBRARY_PATH</code> in case you want to use Embree on the Intel® Xeon Phi™ coprocessor).</p>
+<p>If you cannot install Embree on your system (e.g. when you don’t have administrator rights) some additional configurations are required to use Embree from its build folder. Set the <code>EMBREE_INCLUDE_PATH</code> to the embree_root_directory/include folder and the <code>EMBREE_LIBRARY</code> to embree_root_directory/build/libembree.2.3.2.dylib for macOS or embree_root_directory/build/libembree.so.2.3.2 for Linux. Under Linux you have to additionally add embree_root_directory/build to your <code>LD_LIBRARY_PATH</code> (and <code>SINK_LD_LIBRARY_PATH</code> in case you want to use Embree on the Intel® Xeon Phi™ coprocessor).</p>
 <p>Press c (for configure) and g (for generate) to generate a Makefile and leave the configuration. The code can now be compiled by executing make. The executables will be generated in the build folder.</p>
 <pre><code>make</code></pre>
 <h2 id="using-the-embree-example-renderer">Using the Embree Example Renderer</h2>
