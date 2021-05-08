@@ -101,7 +101,7 @@ div.sourceCode { overflow-x: initial; }
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.12.2!
+      We recently released Intel® Embree v3.13.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -228,13 +228,6 @@ div.sourceCode { overflow-x: initial; }
 <p>The device object acts as a class factory for all other object types. All objects created from the device (like scenes, geometries, etc.) hold a reference to the device, thus the device will not be destroyed unless these objects are destroyed first.</p>
 <p>Objects are only compatible if they belong to the same device, e.g it is not allowed to create a geometry in one device and attach it to a scene created with a different device.</p>
 <p>A configuration string (<code>config</code> argument) can be passed to the device construction. This configuration string can be <code>NULL</code> to use the default configuration.</p>
-<p>When creating the device, Embree reads configurations for the device from the following locations in order:</p>
-<ol type="1">
-<li><code>config</code> string passed to the <code>rtcNewDevice</code> function</li>
-<li><code>.embree3</code> file in the application folder</li>
-<li><code>.embree3</code> file in the home folder</li>
-</ol>
-<p>Settings performed later overwrite previous settings. This way the configuration for the application can be changed globally (either through the <code>rtcNewDevice</code> call or through the <code>.embree3</code> file in the application folder), and each user has the option to modify the configuration to fit their needs.</p>
 <p>The following configuration is supported:</p>
 <ul>
 <li><p><code>threads=[int]</code>: Specifies a number of build threads to use. A value of 0 enables all detected hardware threads. By default all hardware threads are used.</p></li>
@@ -245,7 +238,6 @@ div.sourceCode { overflow-x: initial; }
 <li><p><code>max_isa=[sse2,sse4.2,avx,avx2,avx512]</code>: Configures the automated ISA selection to use maximally the specified ISA.</p></li>
 <li><p><code>hugepages=[0/1]</code>: Enables or disables usage of huge pages. Under Linux huge pages are used by default but under Windows and macOS they are disabled by default.</p></li>
 <li><p><code>enable_selockmemoryprivilege=[0/1]</code>: When set to 1, this enables the <code>SeLockMemoryPrivilege</code> privilege with is required to use huge pages on Windows. This option has an effect only under Windows and is ignored on other platforms. See Section <a href="#huge-page-support">Huge Page Support</a> for more details.</p></li>
-<li><p><code>ignore_config_files=[0/1]</code>: When set to 1, configuration files are ignored. Default is 0.</p></li>
 <li><p><code>verbose=[0,1,2,3]</code>: Sets the verbosity of the output. When set to 0, no output is printed by Embree, when set to a higher level more output is printed. By default Embree does not print anything on the console.</p></li>
 <li><code>frequency_level=[simd128,simd256,simd512]</code>: Specifies the frequency level the application want to run on, which can be either:
 <ol type="a">
@@ -1304,7 +1296,7 @@ div.sourceCode { overflow-x: initial; }
 <p>The start address (<code>byteOffset</code> argument) and stride (<code>byteStride</code> argument) must be both aligned to 4 bytes; otherwise the <code>rtcSetGeometryBuffer</code> function will fail.</p>
 <p>When the buffer will be used as a vertex buffer (<code>RTC_BUFFER_TYPE_VERTEX</code> and <code>RTC_BUFFER_TYPE_VERTEX_ATTRIBUTE</code>), the last buffer element must be readable using 16-byte SSE load instructions, thus padding the last element is required for certain layouts. E.g. a standard <code>float3</code> vertex buffer layout should add storage for at least one more float to the end of the buffer.</p>
 <p>The buffer data must remain valid for as long as the buffer may be used, and the user is responsible for freeing the buffer data when no longer required.</p>
-<p>Sharing buffers can significantly reduce the memory required by the application, thus we recommend using this feature. When enabling the <code>RTC_SCENE_COMPACT</code> scene flag, the spatial index structures index into the vertex buffer, resulting in even higher memory savings.</p>
+<p>Sharing buffers can significantly reduce the memory required by the application, thus we recommend using this feature. When enabling the <code>RTC_SCENE_FLAG_COMPACT</code> scene flag, the spatial index structures index into the vertex buffer, resulting in even higher memory savings.</p>
 <h4 id="exit-status">EXIT STATUS</h4>
 <p>On failure an error code is set that can be queried using <code>rtcGetDeviceError</code>.</p>
 <h4 id="see-also">SEE ALSO</h4>

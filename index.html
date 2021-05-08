@@ -37,7 +37,7 @@
     </div>
 
     <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.12.2!
+      We recently released Intel® Embree v3.13.0!
     </a>
 
     <!-- MAIN CONTENT -->
@@ -50,17 +50,6 @@
 <p>The single-ray traversal kernels of Intel® Embree provide high performance for incoherent workloads and are very easy to integrate into existing rendering applications. Using the stream kernels, even higher performance for incoherent rays is possible, but integration might require significant code changes to the application to use the stream paradigm. In general for coherent workloads, the stream mode with coherent flag set gives the best performance.</p>
 <p>Intel® Embree also supports dynamic scenes by implementing high-performance two-level spatial index structure construction algorithms.</p>
 <p>In addition to the ray tracing kernels, Intel® Embree provides some <a href="tutorials.html">Embree Tutorials</a> to demonstrate how to use the <a href="api.html">Embree API</a>.</p>
-
-<h2>
-Scientific & Technical Achievement Award
-</h2>
-<p>
-  <p>The Academy of Motion Picture Arts & Sciences, which presents the annual Academy Awards®, awarded Intel® Embree Ray Tracing library, a component in the Intel® oneAPI Rendering Toolkit, a Scientific & Technical Achievement Award in 2021.  The award recognized Intel® Embree for its geometric rendering in contributing innovation in significant and lasting ways to the moviemaking process.</p>
-
-<p><i>Award recipients: Sven Woop, Carsten Benthin, Attila Afra, Manfred Ernst and Ingo Wald</i></p>
-<p><i>Sr. Director of Intel Advanced Rendering & Visualization Jim (James L.) Jeffers</i></p>
-</p>
-
 <h2>
 Embree Resources
 </h2>
@@ -108,6 +97,15 @@ Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-
 <p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com" class="email">embree_support@intel.com</a>.</p>
 <p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
 <h2 id="version-history">Version History</h2>
+<h3 id="embree-3.13.0">Embree 3.13.0</h3>
+<ul>
+<li>Added support for Apple M1 CPUs.</li>
+<li>RTC_SUBDIVISION_MODE_NO_BOUNDARY now works properly for non-manifold edges.</li>
+<li>CMake target ‘uninstall’ is not defined if it already exists.</li>
+<li>Embree no longer reads the .embree3 config files, thus all configuration has to get passed through the config string to rtcNewDevice.</li>
+<li>Releases upgrade to TBB 2021.2.0 and ISPC 1.15.0</li>
+<li>TBB dll is automatically copied into build folder after build on windows.</li>
+</ul>
 <h3 id="embree-3.12.2">Embree 3.12.2</h3>
 <ul>
 <li>Fixed wrong uv and Ng for grid intersector in robust mode for AVX.</li>
