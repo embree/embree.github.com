@@ -1,671 +1,472 @@
 <!DOCTYPE html>
-<html>
-
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Embree: High Performance Ray Tracing Kernels" />
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-    <title>Intel® Embree</title>
-    <link rel="icon" type="image/png" href="images/icon192.png" sizes="192x192">
-    <link rel="SHORTCUT ICON" HREF="images/icon32.ico">
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-      <div class="inner">
-        <a id="forkme_banner" href="https://github.com/embree">View on GitHub</a>
-        <h1 id="project_title">Intel® Embree</h1>
-        <h2 id="project_tagline">High Performance Ray Tracing Kernels</h2>
-      </div>
-
-      <div id="nav">
-      <div id="nbar">
-        <ul>
-          <li id="selected"><a href="index.html">Overview</a></li>
-          <li><a href="downloads.html">Downloads</a></li>
-          <li><a href="api.html">API</a></li>
-          <li><a href="tutorials.html">Tutorials</a></li>
-          <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="related.html">Related Projects</a></li>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <link href="static-fw/bootstrap-5.0.0-beta2-dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="static-fw/fonts/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet"/>
+  <link href="static-fw/css/intel.css" rel="stylesheet"/>
+  <link href="static-fw/css/arvacode.css" rel="stylesheet"/>
+  <link href="images/icon192.png" rel="icon" sizes="192x192" type="image/png"/>
+  <title>
+   Intel Embree
+  </title>
+  <style>
+   #advantages .card-img-top {
+  width: 120px; height: 120px;
+  }
+    
+      
+    #academy-award {
+        background-color: #262626;
+        color: #FFFFFF;
+    }
+  </style>
+ </head>
+ <body>
+  <header>
+   <!-- main navbar, collapses to hamburger at 'small' sizes -->
+   <nav class="navbar navbar-expand-md navbar-light bg-light">
+    <!-- container-xl stops setting width to 100% after xl size -->
+    <div class="container-xl">
+     <a class="navbar-brand" href="#">
+      <img alt="" height="48" id="product-logo" src="images/intel-embree-stacked-black-3000.png"/>
+     </a>
+     <!-- hamburger, shows when nav is collapsed, putting it after brand right-aligns it -->
+     <button aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#main-navbar" data-bs-toggle="collapse" type="button">
+      <span class="navbar-toggler-icon">
+      </span>
+     </button>
+     <div class="collapse navbar-collapse" id="main-navbar">
+      <!-- main navigation links -->
+      <ul class="navbar-nav">
+       <li class="nav-item">
+        <a class="nav-link" href="gallery.html">
+         Gallery
+        </a>
+       </li>
+       <li class="nav-item dropdown">
+        <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="20225e4e-782b-43f6-bda7-3458c18089bd" role="button">
+         Resources
+        </a>
+        <ul aria-labelledby="20225e4e-782b-43f6-bda7-3458c18089bd" class="dropdown-menu">
+         <li class="nav-item">
+          <a class="nav-link" href="https://raw.githubusercontent.com/embree/embree/master/readme.pdf">
+           API Documentation
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="api.html">
+           API Examples
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="papers.html">
+           Talks and Papers
+          </a>
+         </li>
         </ul>
-      </div>
-      </div>
-
+       </li>
+       <li class="nav-item dropdown">
+        <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="a415ad77-cf6d-4315-beef-0202ed94fca4" role="button">
+         RenderKit
+        </a>
+        <ul aria-labelledby="a415ad77-cf6d-4315-beef-0202ed94fca4" class="dropdown-menu">
+         <li class="nav-item">
+          <a class="nav-link" href="https://openimagedenoise.org">
+           Intel® Open Image Denoise
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="https://openvkl.org">
+           Intel® Open VKL
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="https://ospray.org">
+           Intel® OSPRay
+          </a>
+         </li>
+        </ul>
+       </li>
+      </ul>
+      <a class="nav-link ms-auto" href="https://www.github.com/embree/embree">
+       <li class="fa fa-fw fa-github">
+       </li>
+       GitHub
+      </a>
+      <a class="nav-link" href="https://www.github.com/embree/embree/releases">
+       <li class="fa fa-fw fa-download">
+       </li>
+       Download
+      </a>
+     </div>
     </div>
-
-    <a id="news_banner" href="https://github.com/embree/embree/releases">
-      We recently released Intel® Embree v3.13.0!
-    </a>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <div id="main_content" class="inner">
-<h1 id="embree-overview">Embree Overview</h1>
-<p>Intel® Embree is a collection of high-performance ray tracing kernels, developed at Intel. The target users of Intel® Embree are graphics application engineers who want to improve the performance of their photo-realistic rendering application by leveraging Embree’s performance-optimized ray tracing kernels. The kernels are optimized for the latest Intel® processors with support for SSE, AVX, AVX2, and AVX-512 instructions. Intel® Embree supports runtime code selection to choose the traversal and build algorithms that best matches the instruction set of your CPU. We recommend using Intel® Embree through its API to get the highest benefit from future improvements. Intel® Embree is released as Open Source under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>.</p>
-<p>Intel® Embree supports applications written with the Intel® SPMD Program Compiler (ISPC, <a href="https://ispc.github.io/" class="uri">https://ispc.github.io/</a>) by also providing an ISPC interface to the core ray tracing algorithms. This makes it possible to write a renderer in ISPC that automatically vectorizes and leverages SSE, AVX, AVX2, and AVX-512 instructions. ISPC also supports runtime code selection, thus ISPC will select the best code path for your application.</p>
-<p>Intel® Embree contains algorithms optimized for incoherent workloads (e.g. Monte Carlo ray tracing algorithms) and coherent workloads (e.g. primary visibility and hard shadow rays).</p>
-<p>The single-ray traversal kernels of Intel® Embree provide high performance for incoherent workloads and are very easy to integrate into existing rendering applications. Using the stream kernels, even higher performance for incoherent rays is possible, but integration might require significant code changes to the application to use the stream paradigm. In general for coherent workloads, the stream mode with coherent flag set gives the best performance.</p>
-<p>Intel® Embree also supports dynamic scenes by implementing high-performance two-level spatial index structure construction algorithms.</p>
-<p>In addition to the ray tracing kernels, Intel® Embree provides some <a href="tutorials.html">Embree Tutorials</a> to demonstrate how to use the <a href="api.html">Embree API</a>.</p>
-<h2>
-Embree Resources
-</h2>
-<h3>
-Presentations
-</h3>
-<p>
-<a href="data/embree-siggraph-2018-final.pdf">Embree Presentation</a> at SIGGRAPH 2018
-</p>
-<p>
-<a href="data/embree-siggraph-2017-final.pdf">Embree Presentation</a> at SIGGRAPH 2017
-</p>
-<p>
-<a href="data/msmblur-hpg-2017-final.pdf">STBVH: A Spatial-Temporal BVH for Efficient Multi-Segment Motion Blur</a> presentation at HPG 2017
-</p>
-<p>
-<a href="data/openmerge-hpg-2017-final.pdf">Improved Two-Level BVHs using Partial Re-Braiding</a> presentation at HPG 2017
-</p>
-<p>
-<a href="data/embree-siggraph-2016-final.pdf">Embree Presentation</a> at SIGGRAPH 2016
-</p>
-<p>
-<a href="data/embree-siggraph-2015-final.pdf">Embree Presentation</a> at SIGGRAPH 2015
-</p>
-<p>
-<a href="data/siggraph2014_embree_paper.pdf">Embree Paper Talk</a> at SIGGRAPH 2014
-</p>
-<p>
-<a href="data/siggraph2014_embree_tutorial.pdf">Embree Tutorial</a> at SIGGRAPH 2014
-</p>
-<p>
-<a href="data/embree-siggraph-2013-final.pdf">Embree 2.0 Presentation</a> at SIGGRAPH 2013
-</p>
-<p>
-<a href="data/embree-siggraph-2012-final.pdf">Embree 1.1 Presentation</a> at SIGGRAPH 2012
-</p>
-<h3>
-Forum
-</h3>
-<p>
-Participate in <a href="https://community.intel.com/t5/Intel-Embree-Ray-Tracing-Kernels/bd-p/embree">Embree Forum</a> discussions.
-</p>
-<h2 id="embree-support-and-contact">Embree Support and Contact</h2>
-<p>If you encounter bugs please report them via <a href="https://github.com/embree/embree/issues">Embree’s GitHub Issue Tracker</a>.</p>
-<p>For questions and feature requests please write us at <a href="mailto:embree_support@intel.com" class="email">embree_support@intel.com</a>.</p>
-<p>To receive notifications of updates and new features of Embree please subscribe to the <a href="https://groups.google.com/d/forum/embree/">Embree mailing list</a>.</p>
-<h2 id="version-history">Version History</h2>
-<h3 id="embree-3.13.0">Embree 3.13.0</h3>
-<ul>
-<li>Added support for Apple M1 CPUs.</li>
-<li>RTC_SUBDIVISION_MODE_NO_BOUNDARY now works properly for non-manifold edges.</li>
-<li>CMake target ‘uninstall’ is not defined if it already exists.</li>
-<li>Embree no longer reads the .embree3 config files, thus all configuration has to get passed through the config string to rtcNewDevice.</li>
-<li>Releases upgrade to TBB 2021.2.0 and ISPC 1.15.0</li>
-<li>TBB dll is automatically copied into build folder after build on windows.</li>
-</ul>
-<h3 id="embree-3.12.2">Embree 3.12.2</h3>
-<ul>
-<li>Fixed wrong uv and Ng for grid intersector in robust mode for AVX.</li>
-<li>Removed optimizations for Knights Landing.</li>
-<li>Upgrading release builds to use oneTBB 2021.1.1</li>
-</ul>
-<h3 id="embree-3.12.1">Embree 3.12.1</h3>
-<ul>
-<li>Changed default frequency level to SIMD128 for Skylake, Cannon Lake, Comet Lake and Tiger Lake CPUs. This change typically improves performance for renderers that just use SSE by maintaining higher CPU frequencies. In case your renderer is AVX optimized you can get higher ray tracing performance by configuring the frequency level to simd256 through passing frequency_level=simd256 to rtcNewDevice.</li>
-</ul>
-<h3 id="embree-3.12.0">Embree 3.12.0</h3>
-<ul>
-<li>Added linear cone curve geometry support. In this mode a real geometric surface for curves with linear basis is rendered using capped cones. They are discontinuous at edge boundaries.</li>
-<li>Enabled fast two level builder for instances when low quality build is requested.</li>
-<li>Bugfix for BVH build when geometries got disabled.</li>
-<li>Added EMBREE_BACKFACE_CULLING_CURVES cmake option. This allows for a cheaper round linear curve intersection when correct internal tracking and back hits are not required. The new cmake option defaults to OFF.</li>
-<li>User geometries with invalid bounds with lower&gt;upper in some dimension will be ignored.</li>
-<li>Increased robustness for grid interpolation code and fixed returned out of range u/v coordinates for grid primitive.</li>
-<li>Fixed handling of motion blur time range for sphere, discs, and oriented disc geometries.</li>
-<li>Fixed missing model data in releases.</li>
-<li>Ensure compatibility to newer versions of oneTBB.</li>
-<li>Motion blur BVH nodes no longer store NaN values.</li>
-</ul>
-<h3 id="embree-3.11.0">Embree 3.11.0</h3>
-<ul>
-<li>Round linear curves now automatically check for the existence of left and right connected segments if the flags buffer is empty. Left segments exist if the segment(id-1) + 1 == segment(id) and similarly for right segments.</li>
-<li>Implemented the min-width feature for curves and points, which allows to increase the radius in a distance dependent way, such that the curve or points thickness is n pixels wide.</li>
-<li>Round linear curves are closed now also at their start.</li>
-<li>Embree no longer supports Visual Studio 2013 starting with this release.</li>
-<li>Bugfix in subdivision tessellation level assignment for non-quad base primitives</li>
-<li>Small meshes are directly added to top level build phase of two-level builder to reduce memory consumption.</li>
-<li>Enabled fast two level builder for user geometries when low quality build is requested.</li>
-</ul>
-<h3 id="embree-3.10.0">Embree 3.10.0</h3>
-<ul>
-<li>Added EMBREE_COMPACT_POLYS CMake option which enables double indexed triangle and quad leaves to reduce memory consumption in compact mode by an additional 40% at about 15% performance impact. This new mode is disabled by default.</li>
-<li>Compile fix for oneTBB 2021.1-beta05</li>
-<li>Releases upgrade to TBB 2020.2</li>
-<li>Compile fix for ISPC v1.13.0</li>
-<li>Adding RPATH to libembree.so in releases</li>
-<li>Increased required CMake version to 3.1.0</li>
-<li>Made instID member for array of pointers ray stream layout optional again.</li>
-</ul>
-<h3 id="embree-3.9.0">Embree 3.9.0</h3>
-<ul>
-<li>Added round linear curve geometry support. In this mode a real geometric surface for curves with linear basis is rendered using capped cones with spherical filling between the curve segments.</li>
-<li>Added rtcGetSceneDevice API function, that returns the device a scene got created in.</li>
-<li>Improved performance of round curve rendering by up to 1.8x.</li>
-<li>Bugfix to sphere intersection filter invokation for back hit.</li>
-<li>Fixed wrong assertion that triggered for invalid curves which anyway get filtered out.</li>
-<li>RelWithDebInfo mode no longer enables assertions.</li>
-<li>Fixed an issue in FindTBB.cmake that caused compile error with Debug build under Linux.</li>
-<li>Embree releases no longer provide RPMs for Linux. Please use the RPMs coming with the package manager of your Linux distribution.</li>
-</ul>
-<h3 id="embree-3.8.0">Embree 3.8.0</h3>
-<ul>
-<li>Added collision detection support for user geometries (see rtcCollide API function)</li>
-<li>Passing geomID to user geometry callbacks.</li>
-<li>Bugfix in AVX512VL codepath for rtcIntersect1</li>
-<li>For sphere geometries the intersection filter gets now invoked for front and back hit.</li>
-<li>Fixed some bugs for quaternion motion blur.</li>
-<li>RTCIntersectContext always non-const in Embree API</li>
-<li>Made RTCHit aligned to 16 bytes in Embree API</li>
-</ul>
-<h3 id="new-features-in-embree-3.7.0">New Features in Embree 3.7.0</h3>
-<ul>
-<li>Added quaternion motion blur for correct interpolation of rotational transformations.</li>
-<li>Fixed wrong bounding calculations when a motion blurred instance did instantiate a motion blurred scene.</li>
-<li>In robust mode the depth test consistently uses tnear &lt;= t &lt;= tfar now in order to robustly continue traversal at a previous hit point in a way that guarentees reaching all hits, even hits at the same place.</li>
-<li>Fixed depth test in robust mode to be precise at tnear and tfar.</li>
-<li>Added next_hit tutorial to demonstrate robustly collecting all hits along a ray using multiple ray queries.</li>
-<li>Implemented robust mode for curves. This has a small performance impact but fixes bounding problems with flat curves.</li>
-<li>Improved quality of motion blur BVH by using linear bounds during binning.</li>
-<li>Implemented issue with motion blur builder where number of time segments for SAH heuristic were counted wrong due to some numerical issues.</li>
-<li>Fixed an accuracy issue with rendering very short fat curves.</li>
-<li>rtcCommitScene can now get called during rendering from multiple threads to lazily build geometry. When TBB is used this causes a much lower overhead than using rtcJoinCommitScene.</li>
-<li>Geometries can now get attached to multiple scenes at the same time, which simplifies mapping general scene graphs to API.</li>
-<li>Updated to TBB 2019.9 for release builds.</li>
-<li>Fixed a bug in the BVH builder for Grid geometries.</li>
-<li>Added macOS Catalina support to Embree releases.</li>
-</ul>
-<h3 id="new-features-in-embree-3.6.1">New Features in Embree 3.6.1</h3>
-<ul>
-<li>Restored binary compatibility between Embree 3.6 and 3.5 when single-level instancing is used.</li>
-<li>Fixed bug in subgrid intersector</li>
-<li>Removed point query alignment in ISPC header</li>
-</ul>
-<h3 id="new-features-in-embree-3.6">New Features in Embree 3.6</h3>
-<ul>
-<li>Added Catmull-Rom curve types.</li>
-<li>Added support for multi-level instancing.</li>
-<li>Added support for point queries.</li>
-<li>Fixed a bug preventing normal oriented curves being used unless timesteps were specified.</li>
-<li>Fixed bug in external BVH builder when configured for dynamic build.</li>
-<li>Added support for new config flag “user_threads=N” to device initialization which sets the number of threads used by TBB but created by the user.</li>
-<li>Fixed automatic vertex buffer padding when using rtcSetNewGeometry API function.</li>
-</ul>
-<h3 id="new-features-in-embree-3.5.2">New Features in Embree 3.5.2</h3>
-<ul>
-<li>Added EMBREE_API_NAMESPACE cmake option that allows to put all Embree API functions inside a user defined namespace.</li>
-<li>Added EMBREE_LIBRARY_NAME cmake option that allows to rename the Embree library.</li>
-<li>When Embree is compiled as static library, EMBREE_STATIC_LIB has no longer to get defined before including the Embree API headers.</li>
-<li>Added CPU frequency_level device configuration to allow an application to specify the frequency level it wants to run on. This forces Embree to not use optimizations that may reduce the CPU frequency below that level. By default Embree is configured to the the AVX-heavy frequency level, thus if the application uses solely non-AVX code, configuring the Embree device with “frequency_level=simd128” may give better performance.</li>
-<li>Fixed a bug in the spatial split builder which caused it to fail for scenes with more than 2^24 geometries.</li>
-</ul>
-<h3 id="new-features-in-embree-3.5.1">New Features in Embree 3.5.1</h3>
-<ul>
-<li>Fixed ray/sphere intersector to work also for non-normalized rays.</li>
-<li>Fixed self intersection avoidance for ray oriented discs when non-normalized rays were used.</li>
-<li>Increased maximal face valence for subdiv patch to 64 and reduced stack size requirement for subdiv patch evaluation.</li>
-</ul>
-<h3 id="new-features-in-embree-3.5.0">New Features in Embree 3.5.0</h3>
-<ul>
-<li>Changed normal oriented curve definition to fix waving artefacts.</li>
-<li>Fixed bounding issue for normal oriented motion blurred curves.</li>
-<li>Fixed performance issue with motion blurred point geometry.</li>
-<li>Fixed generation of documentation with new pandoc versions.</li>
-</ul>
-<h3 id="new-features-in-embree-3.4.0">New Features in Embree 3.4.0</h3>
-<ul>
-<li>Added point primitives (spheres, ray-oriented discs, normal-oriented discs).</li>
-<li>Fixed crash triggered by scenes with only invalid primitives.</li>
-<li>Improved robustness of quad/grid-based intersectors.</li>
-<li>Upgraded to TBB 2019.2 for release builds.</li>
-</ul>
-<h3 id="new-features-in-embree-3.3.0">New Features in Embree 3.3.0</h3>
-<ul>
-<li>Added support for motion blur time range per geometry. This way geometries can appear and disappear during the camera shutter and time steps do not have to start and end at camera shutter interval boundaries.</li>
-<li>Fixed crash with pathtracer when using –triangle-sphere command line.</li>
-<li>Fixed crash with pathtracer when using –shader ao command line.</li>
-<li>Fixed tutorials showing a black window on macOS 10.14 until moved.</li>
-</ul>
-<h3 id="new-features-in-embree-3.2.4">New Features in Embree 3.2.4</h3>
-<ul>
-<li>Fixed compile issues with ICC 2019.</li>
-<li>Released ZIP files for Windows are now provided in a version linked against Visual Studio 2013 and Visual Studio 2015.</li>
-</ul>
-<h3 id="new-features-in-embree-3.2.3">New Features in Embree 3.2.3</h3>
-<ul>
-<li>Fixed crash when using curves with RTC_SCENE_FLAG_DYNAMIC combined with RTC_BUILD_QUALITY_MEDIUM.</li>
-</ul>
-<h3 id="new-features-in-embree-3.2.2">New Features in Embree 3.2.2</h3>
-<ul>
-<li>Fixed intersection distance for unnormalized rays with line segments.</li>
-<li>Removed libmmd.dll dependency in release builds for Windows.</li>
-<li>Fixed detection of AppleClang compiler under MacOSX.</li>
-</ul>
-<h3 id="new-features-in-embree-3.2.1">New Features in Embree 3.2.1</h3>
-<ul>
-<li>Bugfix in flat mode for hermite curves.</li>
-<li>Added EMBREE_CURVE_SELF_INTERSECTION_AVOIDANCE_FACTOR cmake option to control self intersection avoidance for flat curves.</li>
-<li>Performance fix when instantiating motion blurred scenes. The application should best use two (or more) time steps for an instance that instantiates a motion blurred scene.</li>
-<li>Fixed AVX512 compile issue with GCC 6.1.1.</li>
-<li>Fixed performance issue with rtcGetGeometryUserData when used during rendering.</li>
-<li>Bugfix in length of derivatives for grid geometry.</li>
-<li>Added BVH8 support for motion blurred curves and lines. For some workloads this increases performance by up to 7%.</li>
-<li>Fixed rtcGetGeometryTransform to return the local to world transform.</li>
-<li>Fixed bug in multi segment motion blur that caused missing of perfectly axis aligned geometry.</li>
-<li>Reduced memory consumption of small scenes by 4x.</li>
-<li>Reduced temporal storage of grid builder.</li>
-</ul>
-<h3 id="new-features-in-embree-3.2.0">New Features in Embree 3.2.0</h3>
-<ul>
-<li>Improved watertightness of robust mode.</li>
-<li>Line segments, and other curves are now all contained in a single BVH which improves performance when these are both used in a scene.</li>
-<li>Performance improvement of up to 20% for line segments.</li>
-<li>Bugfix to Embree2 to Embree3 conversion script.</li>
-<li>Added support for Hermite curve basis.</li>
-<li>Semantics of normal buffer for normal oriented curves has changed to simplify usage. Please see documentation for details.</li>
-<li>Using GLFW and imgui in tutorials.</li>
-<li>Fixed floating point exception in static variable initialization.</li>
-<li>Fixed invalid memory access in rtcGetGeometryTransform for non-motion blur instances.</li>
-<li>Improved self intersection avoidance for flat curves. Transparency rays with tnear set to previous hit distance do not need curve radius based self intersection avoidance as same hit is calculated again. For this reason self intersection avoidance is now only applied to ray origin.</li>
-</ul>
-<h3 id="new-features-in-embree-3.1.0">New Features in Embree 3.1.0</h3>
-<ul>
-<li>Added new normal-oriented curve primitive for ray tracing of grass-like structures.</li>
-<li>Added new grid primitive for ray tracing tessellated and displaced surfaces in very memory efficient manner.</li>
-<li>Fixed bug of ribbon curve intersector when derivative was zero.</li>
-<li>Installing all static libraries when EMBREE_STATIC_LIB is enabled.</li>
-<li>Added API functions to access topology of subdivision mesh.</li>
-<li>Reduced memory consumption of instances.</li>
-<li>Improved performance of instances by 8%.</li>
-<li>Reduced memory consumption of curves by up to 2x.</li>
-<li>Up to 5% higher performance on AVX-512 architectures.</li>
-<li>Added native support for multiple curve basis functions. Internal basis conversions are no longer performed, which saves additional memory when multiple bases are used.</li>
-<li>Fixed issue with non thread safe local static variable initialization in VS2013.</li>
-<li>Bugfix in rtcSetNewGeometry. Vertex buffers did not get properly overallocated.</li>
-<li>Replaced ImageMagick with OpenImageIO in the tutorials.</li>
-</ul>
-<h3 id="new-features-in-embree-3.0.0">New Features in Embree 3.0.0</h3>
-<ul>
-<li>Switched to a new version of the API which provides improved flexibility but is not backward compatible. Please see “Upgrading from Embree 2 to Embree 3” section of the documentation for upgrade instructions. In particular, we provide a Python script that performs most of the transition work.</li>
-<li>User geometries inside an instanced scene and a top-level scene no longer need to handle the instID field of the ray differently. They both just need to copy the context.instID into the ray.instID field.</li>
-<li>Support for context filter functions that can be assigned to a ray query.</li>
-<li>User geometries can now invoke filter functions using the rtcFilterIntersection and rtcFilterOcclusion calls.</li>
-<li>Higher flexibility through specifying build quality per scene and geometry.</li>
-<li>Geometry normal uses commonly used right-hand rule from now on.</li>
-<li>Added self-intersection avoidance to ribbon curves and lines. Applications do not have to implement self-intersection workarounds for these primitive types anymore.</li>
-<li>Added support for 4 billion primitives in a single scene.</li>
-<li>Removed the RTC_MAX_USER_VERTEX_BUFFERS and RTC_MAX_INDEX_BUFFERS limitations.</li>
-<li>Reduced memory consumption by 192 bytes per instance.</li>
-<li>Fixed some performance issues on AVX-512 architectures.</li>
-<li>Individual Contributor License Agreement (ICLA) and Corporate Contributor License Agreement (CCLA) no longer required to contribute to the project.</li>
-</ul>
-<h3 id="new-features-in-embree-2.17.5">New Features in Embree 2.17.5</h3>
-<ul>
-<li>Improved watertightness of robust mode.</li>
-<li>Fixed floating point exception in static variable initialization.</li>
-<li>Fixed AVX512 compile issue with GCC 6.1.1.</li>
-</ul>
-<h3 id="new-features-in-embree-2.17.4">New Features in Embree 2.17.4</h3>
-<ul>
-<li>Fixed AVX512 compile issue with GCC 7.</li>
-<li>Fixed issue with not thread safe local static variable initialization in VS2013.</li>
-<li>Fixed bug in the 4 and 8-wide packet intersection of instances with multi-segment motion blur on AVX-512 architectures.</li>
-<li>Fixed bug in rtcOccluded4/8/16 when only AVX-512 ISA was enabled.</li>
-</ul>
-<h3 id="new-features-in-embree-2.17.3">New Features in Embree 2.17.3</h3>
-<ul>
-<li>Fixed GCC compile warning in debug mode.</li>
-<li>Fixed bug of ribbon curve intersector when derivative was zero.</li>
-<li>Installing all static libraries when EMBREE_STATIC_LIB is enabled.</li>
-</ul>
-<h3 id="new-features-in-embree-2.17.2">New Features in Embree 2.17.2</h3>
-<ul>
-<li>Made BVH build of curve geometry deterministic.</li>
-</ul>
-<h3 id="new-features-in-embree-2.17.1">New Features in Embree 2.17.1</h3>
-<ul>
-<li>Improved performance of occlusion ray packets by up to 50%.</li>
-<li>Fixed detection of Clang for CMake 3 under MacOSX</li>
-<li>Fixed AVX code compilation issue with GCC 7 compiler caused by explicit use of vzeroupper intrinsics.</li>
-<li>Fixed an issue where Clang address sanitizer reported an error in the internal tasking system.</li>
-<li>Added fix to compile on 32 bit Linux distribution.</li>
-<li>Fixed some wrong relative include paths in Embree.</li>
-<li>Improved performance of robust single ray mode by 5%.</li>
-<li>Added EMBREE_INSTALL_DEPENDENCIES option (default OFF) to enable installing of Embree dependencies.</li>
-<li>Fixed performance regression for occlusion ray streams.</li>
-<li>Reduced temporary memory requirements of BVH builder for curves and line segments.</li>
-<li>Fixed performance regression for user geometries and packet ray tracing.</li>
-<li>Fixed bug where wrong closest hit was reported for very curvy hair segment.</li>
-</ul>
-<h3 id="new-features-in-embree-2.17.0">New Features in Embree 2.17.0</h3>
-<ul>
-<li>Improved packet ray tracing performance for coherent rays by 10-60% (requires RTC_INTERSECT_COHERENT flag).</li>
-<li>Improved ray tracing performance for incoherent rays on AVX-512 architectures by 5%.</li>
-<li>Improved ray tracing performance for streams of incoherent rays by 5-15%.</li>
-<li>Fixed tbb_debug.lib linking error under Windows.</li>
-<li>Fast coherent ray stream and packet code paths now also work in robust mode.</li>
-<li>Using less agressive prefetching for large BVH nodes which results in 1-2% higher ray tracing performance.</li>
-<li>Precompiled binaries have stack-protector enabled, except for traversal kernels. BVH builders can be slightly slower due to this change. If you want stack-protectors disabled please turn off EMBREE_STACK_PROTECTOR in cmake and build the binaries yourself.</li>
-<li>When enabling ISAs individually, the 8-wide BVH was previously only available when the AVX ISA was also selected. This issue is now fixed, and one can enable only AVX2 and still get best performance by using an 8-wide BVH.</li>
-<li>Fixed rtcOccluded1 and rtcOccluded1Ex API functions which were broken in ISPC.</li>
-<li>Providing MSI installer for Windows.</li>
-</ul>
-<h3 id="new-features-in-embree-2.16.5">New Features in Embree 2.16.5</h3>
-<ul>
-<li>Bugfix in the robust triangle intersector that rarely caused NaNs.</li>
-<li>Fixed bug in hybrid traversal kernel when BVH leaf was entered with no active rays. This rarely caused crashes when used with instancing.</li>
-<li>Fixed bug introduced in Embree 2.16.2 which caused instancing not to work properly when a smaller than the native SIMD width was used in ray packet mode.</li>
-<li>Fixed bug in the curve geometry intersector that caused rendering artefacts for Bézier curves with p0=p1 and/or p2=p3.</li>
-<li>Fixed bug in the curve geometry intersector that caused hit results with NaNs to be reported.</li>
-<li>Fixed masking bug that caused rare cracks in curve geometry.</li>
-<li>Enabled support for SSE2 in precompiled binaries again.</li>
-</ul>
-<h3 id="new-features-in-embree-2.16.4">New Features in Embree 2.16.4</h3>
-<ul>
-<li>Bugfix in the ribbon intersector for hair primitives. Non-normalized rays caused wrong intersection distance to be reported.</li>
-</ul>
-<h3 id="new-features-in-embree-2.16.3">New Features in Embree 2.16.3</h3>
-<ul>
-<li>Increased accuracy for handling subdivision surfaces. This fixes cracks when using displacement mapping but reduces performance at irregular vertices.</li>
-<li>Fixed a bug where subdivision geometry was not properly updated when modifying only the tesselation rate and vertex array.</li>
-</ul>
-<h3 id="new-features-in-embree-2.16.2">New Features in Embree 2.16.2</h3>
-<ul>
-<li>Fixed bug that caused NULL intersection context in intersection filter when instancing was used.</li>
-<li>Fixed an issue where uv’s where outside the triangle (or quad) for very small triangles (or quads). In robust mode we improved the uv calculation to avoid that issue, in fast mode we accept that inconsistency for better performance.</li>
-<li>Changed UV encoding for non-quad subdivision patches to allow a subpatch UV range of <code>[-0.5,1.5[</code>. Using this new encoding one can use finite differences to calculate derivatives if required. Please adjust your code in case you rely on the old encoding.</li>
-</ul>
-<h3 id="new-features-in-embree-2.16.1">New Features in Embree 2.16.1</h3>
-<ul>
-<li>Workaround for compile issues with Visual Studio 2017</li>
-<li>Fixed bug in subdiv code for static scenes when using tessellation levels larger than 50.</li>
-<li>Fixed low performance when adding many geometries to a scene.</li>
-<li>Fixed high memory consumption issue when using instances in dynamic scene (by disabling two level builder for user geometries and instances).</li>
-</ul>
-<h3 id="new-features-in-embree-2.16.0">New Features in Embree 2.16.0</h3>
-<ul>
-<li>Improved multi-segment motion blur support for scenes with different number of time steps per mesh.</li>
-<li>New top level BVH builder that improves build times and BVH quality of two-level BVHs.</li>
-<li>Added support to enable only a single ISA. Previously code was always compiled for SSE2.</li>
-<li>Improved single ray tracing performance for incoherent rays on AVX-512 architectures by 5-10%.</li>
-<li>Improved packet/hybrid ray tracing performance for incoherent rays on AVX-512 architectures by 10-30%.</li>
-<li>Improved stream ray tracing performance for coherent rays in structure-of-pointers layout by 40-70%.</li>
-<li>BVH builder for compact scenes of triangles and quads needs essentially no temporary memory anymore. This doubles the maximal scene size that can be rendered in compact mode.</li>
-<li>Triangles no longer store the geometry normal in fast/default mode which reduces memory consumption by up to 20%.</li>
-<li>Compact mode uses BVH4 now consistently which reduces memory consumption by up to 10%.</li>
-<li>Reduced memory consumption for small scenes (of 10k-100k primitives) and dynamic scenes.</li>
-<li>Improved performance of user geometries and instances through BVH8 support.</li>
-<li>The API supports now specifying the geometry ID of a geometry at construction time. This way matching the geometry ID used by Embree and the application is simplified.</li>
-<li>Fixed a bug that would have caused a failure of the BVH builder for dynamic scenes when run on a machine with more then 1000 threads.</li>
-<li>Fixed a bug that could have been triggered when reaching the maximal number of mappings under Linux (<code>vm.max_map_count</code>). This could have happened when creating a large number of small static scenes.</li>
-<li>Added huge page support for Windows and MacOSX (experimental).</li>
-<li>Added support for Visual Studio 2017.</li>
-<li>Removed support for Visual Studio 2012.</li>
-<li>Precompiled binaries now require a CPU supporting at least the SSE4.2 ISA.</li>
-<li>We no longer provide precompiled binaries for 32-bit on Windows.</li>
-<li>Under Windows one now has to use the platform toolset option in CMake to switch to Clang or the Intel® Compiler.</li>
-<li>Fixed a bug for subdivision meshes when using the incoherent scene flag.</li>
-<li>Fixed a bug in the line geometry intersection, that caused reporting an invalid line segment intersection with primID -1.</li>
-<li>Buffer stride for vertex buffers of different time steps of triangle and quad meshes have to be identical now.</li>
-<li>Fixed a bug in the curve geometry intersection code when passed a perfect cylinder.</li>
-</ul>
-<h3 id="new-features-in-embree-2.15.0">New Features in Embree 2.15.0</h3>
-<ul>
-<li>Added <code>rtcCommitJoin</code> mode that allows thread to join a build operation. When using the internal tasking system this allows Embree to solely use the threads that called <code>rtcCommitJoin</code> to build the scene, while previously also normal worker threads participated in the build. You should no longer use <code>rtcCommit</code> to join a build.</li>
-<li>Added <code>rtcDeviceSetErrorFunction2</code> API call, which sets an error callback function which additionally gets passed a user provided pointer (<code>rtcDeviceSetErrorFunction</code> is now deprecated).</li>
-<li>Added <code>rtcDeviceSetMemoryMonitorFunction2</code> API call, which sets a memory monitor callback function which additionally get passed a user provided pointer. (<code>rtcDeviceSetMemoryMonitorFunction</code> is now deprecated).</li>
-<li>Build performance for hair geometry improved by up to 2×.</li>
-<li>Standard BVH build performance increased by 5%.</li>
-<li>Added API extension to use internal Morton-code based builder, the standard binned-SAH builder, and the spatial split-based SAH builder.</li>
-<li>Added support for BSpline hair and curves. Embree uses either the Bézier or BSpline basis internally, and converts other curves, which requires more memory during rendering. For reduced memory consumption set the <code>EMBREE_NATIVE_SPLINE_BASIS</code> to the basis your application uses (which is set to <code>BEZIER</code> by default).</li>
-<li>Setting the number of threads through <code>tbb::taskscheduler_init</code> object on the application side is now working properly.</li>
-<li>Windows and Linux releases are build using AVX-512 support.</li>
-<li>Implemented hybrid traversal for hair and line segments for improved ray packet performance.</li>
-<li>AVX-512 code compiles with Clang 4.0.0</li>
-<li>Fixed crash when ray packets were disabled in CMake.</li>
-</ul>
-<h3 id="new-features-in-embree-2.14.0">New Features in Embree 2.14.0</h3>
-<ul>
-<li>Added <code>ignore_config_files</code> option to init flags that allows the application to ignore Embree configuration files.</li>
-<li>Face-varying interpolation is now supported for subdivision surfaces.</li>
-<li>Up to 16 user vertex buffers are supported for vertex attribute interpolation.</li>
-<li>Deprecated <code>rtcSetBoundaryMode</code> function, please use the new <code>rtcSetSubdivisionMode</code> function.</li>
-<li>Added <code>RTC_SUBDIV_PIN_BOUNDARY</code> mode for handling boundaries of subdivision meshes.</li>
-<li>Added <code>RTC_SUBDIV_PIN_ALL</code> mode to enforce linear interpolation for subdivision meshes.</li>
-<li>Optimized object generation performance for dynamic scenes.</li>
-<li>Reduced memory consumption when using lots of small dynamic objects.</li>
-<li>Fixed bug for subdivision surfaces using low tessellation rates.</li>
-<li>Hair geometry now uses a new ribbon intersector that intersects with ray-facing quads. The new intersector also returns the v-coordinate of the hair intersection, and fixes artefacts at junction points between segments, at the cost of a small performance hit.</li>
-<li>Added <code>rtcSetBuffer2</code> function, that additionally gets the number of elements of a buffer. In dynamic scenes, this function allows to quickly change buffer sizes, making it possible to change the number of primitives of a mesh or the number of crease features for subdivision surfaces.</li>
-<li>Added simple ‘viewer_anim’ tutorial for rendering key frame animations and ‘buildbench’ for measuring BVH (re-)build performance for static and dynamic scenes.</li>
-<li>Added more AVX-512 optimizations for future architectures.</li>
-</ul>
-<h3 id="new-features-in-embree-2.13.0">New Features in Embree 2.13.0</h3>
-<ul>
-<li>Improved performance for compact (but not robust) scenes.</li>
-<li>Added robust mode for motion blurred triangles and quads.</li>
-<li>Added fast dynamic mode for user geometries.</li>
-<li>Up to 20% faster BVH build performance on the second generation Intel® Xeon Phi™ processor codenamed Knights Landing.</li>
-<li>Improved quality of the spatial split builder.</li>
-<li>Improved performance for coherent streams of ray packets (SOA layout), e.g. for fast primary visibility.</li>
-<li>Various bug fixes in tessellation cache, quad-based spatial split builder, etc.</li>
-</ul>
-<h3 id="new-features-in-embree-2.12.0">New Features in Embree 2.12.0</h3>
-<ul>
-<li>Added support for multi-segment motion blur for all primitive types.</li>
-<li>API support for stream of pointers to single rays (<code>rtcIntersect1Mp</code> and <code>rtcOccluded1Mp</code>)</li>
-<li>Improved BVH refitting performance for dynamic scenes.</li>
-<li>Improved high-quality mode for quads (added spatial split builder for quads)</li>
-<li>Faster dynamic scenes for triangle and quad-based meshes on AVX2 enabled machines.</li>
-<li>Performance and correctness bugfix in optimization for streams of coherent (single) rays.</li>
-<li>Fixed large memory consumption (issue introduced in Embree v2.11.0). If you use Embree v2.11.0 please upgrade to Embree v2.12.0.</li>
-<li>Reduced memory consumption for dynamic scenes containing small meshes.</li>
-<li>Added support to start and affinitize TBB worker threads by passing “<code>start_threads=1,set_affinity=1</code>” to <code>rtcNewDevice</code>. These settings are recommended on systems with a high thread count.</li>
-<li><code>rtcInterpolate2</code> can now be called within a displacement shader.</li>
-<li>Added initial support for Microsoft’s Parallel Pattern Library (PPL) as tasking system alternative (for optimal performance TBB is highly recommended).</li>
-<li>Updated to TBB 2017 which is released under the Apache v2.0 license.</li>
-<li>Dropped support for Visual Studio 2012 Win32 compiler. Visual Studio 2012 x64 is still supported.</li>
-</ul>
-<h3 id="new-features-in-embree-2.11.0">New Features in Embree 2.11.0</h3>
-<ul>
-<li>Improved performance for streams of coherent (single) rays flagged with <code>RTC_INTERSECT_COHERENT</code>. For such coherent ray streams, e.g. primary rays, the performance typically improves by 1.3-2×.</li>
-<li>New spatial split BVH builder for triangles, which is 2-6× faster than the previous version and more memory conservative.</li>
-<li>Improved performance and scalability of all standard BVH builders on systems with large core counts.</li>
-<li>Fixed <code>rtcGetBounds</code> for motion blur scenes.</li>
-<li>Thread affinity is now on by default when running on the latest Intel® Xeon Phi™ processor.</li>
-<li>Added AVX-512 support for future Intel® Xeon processors.</li>
-</ul>
-<h3 id="new-features-in-embree-2.10.0">New Features in Embree 2.10.0</h3>
-<ul>
-<li>Added a new curve geometry which renders the sweep surface of a circle along a Bézier curve.</li>
-<li>Intersection filters can update the <code>tfar</code> ray distance.</li>
-<li>Geometry types can get disabled at compile time.</li>
-<li>Modified and extended the ray stream API.</li>
-<li>Added new callback mechanism for the ray stream API.</li>
-<li>Improved ray stream performance (up to 5-10%).</li>
-<li>Up to 20% faster morton builder on machines with large core counts.</li>
-<li>Lots of optimizations for the second generation Intel® Xeon Phi™ processor codenamed Knights Landing.</li>
-<li>Added experimental support for compressed BVH nodes (reduces node size to 56-62% of uncompressed size). Compression introduces a typical performance overhead of ~10%.</li>
-<li>Bugfix in backface culling mode. We do now properly cull the backfaces and not the frontfaces.</li>
-<li>Feature freeze for the first generation Intel® Xeon Phi™ coprocessor codenamed Knights Corner. We will still maintain and add bug fixes to Embree v2.9.0, but Embree 2.10 and future versions will no longer support it.</li>
-</ul>
-<h3 id="new-features-in-embree-2.9.0">New Features in Embree 2.9.0</h3>
-<ul>
-<li>Improved shadow ray performance (10-100% depending on the scene).</li>
-<li>Added initial support for ray streams (10-30% higher performance depending on ray coherence in the stream).</li>
-<li>Added support to calculate second order derivatives using the <code>rtcInterpolate2</code> function.</li>
-<li>Changed the parametrization for triangular subdivision faces to the same scheme used for pentagons.</li>
-<li>Added support to query the Embree configuration using the <code>rtcDeviceGetParameter</code> function.</li>
-</ul>
-<h3 id="new-features-in-embree-2.8.1">New Features in Embree 2.8.1</h3>
-<ul>
-<li>Added support for setting per geometry tessellation rate (supported for subdivision and Bézier geometries).</li>
-<li>Added support for motion blurred instances.</li>
-</ul>
-<h3 id="new-features-in-embree-2.8.0">New Features in Embree 2.8.0</h3>
-<ul>
-<li>Added support for line segment geometry.</li>
-<li>Added support for quad geometry (replaces triangle-pairs feature).</li>
-<li>Added support for linear motion blur of user geometries.</li>
-<li>Improved performance through AVX-512 optimizations.</li>
-<li>Improved performance of lazy scene build (when using TBB 4.4 update 2).</li>
-<li>Improved performance through huge page support under linux.</li>
-</ul>
-<h3 id="new-features-in-embree-2.7.1">New Features in Embree 2.7.1</h3>
-<ul>
-<li>Internal tasking system supports cancellation of build operations.</li>
-<li>ISPC mode for robust and compact scenes got significantly faster (implemented hybrid traversal for bvh4.triangle4v and bvh4.triangle4i).</li>
-<li>Hair rendering got faster as we fixed some issues with the SAH heuristic cost factors.</li>
-<li>BVH8 got slight faster for single ray traversal (improved sorting when hitting more than 4 boxes).</li>
-<li>BVH build performance got up to 30% faster on CPUs with high core counts (improved parallel partition code).</li>
-<li>High quality build mode again working properly (spatial splits had been deactivated in v2.7.0 due to some bug).</li>
-<li>Support for merging two adjacent triangles sharing a common edge into a triangle-pair primitive (can reduce memory consumption and BVH build times by up to 50% for mostly quad-based input meshes).</li>
-<li>Internal cleanups (reduced number of traversal kernels by more templating).</li>
-<li>Reduced stack size requirements of BVH builders.</li>
-<li>Fixed crash for dynamic scenes, triggered by deleting all geometries from the scene.</li>
-</ul>
-<h3 id="new-features-in-embree-2.7.0">New Features in Embree 2.7.0</h3>
-<ul>
-<li>Added device concept to Embree to allow different components of an application to use Embree without interfering with each other.</li>
-<li>Fixed memory leak in twolevel builder used for dynamic scenes.</li>
-<li>Fixed bug in tesselation cache that caused crashes for subdivision surfaces.</li>
-<li>Fixed bug in internal task scheduler that caused deadlocks when using <code>rtcCommitThread</code>.</li>
-<li>Improved hit-distance accuracy for thin triangles in robust mode.</li>
-<li>Added support to disable ray packet support in cmake.</li>
-</ul>
-<h3 id="new-features-in-embree-2.6.2">New Features in Embree 2.6.2</h3>
-<ul>
-<li>Fixed bug triggered by instantiating motion blur geometry.</li>
-<li>Fixed bug in hit UV coordinates of static subdivision geometries.</li>
-<li>Performance improvements when only changing tessellation levels for subdivision geometry per frame.</li>
-<li>Added ray packet intersectors for subdivision geometry, resulting in improved performance for coherent rays.</li>
-<li>Reduced virtual address space usage for static geometries.</li>
-<li>Fixed some AVX2 code paths when compiling with GCC or Clang.</li>
-<li>Bugfix for subdiv patches with non-matching winding order.</li>
-<li>Bugfix in ISA detection of AVX-512.</li>
-</ul>
-<h3 id="new-features-in-embree-2.6.1">New Features in Embree 2.6.1</h3>
-<ul>
-<li>Major performance improvements for ray tracing subdivision surfaces, e.g. up to 2× faster for scenes where only the tessellation levels are changing per frame, and up to 3× faster for scenes with lots of crease features</li>
-<li>Initial support for architectures supporting the new 16-wide AVX-512 ISA</li>
-<li>Implemented intersection filter callback support for subdivision surfaces</li>
-<li>Added <code>RTC_IGNORE_INVALID_RAYS</code> CMake option which makes the ray intersectors more robust against full tree traversal caused by invalid ray inputs (e.g. INF, NaN, etc)</li>
-</ul>
-<h3 id="new-features-in-embree-2.6.0">New Features in Embree 2.6.0</h3>
-<ul>
-<li>Added <code>rtcInterpolate</code> function to interpolate per vertex attributes</li>
-<li>Added <code>rtcSetBoundaryMode</code> function that can be used to select the boundary handling for subdivision surfaces</li>
-<li>Fixed a traversal bug that caused rays with very small ray direction components to miss geometry</li>
-<li>Performance improvements for the robust traversal mode</li>
-<li>Fixed deadlock when calling <code>rtcCommit</code> from multiple threads on same scene</li>
-</ul>
-<h3 id="new-features-in-embree-2.5.1">New Features in Embree 2.5.1</h3>
-<ul>
-<li>On dual socket workstations, the initial BVH build performance almost doubled through a better memory allocation scheme</li>
-<li>Reduced memory usage for subdivision surface objects with crease features</li>
-<li><code>rtcCommit</code> performance is robust against unset “flush to zero” and “denormals are zero” flags. However, enabling these flags in your application is still recommended</li>
-<li>Reduced memory usage for subdivision surfaces with borders and infinitely sharp creases</li>
-<li>Lots of internal cleanups and bug fixes for both Intel® Xeon® and Intel® Xeon Phi™</li>
-</ul>
-<h3 id="new-features-in-embree-2.5.0">New Features in Embree 2.5.0</h3>
-<ul>
-<li>Improved hierarchy build performance on both Intel Xeon and Intel Xeon Phi</li>
-<li>Vastly improved tessellation cache for ray tracing subdivision surfaces</li>
-<li>Added <code>rtcGetUserData</code> API call to query per geometry user pointer set through <code>rtcSetUserData</code></li>
-<li>Added support for memory monitor callback functions to track and limit memory consumption</li>
-<li>Added support for progress monitor callback functions to track build progress and cancel long build operations</li>
-<li>BVH builders can be used to build user defined hierarchies inside the application (see tutorial <a href="tutorials.html#bvh-builder">BVH Builder</a>)</li>
-<li>Switched to TBB as default tasking system on Xeon to get even faster hierarchy build times and better integration for applications that also use TBB</li>
-<li><code>rtcCommit</code> can get called from multiple TBB threads to join the hierarchy build operations</li>
-</ul>
-<h3 id="new-features-in-embree-2.4">New Features in Embree 2.4</h3>
-<ul>
-<li>Support for Catmull Clark subdivision surfaces (triangle/quad base primitives)</li>
-<li>Support for vector displacements on Catmull Clark subdivision surfaces</li>
-<li>Various bug fixes (e.g. 4-byte alignment of vertex buffers works)</li>
-</ul>
-<h3 id="new-features-in-embree-2.3.3">New Features in Embree 2.3.3</h3>
-<ul>
-<li>BVH builders more robustly handle invalid input data (Intel Xeon processor family)</li>
-<li>Motion blur support for hair geometry (Xeon)</li>
-<li>Improved motion blur performance for triangle geometry (Xeon)</li>
-<li>Improved robust ray tracing mode (Xeon)</li>
-<li>Added <code>rtcCommitThread</code> API call for easier integration into existing tasking systems (Xeon and Intel Xeon Phi coprocessor)</li>
-<li>Added support for recording and replaying all <code>rtcIntersect</code>/<code>rtcOccluded</code> calls (Xeon and Xeon Phi)</li>
-</ul>
-<h3 id="new-features-in-embree-2.3.2">New Features in Embree 2.3.2</h3>
-<ul>
-<li>Improved mixed AABB/OBB-BVH for hair geometry (Xeon Phi)</li>
-<li>Reduced amount of pre-allocated memory for BVH builders (Xeon Phi)</li>
-<li>New 64-bit Morton code-based BVH builder (Xeon Phi)</li>
-<li>(Enhanced) Morton code-based BVH builders use now tree rotations to improve BVH quality (Xeon Phi)</li>
-<li>Bug fixes (Xeon and Xeon Phi)</li>
-</ul>
-<h3 id="new-features-in-embree-2.3.1">New Features in Embree 2.3.1</h3>
-<ul>
-<li>High quality BVH mode improves spatial splits which result in up to 30% performance improvement for some scenes (Xeon)</li>
-<li>Compile time enabled intersection filter functions do not reduce performance if no intersection filter is used in the scene (Xeon and Xeon Phi)</li>
-<li>Improved ray tracing performance for hair geometry by &gt;20% on Xeon Phi. BVH for hair geometry requires 20% less memory</li>
-<li>BVH8 for AVX/AVX2 targets improves performance for single ray tracing on Haswell by up to 12% and by up to 5% for hybrid (Xeon)</li>
-<li>Memory conservative BVH for Xeon Phi now uses BVH node quantization to lower memory footprint (requires half the memory footprint of the default BVH)</li>
-</ul>
-<h3 id="new-features-in-embree-2.3">New Features in Embree 2.3</h3>
-<ul>
-<li>Support for ray tracing hair geometry (Xeon and Xeon Phi)</li>
-<li>Catching errors through error callback function</li>
-<li>Faster hybrid traversal (Xeon and Xeon Phi)</li>
-<li>New memory conservative BVH for Xeon Phi</li>
-<li>Faster Morton code-based builder on Xeon</li>
-<li>Faster binned-SAH builder on Xeon Phi</li>
-<li>Lots of code cleanups/simplifications/improvements (Xeon and Xeon Phi)</li>
-</ul>
-<h3 id="new-features-in-embree-2.2">New Features in Embree 2.2</h3>
-<ul>
-<li>Support for motion blur on Xeon Phi</li>
-<li>Support for intersection filter callback functions</li>
-<li>Support for buffer sharing with the application</li>
-<li>Lots of AVX2 optimizations, e.g. ~20% faster 8-wide hybrid traversal</li>
-<li>Experimental support for 8-wide (AVX/AVX2) and 16-wide BVHs (Xeon Phi)</li>
-</ul>
-<h3 id="new-features-in-embree-2.1">New Features in Embree 2.1</h3>
-<ul>
-<li>New future proof API with a strong focus on supporting dynamic scenes</li>
-<li>Lots of optimizations for 8-wide AVX2 (Haswell architecture)</li>
-<li>Automatic runtime code selection for SSE, AVX, and AVX2</li>
-<li>Support for user-defined geometry</li>
-<li>New and improved BVH builders:
-<ul>
-<li>Fast adaptive Morton code-based builder (without SAH-based top-level rebuild)</li>
-<li>Both the SAH and Morton code-based builders got faster (Xeon Phi)</li>
-<li>New variant of the SAH-based builder using triangle pre-splits (Xeon Phi)</li>
-</ul></li>
-</ul>
-<h3 id="new-features-in-embree-2.0">New Features in Embree 2.0</h3>
-<ul>
-<li>Support for the Intel® Xeon Phi™ coprocessor platform</li>
-<li>Support for high-performance “packet” kernels on SSE, AVX, and Xeon Phi</li>
-<li>Integration with the Intel® SPMD Program Compiler (ISPC)</li>
-<li>Instantiation and fast BVH reconstruction</li>
-<li>Example photo-realistic rendering engine for both C++ and ISPC</li>
-</ul>
+   </nav>
+  </header>
+  <main class="container-fluid" id="main-content">
+   <div class="row">
+    <div class="col-12 px-0">
+     <div class="carousel slide" id="carouselExampleControls">
+      <div class="carousel-inner">
+       <div class="carousel-item active">
+        <img alt="None" class="d-block w-100" src="images/carousel/crown3_crop.jpg"/>
+        <div class="carousel-caption d-none d-md-block">
+         <h5>
+          Model Courtesy of Martin Lubich (www.loramel.net)
+         </h5>
+        </div>
+       </div>
+       <div class="carousel-item">
+        <img alt="None" class="d-block w-100" src="images/carousel/peter_ang_crop.jpg"/>
+        <div class="carousel-caption d-none d-md-block">
+         <h5>
+          Crunch Cup by Peter Ang ( www.dartofang.com ) rendered with Corona Renderer.
+         </h5>
+        </div>
+       </div>
+       <div class="carousel-item">
+        <img alt="None" class="d-block w-100" src="images/carousel/John_Cedric_Gomez_Macabantad_Interior_Room_crop.jpg"/>
+        <div class="carousel-caption d-none d-md-block">
+         <h5>
+          Interiour Room model by John Cedric Gomez Macabantad. Rendered by Khalid Abu Eid using SimLab Composer.
+         </h5>
+        </div>
+       </div>
       </div>
-
-      <div id="footer">
-        © 2009–2020 Intel Corporation <a href="legal.html">Disclaimer and Legal Information</a>
-        <a href="https://www.intel.com/privacy">Privacy</a>
-      </div>
+      <a class="carousel-control-prev" data-bs-slide="prev" href="#carouselExampleControls" role="button">
+       <span aria-hidden="true" class="carousel-control-prev-icon">
+       </span>
+       <span class="visually-hidden">
+        Previous
+       </span>
+      </a>
+      <a class="carousel-control-next" data-bs-slide="next" href="#carouselExampleControls" role="button">
+       <span aria-hidden="true" class="carousel-control-next-icon">
+       </span>
+       <span class="visually-hidden">
+        Next
+       </span>
+      </a>
+     </div>
     </div>
-  </body>
+   </div>
+   <div class="container-lg blurb">
+    <div class="row justify-content-center py-5">
+     <div class="col-lg-9">
+      <h1>
+       High Performance Ray Tracing
+      </h1>
+      <p>
+       Intel® Embree is a collection of high performance ray tracing
+    kernels that helps graphics application engineers to
+    improve the performance of their photorealistic rendering application.
+      </p>
+      <p>
+       Embree is released as open source under the
+       <a href="https://www.apache.org/licenses/LICENSE-2.0">
+        Apache 2.0 License
+       </a>
+       .
+      </p>
+     </div>
+     <div class="col-lg-3" id="blurb-contact">
+      <h2>
+       Get in touch
+      </h2>
+      <ul class="list-unstyled">
+       <li>
+        <a href="mailto:embree_support@intel.com">
+         <i class="fa fa-envelope-o fa-fw">
+         </i>
+         Contact us
+        </a>
+       </li>
+       <li>
+        <a href="https://groups.google.com/d/forum/embree/">
+         <i class="fa fa-envelope-o fa-fw">
+         </i>
+         Subscribe to our mailing list
+        </a>
+       </li>
+      </ul>
+      <ul class="list-unstyled">
+       <li>
+        <a href="https://www.github.com/embree/embree">
+         <i class="fa fa-github fa-fw">
+         </i>
+         GitHub
+        </a>
+       </li>
+       <li>
+        <a href="https://www.github.com/embree/embree/issues">
+         <i class="fa fa-bug fa-fw">
+         </i>
+         Report a bug
+        </a>
+       </li>
+      </ul>
+      <ul class="list-unstyled">
+       <li>
+        <a href="https://www.apache.org/licenses/LICENSE-2.0">
+         <i class="fa fa-file-text-o fa-fw">
+         </i>
+         Apache 2.0 License
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </div>
+   <!-- end of blurb -->
+   <div class="row justify-content-center py-5 release-notes">
+    <div class="col-sm-5">
+     <h2 id="release-version">
+      Current Release: v3.13.0
+     </h2>
+     <p>
+      This release introduces support for Apple M1 CPUs, as well as an upgrade to TBB 2021.2.0 and ISPC 1.15.0.
+     </p>
+     <ul class="list-unstyled">
+      <li>
+       <a href="https://www.github.com/embree/embree/releases/latest">
+        <i class="fa fa-github fa-fw">
+        </i>
+        Get it on GitHub
+       </a>
+      </li>
+      <li>
+       <a href="https://www.github.com/embree/embree/releases/latest">
+        <i class="fa fa-file-text-o fa-fw">
+        </i>
+        Full release notes
+       </a>
+      </li>
+     </ul>
+    </div>
+   </div>
+   <!-- end of release-notes -->
+   <div class="row justify-content-center py-5 feature-gallery" id="advantages">
+    <div class="row justify-content-center pb-5">
+     <div class="col-sm-6">
+      <h2>
+       Why Embree?
+      </h2>
+     </div>
+    </div>
+    <div class="col-sm-4 col-md-4 feature.html">
+     <div class="card text-center mb-5">
+      <i class="card-img-top mx-auto fa fa-tachometer" style="font-size:100px">
+      </i>
+      <div class="card-body">
+       <h5 class="card-title">
+        Highest Performance
+       </h5>
+       <p class="card-text">
+        Embree provides highest performance by using state of the art high quality data structures and algorithms, parallelized and optimized for modern instruction sets, such as AVX2. Integrating Embree can double the performance of your renderer.
+       </p>
+      </div>
+     </div>
+    </div>
+    <div class="col-sm-4 col-md-4 feature.html">
+     <div class="card text-center mb-5">
+      <i class="card-img-top mx-auto fa fa-child" style="font-size:100px">
+      </i>
+      <div class="card-body">
+       <h5 class="card-title">
+        Easy to use
+       </h5>
+       <p class="card-text">
+        Embree provides an easy to use API and can get integrated into rendering applications by just replacing the ray tracing operation.
+       </p>
+      </div>
+     </div>
+    </div>
+    <div class="col-sm-4 col-md-4 feature.html">
+     <div class="card text-center mb-5">
+      <i class="card-img-top mx-auto fa fa-thumbs-up" style="font-size:100px">
+      </i>
+      <div class="card-body">
+       <h5 class="card-title">
+        Feature rich
+       </h5>
+       <p class="card-text">
+        Embree provides all features required for professional rendering, including various primitive types (including advanced hair primitives), motion blur, multi-level instancing, etc.
+       </p>
+      </div>
+     </div>
+    </div>
+    <div class="col-sm-4 col-md-4 feature.html">
+     <div class="card text-center mb-5">
+      <i class="card-img-top mx-auto fa fa-linux" style="font-size:100px">
+      </i>
+      <div class="card-body">
+       <h5 class="card-title">
+        Cross Platform
+       </h5>
+       <p class="card-text">
+        Embree supports Windows, Linux, and macOS, as well as support for x86 and ARM CPUs.
+       </p>
+      </div>
+     </div>
+    </div>
+    <div class="col-sm-4 col-md-4 feature.html">
+     <div class="card text-center mb-5">
+      <i class="card-img-top mx-auto fa fa-unlock" style="font-size:100px">
+      </i>
+      <div class="card-body">
+       <h5 class="card-title">
+        Open Source
+       </h5>
+       <p class="card-text">
+        Embree is released as open source under the
+        <a href="https://www.apache.org/licenses/LICENSE-2.0">
+         Apache 2.0 License
+        </a>
+        .
+       </p>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="row justify-content-center py-5 news-content" id="academy-award">
+    <div class="col-sm-6">
+     <h2>
+      Embree Team recieves Scientific &amp; Technical Achievement Award!
+     </h2>
+     <p>
+      The award recognizes Intel® Embree for its geometric rendering in
+        contributing innovation in significant and lasting ways to the moviemaking
+        process.
+     </p>
+     <p>
+      Award recipients are Sven Woop, Carsten Benthin, Attila Afra, Manfred Ernst
+        and Ingo Wald.
+     </p>
+     <p>
+      Sr. Director of Intel® Advanced Rendering &amp; Visualization
+        Jim (James L.) Jeffers
+     </p>
+     <p>
+      Watch the
+      <a href="https://oscars.org/sci-tech/ceremonies/2020">
+       Scientific &amp; Technical Achievement Awards 2020 Ceremony
+      </a>
+     </p>
+    </div>
+   </div>
+   <div class="row justify-content-center py-5 feature-gallery" id="features">
+    <div class="row justify-content-center pb-5">
+     <div class="col-sm-6">
+      <h2>
+       Embree Features
+      </h2>
+     </div>
+    </div>
+    <div class="col-sm-4 col-md-4 feature.html">
+     <div class="card text-center mb-5">
+      <img class="card-img-top mx-auto" src="images/feature-hair-cropped.jpg"/>
+      <div class="card-body">
+       <h5 class="card-title">
+        Advanced Hair Geometry
+       </h5>
+       <p class="card-text">
+        Various flavors of hair primitives are supported, including flat, round, and normal oriented curves, all supported with different basis functions, such as linear, Bézier, Hermite, Catmull-Rom, and B-Spline.
+       </p>
+       <p class="card-text">
+        The flat curve type is designed to achieve highest rendering performance for distance hair, round curves can be used to render accurate hair closeups, and normal oriented curves are often used to render grass-type geometry.
+       </p>
+       <p class="card-text">
+        Choosing a basis function that matches the application allows Embree to share vertex buffers for memory savings.
+       </p>
+      </div>
+     </div>
+    </div>
+    <div class="col-sm-4 col-md-4 feature.html">
+     <div class="card text-center mb-5">
+      <img class="card-img-top mx-auto" src="images/feature-mblur-cropped.jpg"/>
+      <div class="card-body">
+       <h5 class="card-title">
+        Motion Blur
+       </h5>
+       <p class="card-text">
+        Embree supports advanced motion blur to render dynamic content. Multi-segment motion blur can be used to render deforming meshes, transformation blur allows to blur entire geometry instances, and quaternion blur allows blurred instance rotations.
+       </p>
+       <p class="card-text">
+        An advanced 4D data structure represents spatial and temporal aspects of motion and allows highest levels of performance.
+       </p>
+      </div>
+     </div>
+    </div>
+    <div class="col-sm-4 col-md-4 feature.html">
+     <div class="card text-center mb-5">
+      <img class="card-img-top mx-auto" src="images/feature-dynamic-cropped.jpg"/>
+      <div class="card-body">
+       <h5 class="card-title">
+        Dynamic Scenes
+       </h5>
+       <p class="card-text">
+        Dynamic scene support allows previews to be rendered interactively. Embree uses morton code algorithms to rapidly rebuild data structures for highly dynamic content.
+       </p>
+      </div>
+     </div>
+    </div>
+    <div class="col-sm-4 col-md-4 feature.html">
+     <div class="card text-center mb-5">
+      <img class="card-img-top mx-auto" src="images/feature-instancing-cropped.jpg"/>
+      <div class="card-body">
+       <h5 class="card-title">
+        Multi-Level Instancing
+       </h5>
+       <p class="card-text">
+        Multi-level instancing allows rendering of highly complex outdoor scenes with moderate memory usage.
+       </p>
+       <p class="card-text">
+        This example show a rendering of the complex
+        <a href="https://www.disneyanimation.com/resources/moana-island-scene/">
+         Moana Island Scene
+        </a>
+        using instancing accelerated by Embree.
+       </p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </main>
+  <footer>
+   <nav class="navbar navbar-expand-sm navbar-light">
+    <div class="container-xl">
+     <ul class="navbar-nav">
+      <li class="nav-item">
+       <a class="nav-link" href="https://www.intel.com">
+        © 2021 Intel Corporation
+       </a>
+      </li>
+      <li class="nav-item">
+       <a class="nav-link" href="https://www.intel.com/content/www/us/en/legal/terms-of-use.html">
+        Terms of Use
+       </a>
+      </li>
+      <li class="nav-item">
+       <a class="nav-link" href="https://www.intel.com/content/www/us/en/legal/trademarks.html">
+        Trademarks
+       </a>
+      </li>
+      <li class="nav-item">
+       <a class="nav-link" href="https://www.intel.com/content/www/us/en/privacy/intel-privacy-notice.html">
+        Privacy
+       </a>
+      </li>
+      <li class="nav-item">
+       <a class="nav-link" href="https://www.intel.com/content/www/us/en/privacy/intel-cookie-notice.html">
+        Cookies
+       </a>
+      </li>
+     </ul>
+    </div>
+   </nav>
+  </footer>
+  <script src="static-fw/bootstrap-5.0.0-beta2-dist/js/bootstrap.bundle.min.js">
+  </script>
+ </body>
 </html>
