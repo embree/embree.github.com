@@ -73,10 +73,10 @@
         
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" 
-               href="#" id="4cd68ef8-9604-46f8-816d-f2083a5168d4" role="button" 
+               href="#" id="a71ce1fb-d154-423f-86e9-e67de03d95f1" role="button" 
                data-bs-toggle="dropdown" 
                aria-expanded="false">Resources</a>
-            <ul class="dropdown-menu" aria-labelledby="4cd68ef8-9604-46f8-816d-f2083a5168d4">
+            <ul class="dropdown-menu" aria-labelledby="a71ce1fb-d154-423f-86e9-e67de03d95f1">
               
                 <li class="nav-item">
                 
@@ -136,10 +136,10 @@
         
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" 
-               href="#" id="b1735040-222b-41df-b81f-ec224342f0d7" role="button" 
+               href="#" id="8c945a5c-2697-47e3-9946-a0e314e5a99e" role="button" 
                data-bs-toggle="dropdown" 
                aria-expanded="false">RenderKit</a>
-            <ul class="dropdown-menu" aria-labelledby="b1735040-222b-41df-b81f-ec224342f0d7">
+            <ul class="dropdown-menu" aria-labelledby="8c945a5c-2697-47e3-9946-a0e314e5a99e">
               
                 <li class="nav-item">
                 
@@ -347,11 +347,15 @@
     <div class="col-lg-9">
       <h1>High Performance Ray Tracing</h1>
       
-      <p>Intel&reg; Embree is a collection of high performance ray tracing
-    kernels that helps graphics application engineers to
-    improve the performance of their photorealistic rendering application.</p>
-      
-      <p>Embree is released as open source under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 License</a>.</p>
+      <p>Intel&reg; Embree is a high-performance ray tracing library
+    developed at Intel which supports x86 CPUs under Linux, macOS, and
+    Windows; ARM CPUs on macOS; as well as Intel® Arc™ GPUs under
+    Linux and Windows. Embree targets graphics application developers
+    to improve the performance of photo-realistic rendering
+    applications and is optimized towards production rendering. Embree
+    is released as open source under the <a
+    href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0
+    License</a></p>
       
     </div>
     <div class="col-lg-3" id="blurb-contact">
@@ -380,9 +384,17 @@
   <div class="row justify-content-center py-5 release-notes"
     >
   <div class="col-sm-5">
-    <h2 id="release-version">Current Release: v3.13.5</h2>
+    <h2 id="release-version">Current Release: v4.0.0</h2>
     
-    <p>This release adds a bugfix for bounding of flat catmull rom curves of subdivision level 4 and fixes a bounding issue for spatial splits of non-planar quads. Further, self intersection avoidance is improved for ray oriented discs.</p>
+    <p>This Embree release which adds support for Intel® Arc™ GPUs through
+    SYCL. The SYCL support of Embree is in beta phase. Current
+    functionality, quality, and GPU performance may not reflect that
+    of the final product. Embree CPU support in this release as at
+    Gold level, incorporating the same quality and performance as
+    previous releases. Please read documentation section "Embree SYCL
+    Known Issues" for SYCL limitations and section "Upgrading from
+    Embree 3 to Embree 4" for details on how to upgrade to this Embree
+    version.</p>
     
     <ul class="list-unstyled">
       <li><a href="https://www.github.com/embree/embree/releases/latest"><i class="fa fa-github fa-fw"></i>Get it on GitHub</a></li>
@@ -405,6 +417,27 @@
   >
   <div class="card text-center mb-5">
     
+      <i class="card-img-top mx-auto fa fa-rocket" style="font-size:100px"></i>
+    
+
+    
+
+    
+
+    <div class="card-body">
+      <h5 class="card-title">Hardware accelerated GPU ray tracing</h5>
+      
+      <p class="card-text">Embree supports hardware accelerated ray tracing on Intel® Arc™ GPUs through the SYCL programming language for excellent GPU rendering performance.</p>
+      
+      
+    </div>
+  </div>
+</div>
+    
+      <div class="col-sm-4 col-md-4 feature.html"
+  >
+  <div class="card text-center mb-5">
+    
       <i class="card-img-top mx-auto fa fa-tachometer" style="font-size:100px"></i>
     
 
@@ -415,7 +448,7 @@
     <div class="card-body">
       <h5 class="card-title">Highest Performance</h5>
       
-      <p class="card-text">Embree provides highest performance by using state of the art high quality data structures and algorithms, parallelized and optimized for modern instruction sets, such as AVX2. Integrating Embree can double the performance of your renderer.</p>
+      <p class="card-text">Embree provides highest performance for your CPU renderer by using state of the art high quality data structures and algorithms, parallelized and optimized for modern instruction sets, such as AVX2. Integrating Embree can double the performance of your CPU renderer.</p>
       
       
     </div>
@@ -478,7 +511,7 @@
     <div class="card-body">
       <h5 class="card-title">Cross Platform</h5>
       
-      <p class="card-text">Embree supports Windows, Linux, and macOS, as well as support for x86 and ARM CPUs.</p>
+      <p class="card-text">Embree supports Windows, Linux, and macOS, as well as support for x86 CPUs, ARM CPUs, and Intel GPUs</p>
       
       
     </div>
@@ -677,6 +710,40 @@
   </div>
 </div>
     
+      <div class="col-sm-4 col-md-4 feature.html"
+  >
+  <div class="card text-center mb-5">
+    
+
+    
+
+    
+      <picture>
+        <source
+          
+          srcset="images/logos/SYCL_RGB_June16.svg" width="100%" height="100%">
+          
+            <img src="images/logos/SYCL_RGB_June16.svg" class="card-img-top mx-auto">
+          
+      </picture>
+    
+
+    <div class="card-body">
+      <h5 class="card-title">SYCL support makes GPU programming easy</h5>
+      
+      <p class="card-text">Embree builds on the <a
+href="https://www.khronos.org/sycl/">SYCL</a> cross platform
+        abstraction layer to support hardware acclerated ray tracing on the
+GPU. Using Embree and SYCL you can write a single renderer in C++,
+that runs on the both the CPU and GPU with excellent
+performance. Using C++ as a language simplifies porting existing CPU
+rendering code and makes programming the GPU easy.</p>
+      
+      
+    </div>
+  </div>
+</div>
+    
   </div>
 </div>
 
@@ -747,7 +814,7 @@
         <div class="container-xl">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="https://www.intel.com">&copy;&nbsp;2022 Intel Corporation</a>
+              <a class="nav-link" href="https://www.intel.com">&copy;&nbsp;2023 Intel Corporation</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="https://www.intel.com/content/www/us/en/legal/terms-of-use.html">Terms of Use</a>
