@@ -1,118 +1,274 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-  <link href="static-fw/bootstrap-5.0.0-beta2-dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="static-fw/fonts/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet"/>
-  <link href="static-fw/css/intel.css" rel="stylesheet"/>
-  <link href="static-fw/css/arvacode.css" rel="stylesheet"/>
-  <link href="images/icon192.png" rel="icon" sizes="192x192" type="image/png"/>
-  <title>
-   API Examples
-  </title>
- </head>
- <body>
-  <header>
-   <!-- main navbar, collapses to hamburger at 'small' sizes -->
-   <nav class="navbar navbar-expand-md navbar-light bg-light">
-    <!-- container-xl stops setting width to 100% after xl size -->
-    <div class="container-xl">
-     <a class="navbar-brand" href="index.html">
-      <img alt="" height="48" id="product-logo" src="images/oneapi-word-mark-embree-stacked-3000.png"/>
-     </a>
-     <!-- hamburger, shows when nav is collapsed, putting it after brand right-aligns it -->
-     <button aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#main-navbar" data-bs-toggle="collapse" type="button">
-      <span class="navbar-toggler-icon">
-      </span>
-     </button>
-     <div class="collapse navbar-collapse" id="main-navbar">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="static-fw/bootstrap-5.0.0-beta2-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="static-fw/fonts/font-awesome-4.7.0/css/font-awesome.css">
+  <link rel="stylesheet" href="static-fw/css/intel.css">
+  <link rel="stylesheet" href="static-fw/css/arvacode.css">
+  
+  <link rel="icon" type="image/png" href="images/icon192.png" sizes="192x192">
+  
+  
+  
+  <title>API Examples</title>
+  
+</head>
+<body>
+    <header>
+      <!-- main navbar, collapses to hamburger at 'small' sizes -->
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+  <!-- container-xl stops setting width to 100% after xl size -->
+  <div class="container-xl">
+    
+    <a class="navbar-brand" href="index.html">
+    
+    <img id="product-logo" src="images/oneapi-word-mark-embree-stacked-3000.png" alt="" height="48">
+    </a>
+
+    <!-- hamburger, shows when nav is collapsed, putting it after brand right-aligns it -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-navbar"
+            aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
       <!-- main navigation links -->
       <ul class="navbar-nav">
-       <li class="nav-item">
-        <a class="nav-link" href="gallery.html">
-         Gallery
-        </a>
-       </li>
-       <li class="nav-item dropdown">
-        <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="e8d8019d-6c85-4ab1-b324-391119acda23" role="button">
-         Resources
-        </a>
-        <ul aria-labelledby="e8d8019d-6c85-4ab1-b324-391119acda23" class="dropdown-menu">
-         <li class="nav-item">
-          <a class="nav-link" href="https://raw.githubusercontent.com/embree/embree/master/readme.pdf">
-           API Documentation
-          </a>
-         </li>
-         <li class="nav-item">
-          <a class="nav-link" href="#">
-           API Examples
-          </a>
-         </li>
-         <li class="nav-item">
-          <a class="nav-link" href="papers.html">
-           Talks and Papers
-          </a>
-         </li>
-        </ul>
-       </li>
-       <li class="nav-item dropdown">
-        <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="02c8c57d-0c43-41d6-98c2-ee5ae00a7891" role="button">
-         RenderKit
-        </a>
-        <ul aria-labelledby="02c8c57d-0c43-41d6-98c2-ee5ae00a7891" class="dropdown-menu">
-         <li class="nav-item">
-          <a class="nav-link" href="https://www.embree.org">
-           Intel® Embree
-          </a>
-         </li>
-         <li class="nav-item">
-          <a class="nav-link" href="https://www.openimagedenoise.org">
-           Intel® Open Image Denoise
-          </a>
-         </li>
-         <li class="nav-item">
-          <a class="nav-link" href="https://www.openvkl.org">
-           Intel® Open VKL
-          </a>
-         </li>
-         <li class="nav-item">
-          <a class="nav-link" href="https://www.ospray.org">
-           Intel® OSPRay
-          </a>
-         </li>
-         <li class="nav-item">
-          <a class="nav-link" href="https://www.ospray.org/ospray_studio">
-           Intel® OSPRay Studio
-          </a>
-         </li>
-        </ul>
-       </li>
+      
+        
+          <li class="nav-item">
+          
+            <a
+
+   class="nav-link"
+
+
+  href="gallery.html"
+
+>
+  
+  Gallery
+</a>
+
+          
+          </li>
+        
+      
+        
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" 
+               href="#" id="4735f627-6f49-403c-9e00-b84eb2fc3378" role="button" 
+               data-bs-toggle="dropdown" 
+               aria-expanded="false">Resources</a>
+            <ul class="dropdown-menu" aria-labelledby="4735f627-6f49-403c-9e00-b84eb2fc3378">
+              
+                <li class="nav-item">
+                
+                  <a
+
+   class="nav-link"
+
+
+  href="https://raw.githubusercontent.com/embree/embree/master/readme.pdf"
+
+>
+  
+  API Documentation
+</a>
+
+                
+                </li>
+              
+                <li class="nav-item">
+                
+                  <a
+
+   class="nav-link"
+
+
+  href="#"
+
+>
+  
+  API Examples
+</a>
+
+                
+                </li>
+              
+                <li class="nav-item">
+                
+                  <a
+
+   class="nav-link"
+
+
+  href="papers.html"
+
+>
+  
+  Talks and Papers
+</a>
+
+                
+                </li>
+              
+            </ul>
+          </li>
+       
+      
+        
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" 
+               href="#" id="fc50dce6-1950-451e-983d-62bde100548c" role="button" 
+               data-bs-toggle="dropdown" 
+               aria-expanded="false">RenderKit</a>
+            <ul class="dropdown-menu" aria-labelledby="fc50dce6-1950-451e-983d-62bde100548c">
+              
+                <li class="nav-item">
+                
+                  <a
+
+   class="nav-link"
+
+
+  href="https://www.embree.org"
+
+>
+  
+  Intel&reg; Embree
+</a>
+
+                
+                </li>
+              
+                <li class="nav-item">
+                
+                  <a
+
+   class="nav-link"
+
+
+  href="https://www.openimagedenoise.org"
+
+>
+  
+  Intel&reg; Open Image Denoise
+</a>
+
+                
+                </li>
+              
+                <li class="nav-item">
+                
+                  <a
+
+   class="nav-link"
+
+
+  href="https://www.openvkl.org"
+
+>
+  
+  Intel&reg; Open VKL
+</a>
+
+                
+                </li>
+              
+                <li class="nav-item">
+                
+                  <a
+
+   class="nav-link"
+
+
+  href="https://www.ospray.org"
+
+>
+  
+  Intel&reg; OSPRay
+</a>
+
+                
+                </li>
+              
+                <li class="nav-item">
+                
+                  <a
+
+   class="nav-link"
+
+
+  href="https://www.ospray.org/ospray_studio"
+
+>
+  
+  Intel&reg; OSPRay Studio
+</a>
+
+                
+                </li>
+              
+            </ul>
+          </li>
+       
+      
       </ul>
-      <a class="nav-link ms-auto" href="https://www.github.com/embree/embree">
-       <li class="fa fa-fw fa-github">
-       </li>
-       GitHub
-      </a>
-      <a class="nav-link" href="https://www.github.com/embree/embree/releases">
-       <li class="fa fa-fw fa-download">
-       </li>
-       Download
-      </a>
-     </div>
+      
+        
+          <a
+
+   class="nav-link ms-auto"
+
+
+  href="https://www.github.com/embree/embree"
+
+>
+  
+    <li class="fa fa-fw fa-github"></li>
+  
+  GitHub
+</a>
+
+        
+      
+        
+          <a
+
+   class="nav-link"
+
+
+  href="https://www.github.com/embree/embree/releases"
+
+>
+  
+    <li class="fa fa-fw fa-download"></li>
+  
+  Download
+</a>
+
+        
+      
     </div>
-   </nav>
-  </header>
-  <main class="container-fluid" id="main-content">
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <section>
-       <h1>
-        Embree API Example
-       </h1>
-       <p>
-        On this page you find a
+  </div>
+</nav>
+    </header>
+
+    <main class="container-fluid" id="main-content">
+      
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <section>
+      <h1>Embree API Example</h1>
+      
+      <p>
+      On this page you find a
     simple example application (a Embree 'hello world', if you will), to
     demonstrate how easy it is to use Embree. The application creates a
     triangle and a ray and performs a ray-triangle intersection using the
@@ -120,21 +276,19 @@
     snippets of the code will be discussed in more detail. Build instructions
     can be found at the bottom of the page. Please refer to the documentation
     for more information.
-       </p>
-      </section>
-     </div>
+      </p>
+      
+    </section>
     </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <figure class="figure">
-       <div class="arvacode">
-        <table class="arvacodetable">
-         <tr>
-          <td class="linenos">
-           <div class="linenodiv">
-            <pre><span class="normal"> 1</span>
+  </div>
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <figure class="figure">
+      <div class="arvacode"><table class="arvacodetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -182,12 +336,7 @@
 <span class="normal">46</span>
 <span class="normal">47</span>
 <span class="normal">48</span>
-<span class="normal">49</span></pre>
-           </div>
-          </td>
-          <td class="code">
-           <div>
-            <pre><span></span><span class="c1">// Copyright 2009-2021 Intel Corporation</span>
+<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><span class="c1">// Copyright 2009-2021 Intel Corporation</span>
 <span class="c1">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;embree3/rtcore.h&gt;</span>
@@ -228,108 +377,91 @@
 <span class="w">  </span><span class="n">rtcIntersect1</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">rayhit</span><span class="p">);</span>
 
 <span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rayhit</span><span class="p">.</span><span class="n">hit</span><span class="p">.</span><span class="n">geomID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">RTC_INVALID_GEOMETRY_ID</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Intersection at t = "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">rayhit</span><span class="p">.</span><span class="n">ray</span><span class="p">.</span><span class="n">tfar</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Intersection at t = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">rayhit</span><span class="p">.</span><span class="n">ray</span><span class="p">.</span><span class="n">tfar</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"No Intersection"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;No Intersection&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="n">rtcReleaseScene</span><span class="p">(</span><span class="n">scene</span><span class="p">);</span>
 <span class="w">  </span><span class="n">rtcReleaseDevice</span><span class="p">(</span><span class="n">device</span><span class="p">);</span>
 <span class="p">}</span>
-</pre>
-           </div>
-          </td>
-         </tr>
-        </table>
-       </div>
-       <figcaption class="figure-caption">
-        hello_embree.cpp
-       </figcaption>
-      </figure>
-     </div>
-    </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <section>
-       <h2>
-        Step by step
-       </h2>
-       <p>
-        We first create several Embree objects: A
+</pre></div></td></tr></table></div>
+
+      <figcaption class="figure-caption">hello_embree.cpp</figcaption>
+    </figure>
+  </div>
+  </div> 
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <section>
+      <h2>Step by step</h2>
+      
+      <p>
+      We first create several Embree objects: A
     Embree device with a default configuration (see sec. 5.1 and 7.1 in the
         documention for details), a Embree scene, and a Embree geometry to
     represent our triangle.
-       </p>
-      </section>
-     </div>
+      </p>
+      
+    </section>
     </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <figure class="figure">
-       <div class="arvacode">
-        <table class="arvacodetable">
-         <tr>
-          <td class="linenos">
-           <div class="linenodiv">
-            <pre><span class="normal">1</span>
+  </div>
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <figure class="figure">
+      <div class="arvacode"><table class="arvacodetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre>
-           </div>
-          </td>
-          <td class="code">
-           <div>
-            <pre><span></span><span class="n">RTCDevice</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rtcNewDevice</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">RTCDevice</span><span class="w"> </span><span class="n">device</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rtcNewDevice</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
 <span class="n">RTCScene</span><span class="w"> </span><span class="n">scene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rtcNewScene</span><span class="p">(</span><span class="n">device</span><span class="p">);</span>
 <span class="n">RTCGeometry</span><span class="w"> </span><span class="n">geometry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rtcNewGeometry</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="n">RTC_GEOMETRY_TYPE_TRIANGLE</span><span class="p">);</span>
-</pre>
-           </div>
-          </td>
-         </tr>
-        </table>
-       </div>
-       <figcaption class="figure-caption">
-        Embree device, scene, and geometry.
-       </figcaption>
-      </figure>
-     </div>
-    </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <section>
-       <h2>
-       </h2>
-       <p>
-        A scene is a collection of geometry objects. Scenes are what
+</pre></div></td></tr></table></div>
+
+      <figcaption class="figure-caption">Embree device, scene, and geometry.</figcaption>
+    </figure>
+  </div>
+  </div> 
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <section>
+      <h2></h2>
+      
+      <p>
+      A scene is a collection of geometry objects. Scenes are what
     the intersect / occluded API functions work on. You can think of a scene as
     an acceleration structure, e.g. a bounding-volume hierarchy.
-       </p>
-       <p>
-        Next,
+      </p>
+      
+      <p>
+      Next,
     we instruct Embree to create vertex and index buffers into which we copy
     the geomety data. For complex scenes, shared buffers are often better
     choice but special care must be taken to ensure proper alignment and
     padding. This is described in more detail in the API documentation.
-       </p>
-      </section>
-     </div>
+      </p>
+      
+    </section>
     </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <figure class="figure">
-       <div class="arvacode">
-        <table class="arvacodetable">
-         <tr>
-          <td class="linenos">
-           <div class="linenodiv">
-            <pre><span class="normal">1</span>
+  </div>
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <figure class="figure">
+      <div class="arvacode"><table class="arvacodetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
@@ -337,12 +469,7 @@
 <span class="normal">6</span>
 <span class="normal">7</span>
 <span class="normal">8</span>
-<span class="normal">9</span></pre>
-           </div>
-          </td>
-          <td class="code">
-           <div>
-            <pre><span></span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">vb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">rtcSetNewGeometryBuffer</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">vb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">rtcSetNewGeometryBuffer</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span>
 <span class="w">    </span><span class="n">RTC_BUFFER_TYPE_VERTEX</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">RTC_FORMAT_FLOAT3</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
 <span class="n">vb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.f</span><span class="p">;</span><span class="w"> </span><span class="n">vb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.f</span><span class="p">;</span><span class="w"> </span><span class="n">vb</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.f</span><span class="p">;</span><span class="w"> </span><span class="c1">// 1st vertex</span>
 <span class="n">vb</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.f</span><span class="p">;</span><span class="w"> </span><span class="n">vb</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.f</span><span class="p">;</span><span class="w"> </span><span class="n">vb</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.f</span><span class="p">;</span><span class="w"> </span><span class="c1">// 2nd vertex</span>
@@ -351,113 +478,82 @@
 <span class="kt">unsigned</span><span class="o">*</span><span class="w"> </span><span class="n">ib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">rtcSetNewGeometryBuffer</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span>
 <span class="w">    </span><span class="n">RTC_BUFFER_TYPE_INDEX</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">RTC_FORMAT_UINT3</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">unsigned</span><span class="p">),</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
 <span class="n">ib</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">ib</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">ib</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</pre>
-           </div>
-          </td>
-         </tr>
-        </table>
-       </div>
-       <figcaption class="figure-caption">
-        Vertex and index buffers.
-       </figcaption>
-      </figure>
-     </div>
-    </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <section>
-       <h2>
-       </h2>
-       <p>
-        After setting the geometry data the
+</pre></div></td></tr></table></div>
+
+      <figcaption class="figure-caption">Vertex and index buffers.</figcaption>
+    </figure>
+  </div>
+  </div> 
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <section>
+      <h2></h2>
+      
+      <p>
+      After setting the geometry data the
     geometry can be committed and attached to the scene. Embree objects such as
-        <code>
-         RTCDevice
-        </code>
-        ,
-        <code>
-         RTCScene
-        </code>
-        and
-        <code>
-         RTCGeometry
-        </code>
-        are reference-counted. This means, that the scene takes ownership of the
+    <code>RTCDevice</code>, <code>RTCScene</code> and <code>RTCGeometry</code>
+    are reference-counted. This means, that the scene takes ownership of the
     geometry when we attach it and we can release the geometry handle. The API
-    function
-        <code>
-         rtcAttachGeometry
-        </code>
-        returns a geometry ID which can be
+    function <code>rtcAttachGeometry</code> returns a geometry ID which can be
     used identify intersected objects when the scene contains multiple geometry
     objects. We finish the setup by committing the scene, after which the scene
     can be intersected.
-       </p>
-      </section>
-     </div>
+      </p>
+      
+    </section>
     </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <figure class="figure">
-       <div class="arvacode">
-        <table class="arvacodetable">
-         <tr>
-          <td class="linenos">
-           <div class="linenodiv">
-            <pre><span class="normal">1</span>
+  </div>
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <figure class="figure">
+      <div class="arvacode"><table class="arvacodetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre>
-           </div>
-          </td>
-          <td class="code">
-           <div>
-            <pre><span></span><span class="n">rtcCommitGeometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">);</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">rtcCommitGeometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">);</span>
 <span class="n">rtcAttachGeometry</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span><span class="w"> </span><span class="n">geometry</span><span class="p">);</span>
 <span class="n">rtcReleaseGeometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">);</span>
 <span class="n">rtcCommitScene</span><span class="p">(</span><span class="n">scene</span><span class="p">);</span>
-</pre>
-           </div>
-          </td>
-         </tr>
-        </table>
-       </div>
-       <figcaption class="figure-caption">
-        Attach and commit
-       </figcaption>
-      </figure>
-     </div>
-    </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <section>
-       <h2>
-       </h2>
-       <p>
-        To perform a ray intersect, we obviously have to create a ray
+</pre></div></td></tr></table></div>
+
+      <figcaption class="figure-caption">Attach and commit</figcaption>
+    </figure>
+  </div>
+  </div> 
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <section>
+      <h2></h2>
+      
+      <p>
+      To perform a ray intersect, we obviously have to create a ray
         first. Embree also expects an intersection context which can be used
         for advanced features such as intersection filters and instancing.
-       </p>
-      </section>
-     </div>
+      </p>
+      
+    </section>
     </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <figure class="figure">
-       <div class="arvacode">
-        <table class="arvacodetable">
-         <tr>
-          <td class="linenos">
-           <div class="linenodiv">
-            <pre><span class="normal">1</span>
+  </div>
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <figure class="figure">
+      <div class="arvacode"><table class="arvacodetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
@@ -465,12 +561,7 @@
 <span class="normal">6</span>
 <span class="normal">7</span>
 <span class="normal">8</span>
-<span class="normal">9</span></pre>
-           </div>
-          </td>
-          <td class="code">
-           <div>
-            <pre><span></span><span class="n">RTCRayHit</span><span class="w"> </span><span class="n">rayhit</span><span class="p">;</span><span class="w"> </span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">RTCRayHit</span><span class="w"> </span><span class="n">rayhit</span><span class="p">;</span><span class="w"> </span>
 <span class="n">rayhit</span><span class="p">.</span><span class="n">ray</span><span class="p">.</span><span class="n">org_x</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">0.f</span><span class="p">;</span><span class="w"> </span><span class="n">rayhit</span><span class="p">.</span><span class="n">ray</span><span class="p">.</span><span class="n">org_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.f</span><span class="p">;</span><span class="w"> </span><span class="n">rayhit</span><span class="p">.</span><span class="n">ray</span><span class="p">.</span><span class="n">org_z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-1.f</span><span class="p">;</span>
 <span class="n">rayhit</span><span class="p">.</span><span class="n">ray</span><span class="p">.</span><span class="n">dir_x</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">0.f</span><span class="p">;</span><span class="w"> </span><span class="n">rayhit</span><span class="p">.</span><span class="n">ray</span><span class="p">.</span><span class="n">dir_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.f</span><span class="p">;</span><span class="w"> </span><span class="n">rayhit</span><span class="p">.</span><span class="n">ray</span><span class="p">.</span><span class="n">dir_z</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">1.f</span><span class="p">;</span>
 <span class="n">rayhit</span><span class="p">.</span><span class="n">ray</span><span class="p">.</span><span class="n">tnear</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">0.f</span><span class="p">;</span>
@@ -479,417 +570,274 @@
 
 <span class="n">RTCIntersectContext</span><span class="w"> </span><span class="n">context</span><span class="p">;</span>
 <span class="n">rtcInitIntersectContext</span><span class="p">(</span><span class="o">&amp;</span><span class="n">context</span><span class="p">);</span>
-</pre>
-           </div>
-          </td>
-         </tr>
-        </table>
-       </div>
-       <figcaption class="figure-caption">
-        Intersecting the triangle.
-       </figcaption>
-      </figure>
-     </div>
-    </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <section>
-       <h2>
-       </h2>
-       <p>
-        We set the ray values
-        <code>
-         tnear
-        </code>
-        to
-    0 and
-        <code>
-         tfar
-        </code>
-        to infinity to indicate that the ray starts at
-    origin
-        <code>
-         (org_x, org_y, org_z)
-        </code>
-        and is unbounded. We also set
-        <code>
-         geomID
-        </code>
-        to
-        <code>
-         RTC_INVALID_GEOMETRY_ID
-        </code>
-        . If an
-    intersection occured,
-        <code>
-         geomID
-        </code>
-        will contain the ID of the
+</pre></div></td></tr></table></div>
+
+      <figcaption class="figure-caption">Intersecting the triangle.</figcaption>
+    </figure>
+  </div>
+  </div> 
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <section>
+      <h2></h2>
+      
+      <p>
+      We set the ray values <code>tnear</code> to
+    0 and <code>tfar</code> to infinity to indicate that the ray starts at
+    origin <code>(org_x, org_y, org_z)</code> and is unbounded. We also set
+    <code>geomID</code> to <code>RTC_INVALID_GEOMETRY_ID</code>. If an
+    intersection occured, <code>geomID</code> will contain the ID of the
     geometry that has been intersected. In this case, the value
-        <code>
-         tfar
-        </code>
-        will contain the ray parameter which we can compute the
+    <code>tfar</code> will contain the ray parameter which we can compute the
     point at which the ray and triangle intersect as
-        <code>
-         (org_x, org_y, org_z) + t * (dir_x, dir_y, dir_z)
-        </code>
-        .
-       </p>
-       <p>
-        Now
+    
+    <code>(org_x, org_y, org_z) + t * (dir_x, dir_y, dir_z)</code>.
+      </p>
+      
+      <p>
+      Now
     we can call Embree's intersect function and check if the ray intersects the
     triangle.
-       </p>
-      </section>
-     </div>
+      </p>
+      
+    </section>
     </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <figure class="figure">
-       <div class="arvacode">
-        <table class="arvacodetable">
-         <tr>
-          <td class="linenos">
-           <div class="linenodiv">
-            <pre><span class="normal">1</span>
+  </div>
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <figure class="figure">
+      <div class="arvacode"><table class="arvacodetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre>
-           </div>
-          </td>
-          <td class="code">
-           <div>
-            <pre><span></span><span class="n">rtcIntersect1</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">rayhit</span><span class="p">);</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">rtcIntersect1</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">rayhit</span><span class="p">);</span>
 
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rayhit</span><span class="p">.</span><span class="n">hit</span><span class="p">.</span><span class="n">geomID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">RTC_INVALID_GEOMETRY_ID</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Intersection at t = "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">rayhit</span><span class="p">.</span><span class="n">ray</span><span class="p">.</span><span class="n">tfar</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Intersection at t = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">rayhit</span><span class="p">.</span><span class="n">ray</span><span class="p">.</span><span class="n">tfar</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"No Intersection"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;No Intersection&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span>
-</pre>
-           </div>
-          </td>
-         </tr>
-        </table>
-       </div>
-       <figcaption class="figure-caption">
-        Performing a ray intersection with the scene.
-       </figcaption>
-      </figure>
-     </div>
-    </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <section>
-       <h2>
-       </h2>
-       <p>
-        At the end of an application all resources
+</pre></div></td></tr></table></div>
+
+      <figcaption class="figure-caption">Performing a ray intersection with the scene.</figcaption>
+    </figure>
+  </div>
+  </div> 
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <section>
+      <h2></h2>
+      
+      <p>
+      At the end of an application all resources
     that where allocated through Embree should be released. Note that the
     geometry will be released automatically, when the (last) scene the geometry
     is attached to is released.
-       </p>
-      </section>
-     </div>
+      </p>
+      
+    </section>
     </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <figure class="figure">
-       <div class="arvacode">
-        <table class="arvacodetable">
-         <tr>
-          <td class="linenos">
-           <div class="linenodiv">
-            <pre><span class="normal">1</span>
-<span class="normal">2</span></pre>
-           </div>
-          </td>
-          <td class="code">
-           <div>
-            <pre><span></span><span class="n">rtcReleaseScene</span><span class="p">(</span><span class="n">scene</span><span class="p">);</span>
+  </div>
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <figure class="figure">
+      <div class="arvacode"><table class="arvacodetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">rtcReleaseScene</span><span class="p">(</span><span class="n">scene</span><span class="p">);</span>
 <span class="n">rtcReleaseDevice</span><span class="p">(</span><span class="n">device</span><span class="p">);</span>
-</pre>
-           </div>
-          </td>
-         </tr>
-        </table>
-       </div>
-       <figcaption class="figure-caption">
-        Be neat and clean up.
-       </figcaption>
-      </figure>
-     </div>
+</pre></div></td></tr></table></div>
+
+      <figcaption class="figure-caption">Be neat and clean up.</figcaption>
+    </figure>
+  </div>
+  </div> 
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <section>
+      <h2>Building the example</h2>
+      
+      <p>
+      To build and run the
+    example application you can download the latest <a href=https://www.github.com/embree/embree/releases/latest>Embree
+    release</a>, the <a href=../api_examples/hello_embree/hello_embree.cpp><code>hello_embree.cpp</code></a> source code, and a simple
+    <a href=../api_examples/hello_embree/CMakeLists.txt><code>CMakeLists.txt</code></a> file.
+      </p>
+      
+      <p>
+      After extracting the Embree release archive and placing <code>hello_embree.cpp</code> and
+    <code>CMakeLists.txt</code> into the same folder, you can run
+      </p>
+      
+    </section>
     </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <section>
-       <h2>
-        Building the example
-       </h2>
-       <p>
-        To build and run the
-    example application you can download the latest
-        <a href="https://www.github.com/embree/embree/releases/latest">
-         Embree
-    release
-        </a>
-        , the
-        <a href="../api_examples/hello_embree/hello_embree.cpp">
-         <code>
-          hello_embree.cpp
-         </code>
-        </a>
-        source code, and a simple
-        <a href="../api_examples/hello_embree/CMakeLists.txt">
-         <code>
-          CMakeLists.txt
-         </code>
-        </a>
-        file.
-       </p>
-       <p>
-        After extracting the Embree release archive and placing
-        <code>
-         hello_embree.cpp
-        </code>
-        and
-        <code>
-         CMakeLists.txt
-        </code>
-        into the same folder, you can run
-       </p>
-      </section>
-     </div>
-    </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <figure class="figure">
-       <div class="arvacode">
-        <table class="arvacodetable">
-         <tr>
-          <td class="linenos">
-           <div class="linenodiv">
-            <pre><span class="normal">1</span>
+  </div>
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <figure class="figure">
+      <div class="arvacode"><table class="arvacodetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre>
-           </div>
-          </td>
-          <td class="code">
-           <div>
-            <pre><span></span><span class="n">cmake</span><span class="w"> </span><span class="o">-</span><span class="n">B</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="o">-</span><span class="n">Dembree_DIR</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">extracted</span><span class="o">/</span><span class="n">embree</span><span class="o">/</span><span class="n">release</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">cmake</span><span class="o">/</span><span class="n">embree</span><span class="o">-</span><span class="n">VERSION</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">cmake</span><span class="w"> </span><span class="o">-</span><span class="n">B</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="o">-</span><span class="n">Dembree_DIR</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">extracted</span><span class="o">/</span><span class="n">embree</span><span class="o">/</span><span class="n">release</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">cmake</span><span class="o">/</span><span class="n">embree</span><span class="o">-</span><span class="n">VERSION</span>
 <span class="n">cmake</span><span class="w"> </span><span class="o">--</span><span class="n">build</span><span class="w"> </span><span class="n">build</span>
 <span class="p">.</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">hello_embree</span>
-</pre>
-           </div>
-          </td>
-         </tr>
-        </table>
-       </div>
-       <figcaption class="figure-caption">
-        Build and run example on Unix-based systems.
-       </figcaption>
-      </figure>
-     </div>
+</pre></div></td></tr></table></div>
+
+      <figcaption class="figure-caption">Build and run example on Unix-based systems.</figcaption>
+    </figure>
+  </div>
+  </div> 
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <section>
+      <h2></h2>
+      
+      <p>
+      on Unix-based systems or
+      </p>
+      
+    </section>
     </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <section>
-       <h2>
-       </h2>
-       <p>
-        on Unix-based systems or
-       </p>
-      </section>
-     </div>
-    </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <figure class="figure">
-       <div class="arvacode">
-        <table class="arvacodetable">
-         <tr>
-          <td class="linenos">
-           <div class="linenodiv">
-            <pre><span class="normal">1</span>
+  </div>
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <figure class="figure">
+      <div class="arvacode"><table class="arvacodetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre>
-           </div>
-          </td>
-          <td class="code">
-           <div>
-            <pre><span></span><span class="n">cmake</span><span class="w"> </span><span class="o">-</span><span class="n">B</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="o">-</span><span class="n">Dembree_DIR</span><span class="o">=</span><span class="n">C</span><span class="o">:</span><span class="err">\</span><span class="n">path</span><span class="err">\</span><span class="n">to</span><span class="err">\</span><span class="n">extracted</span><span class="err">\</span><span class="n">embree</span><span class="err">\</span><span class="n">release</span><span class="err">\</span><span class="n">lib</span><span class="err">\</span><span class="n">cmake</span><span class="err">\</span><span class="n">embree</span><span class="o">-</span><span class="n">VERSION</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">cmake</span><span class="w"> </span><span class="o">-</span><span class="n">B</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="o">-</span><span class="n">Dembree_DIR</span><span class="o">=</span><span class="n">C</span><span class="o">:</span><span class="err">\</span><span class="n">path</span><span class="err">\</span><span class="n">to</span><span class="err">\</span><span class="n">extracted</span><span class="err">\</span><span class="n">embree</span><span class="err">\</span><span class="n">release</span><span class="err">\</span><span class="n">lib</span><span class="err">\</span><span class="n">cmake</span><span class="err">\</span><span class="n">embree</span><span class="o">-</span><span class="n">VERSION</span>
 <span class="n">cmake</span><span class="w"> </span><span class="o">--</span><span class="n">build</span><span class="w"> </span><span class="n">build</span>
 <span class="n">build</span><span class="err">\</span><span class="n">Debug</span><span class="err">\</span><span class="n">hello_embree</span><span class="p">.</span><span class="n">exe</span>
-</pre>
-           </div>
-          </td>
-         </tr>
-        </table>
-       </div>
-       <figcaption class="figure-caption">
-        Build and run example on Windows.
-       </figcaption>
-      </figure>
-     </div>
-    </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <section>
-       <h2>
-       </h2>
-       <p>
-        in a developer command prompt for Visual
+</pre></div></td></tr></table></div>
+
+      <figcaption class="figure-caption">Build and run example on Windows.</figcaption>
+    </figure>
+  </div>
+  </div> 
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <section>
+      <h2></h2>
+      
+      <p>
+      in a developer command prompt for Visual
     Studio on windows.
-       </p>
-       <p>
-        The CMake variable
-        <code>
-         embree_DIR
-        </code>
-        has to be
-    set to the directory which contains the
-        <code>
-         embree-config.cmake
-        </code>
-        file
+      </p>
+      
+      <p>
+      The CMake variable <code>embree_DIR</code> has to be
+    set to the directory which contains the <code>embree-config.cmake</code> file
     in the extracted release archive.
-       </p>
-       <p>
-        If everything went smoothly you should get the following output
-       </p>
-      </section>
-     </div>
+      </p>
+      
+      <p>
+      If everything went smoothly you should get the following output
+      </p>
+      
+    </section>
     </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <figure class="figure">
-       <div class="arvacode">
-        <table class="arvacodetable">
-         <tr>
-          <td class="linenos">
-           <div class="linenodiv">
-            <pre><span class="normal">1</span></pre>
-           </div>
-          </td>
-          <td class="code">
-           <div>
-            <pre><span></span><span class="n">Intersection</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
-</pre>
-           </div>
-          </td>
-         </tr>
-        </table>
-       </div>
-       <figcaption class="figure-caption">
-        Output of the example application.
-       </figcaption>
-      </figure>
-     </div>
+  </div>
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <figure class="figure">
+      <div class="arvacode"><table class="arvacodetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><span class="n">Intersection</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+</pre></div></td></tr></table></div>
+
+      <figcaption class="figure-caption">Output of the example application.</figcaption>
+    </figure>
+  </div>
+  </div> 
+</div>
+
+  <div class="container-lg text"
+    >
+  <div class="row justify-content-center py-2">
+    <div class="col-8">
+    <section>
+      <h2>Next steps</h2>
+      
+      <p>
+      Some suggestions on how to continue from here:
+<ul>
+<li>Modify the ray such that it does not intersect the triangle.</li>
+<li>Add another triangle to the scene.</li>
+<li>Add a <code>RTC_GEOMETRY_TYPE_QUAD</code> geometry to the scene and check
+if a ray intersects the correct geometry by inspecting the geomerty IDs.</li>
+<li>Take a look at the <a href=https://raw.githubusercontent.com/embree/embree/master/readme.pdf>API documentation</a>.</li>
+<li>Take a look at the <a href=https://github.com/embree/embree/tree/master/tutorials>Embree tutorials</a>.</li>
+</ul>
+      </p>
+      
+    </section>
     </div>
-   </div>
-   <div class="container-lg text">
-    <div class="row justify-content-center py-2">
-     <div class="col-8">
-      <section>
-       <h2>
-        Next steps
-       </h2>
-       <p>
-        Some suggestions on how to continue from here:
-        <ul>
-         <li>
-          Modify the ray such that it does not intersect the triangle.
-         </li>
-         <li>
-          Add another triangle to the scene.
-         </li>
-         <li>
-          Add a
-          <code>
-           RTC_GEOMETRY_TYPE_QUAD
-          </code>
-          geometry to the scene and check
-if a ray intersects the correct geometry by inspecting the geomerty IDs.
-         </li>
-         <li>
-          Take a look at the
-          <a href="https://raw.githubusercontent.com/embree/embree/master/readme.pdf">
-           API documentation
-          </a>
-          .
-         </li>
-         <li>
-          Take a look at the
-          <a href="https://github.com/embree/embree/tree/master/tutorials">
-           Embree tutorials
-          </a>
-          .
-         </li>
-        </ul>
-       </p>
-      </section>
-     </div>
-    </div>
-   </div>
-  </main>
-  <footer>
-   <nav class="navbar navbar-expand-sm navbar-light">
-    <div class="container-xl">
-     <ul class="navbar-nav">
-      <li class="nav-item">
-       <a class="nav-link" href="https://www.intel.com">
-        © 2024 Intel Corporation
-       </a>
-      </li>
-      <li class="nav-item">
-       <a class="nav-link" href="https://www.intel.com/content/www/us/en/legal/terms-of-use.html">
-        Terms of Use
-       </a>
-      </li>
-      <li class="nav-item">
-       <a class="nav-link" href="https://www.intel.com/content/www/us/en/legal/trademarks.html">
-        Trademarks
-       </a>
-      </li>
-      <li class="nav-item">
-       <a class="nav-link" href="https://www.intel.com/content/www/us/en/privacy/intel-privacy-notice.html">
-        Privacy
-       </a>
-      </li>
-      <li class="nav-item">
-       <a class="nav-link" href="https://www.intel.com/content/www/us/en/privacy/intel-cookie-notice.html">
-        Cookies
-       </a>
-      </li>
-     </ul>
-    </div>
-   </nav>
-  </footer>
-  <script src="static-fw/bootstrap-5.0.0-beta2-dist/js/bootstrap.bundle.min.js">
-  </script>
- </body>
+  </div>
+</div>
+
+
+    </main>
+
+    <footer>
+      <nav class="navbar navbar-expand-sm navbar-light">
+        <div class="container-xl">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.intel.com">&copy;&nbsp;2025 Intel Corporation</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.intel.com/content/www/us/en/legal/terms-of-use.html">Terms of Use</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.intel.com/content/www/us/en/legal/trademarks.html">Trademarks</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.intel.com/content/www/us/en/privacy/intel-privacy-notice.html">Privacy</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.intel.com/content/www/us/en/privacy/intel-cookie-notice.html">Cookies</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </footer>
+
+    <script src="static-fw/bootstrap-5.0.0-beta2-dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
