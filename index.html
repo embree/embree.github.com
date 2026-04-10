@@ -73,10 +73,10 @@
         
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" 
-               href="#" id="31478f7e-95aa-46dd-b138-c0ac277dcad1" role="button" 
+               href="#" id="e37e625c-436a-4c65-8380-c0d893fee504" role="button" 
                data-bs-toggle="dropdown" 
                aria-expanded="false">Resources</a>
-            <ul class="dropdown-menu" aria-labelledby="31478f7e-95aa-46dd-b138-c0ac277dcad1">
+            <ul class="dropdown-menu" aria-labelledby="e37e625c-436a-4c65-8380-c0d893fee504">
               
                 <li class="nav-item">
                 
@@ -136,10 +136,10 @@
         
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" 
-               href="#" id="f9d0bb20-e2a6-4c2c-87b5-621a983ebc9f" role="button" 
+               href="#" id="ae3e7377-3607-4b87-9038-e7b44a8584d4" role="button" 
                data-bs-toggle="dropdown" 
                aria-expanded="false">RenderKit</a>
-            <ul class="dropdown-menu" aria-labelledby="f9d0bb20-e2a6-4c2c-87b5-621a983ebc9f">
+            <ul class="dropdown-menu" aria-labelledby="ae3e7377-3607-4b87-9038-e7b44a8584d4">
               
                 <li class="nav-item">
                 
@@ -385,15 +385,22 @@
   <div class="row justify-content-center py-5 release-notes"
     >
   <div class="col-sm-5">
-    <h2 id="release-version">Current Release: v4.4</h2>
+    <h2 id="release-version">Current Release: v4.4.1</h2>
     
     <p>
         <ul>
-            <li>Added support for passing geometry data to Embree using explicit host and SYCL device memory (see `rtcSetSharedGeometryBufferHostDevice`, `rtcNewBufferHostDevice`, and other API calls with `HostDevice` suffix).</li>
-            <li>Embree does not use SYCL shared memory anymore internally on systems without host unified memory (i.e., discrete GPUs). Therefore, memory transfers are triggered by specific Embree API calls (e.g. `rtcCommitScene`, `rtcCommitBuffer`).</li>
-            <li>Objects of type `RTCScene` are not accessible on a SYCL device anymore. Ray queries on SYCL devices must be performed using `RTCTraversable` objects and the `rtcTraversableIntersect` and `rtcTraversableOccluded` API calls.</li>
-            <li>Embree does not query the availability of RDRAND for its ISA detection anymore, which caused issues on some older AMD CPUs.</li>
-            <li>Performance improvements on GPU for the two level instancing case (RTC_MAX_INSTANCE_LEVEL_COUNT 2).</li>
+            <li>Enabled support for Intel® Core™ Ultra series 3 integrated GPUs.</li>
+            <li>Added specialization constants for curves, motion blur, and motion blurred instances to reduce code complexity.</li>
+            <li>Enabled AVX512 support with MSVC compiler.</li>
+            <li>Fixed numerous potential uninitialized variables, integer over/underflows, and out-of-bounds accesses.</li>
+            <li>Fixed bounds checking for buffer stride and grid dimensions.</li>
+            <li>Fixed rare hang in rtcNewDevice when using single thread mode (start_threads=1).</li>
+            <li>Fixed morton builder for instance arrays.</li>
+            <li>Improved compiler warning handling for C++26, GCC, and ARM builds.</li>
+            <li>Improved AVX512 flag consistency between GCC and Clang.</li>
+            <li>Updated TinyEXR dependency to fix resource leaks.</li>
+            <li>Reduced memory copies and improved move semantics usage.</li>
+            <li>Bumped CMake minimum required version to 3.10.</li>
         </ul></p>
     
     <ul class="list-unstyled">
@@ -840,7 +847,7 @@ rendering code and makes programming the GPU easy.</p>
         <div class="container-xl">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="https://www.intel.com">&copy;&nbsp;2025 Intel Corporation</a>
+              <a class="nav-link" href="https://www.intel.com">&copy;&nbsp;2026 Intel Corporation</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="https://www.intel.com/content/www/us/en/legal/terms-of-use.html">Terms of Use</a>
